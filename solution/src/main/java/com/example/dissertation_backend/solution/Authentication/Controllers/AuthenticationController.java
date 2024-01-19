@@ -1,9 +1,9 @@
 package com.example.dissertation_backend.solution.Authentication.Controllers;
 
+import com.example.dissertation_backend.solution.Authentication.Services.AuthenticationService;
 import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
 import com.example.dissertation_backend.solution.DTO.LoginResponseDTO;
 import com.example.dissertation_backend.solution.DTO.RegistrationDTO;
-import com.example.dissertation_backend.solution.Services.UserAuthenticationService.AuthenticationService;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

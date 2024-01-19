@@ -1,4 +1,4 @@
-package com.example.dissertation_backend.solution.Services.UserAuthenticationService;
+package com.example.dissertation_backend.solution.Authentication.Services;
 
 import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
 import com.example.dissertation_backend.solution.Customers.Model.Roles;
