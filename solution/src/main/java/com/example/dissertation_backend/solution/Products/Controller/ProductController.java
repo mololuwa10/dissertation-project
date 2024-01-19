@@ -58,9 +58,9 @@ public class ProductController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Products> getProductById(@PathVariable Integer id) {
+  public ResponseEntity<ProductDTO> getProductById(@PathVariable Integer id) {
     return productService
-      .getProductById(id)
+      .getProductByIdDTOs(id)
       .map(ResponseEntity::ok)
       .orElse(ResponseEntity.notFound().build());
   }
@@ -218,16 +218,20 @@ public class ProductController {
         .stream()
         .anyMatch(role -> role.getAuthority().equals("ADMIN"));
 
-      if (!isAdmin) {
+      // Check if the user is not an admin and not the owner of the product
+      ArtisanProfile artisan = existingProduct.get().getArtisan();
+      if (!isAdmin && (artisan == null || !artisan.getArtisan().equals(user))) {
         return ResponseEntity
           .status(HttpStatus.FORBIDDEN)
-          .body("Access denied: User is not an admin");
+          .body(
+            "Access denied: User is not an admin or user does not own the product"
+          );
       }
 
       Optional<ArtisanProfile> artisanProfileOpt = artisanProfileService.findByArtisan(
         user
       );
-      ArtisanProfile artisan;
+
       if (artisanProfileOpt.isPresent()) {
         artisan = artisanProfileOpt.get();
       } else if (isAdmin) {
@@ -262,21 +266,20 @@ public class ProductController {
   }
 
   // Additional endpoint methods added here
-  @GetMapping("/{productId}/images")
-  public ResponseEntity<List<ProductImages>> getProductImages(
-    @PathVariable Integer productId
-  ) {
-    Products product = productService
-      .getProductById(productId)
-      .orElseThrow(() ->
-        new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found")
-      );
-
-    List<ProductImages> images = productImageService.getImagesByProduct(
-      product
-    );
-    return ResponseEntity.ok(images);
-  }
+  // @GetMapping("/{productId}/images")
+  // public ResponseEntity<List<ProductImages>> getProductImages(
+  //   @PathVariable Integer productId
+  // ) {
+  //   Products product = productService
+  //     .getProductById(productId)
+  //     .orElseThrow(() ->
+  //       new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found")
+  //     );
+  //   List<ProductImages> images = productImageService.getImagesByProduct(
+  //     product
+  //   );
+  //   return ResponseEntity.ok(images);
+  // }
 
   // Image Resizing
   public byte[] resizeImage(byte[] imageBytes, int width, int height)
@@ -288,7 +291,4 @@ public class ProductController {
       .toOutputStream(outputStream);
     return outputStream.toByteArray();
   }
-  // private String getFileExtension(String fileName) {
-  // return fileName.substring(fileName.lastIndexOf(".") + 1);
-  // }
 }
