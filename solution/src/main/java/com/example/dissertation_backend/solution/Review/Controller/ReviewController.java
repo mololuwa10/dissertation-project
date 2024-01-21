@@ -3,6 +3,7 @@ package com.example.dissertation_backend.solution.Review.Controller;
 import com.example.dissertation_backend.solution.Category.Model.Category;
 import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
 import com.example.dissertation_backend.solution.Customers.Model.ArtisanProfile;
+import com.example.dissertation_backend.solution.Customers.Service.ArtisanProfileService;
 import com.example.dissertation_backend.solution.Customers.Service.UserService;
 import com.example.dissertation_backend.solution.DTO.ApplicationUserDTO;
 import com.example.dissertation_backend.solution.DTO.ArtisanProfileDTO;
@@ -39,6 +40,9 @@ public class ReviewController {
   @Autowired
   private ProductServices productServices;
 
+  @Autowired
+  private ArtisanProfileService artisanProfileService;
+
   @GetMapping
   public List<ReviewDTO> getAllReviews() {
     return reviewService.getAllReviewDTOs();
@@ -60,6 +64,13 @@ public class ReviewController {
   @GetMapping("/user/{userId}")
   public List<ReviewDTO> getReviewByUserId(@PathVariable Integer userId) {
     return reviewService.getReviewsByUserId(userId);
+  }
+
+  @GetMapping("/artisan/{artisanId}")
+  public List<ReviewDTO> getReviewsByArtisanId(
+    @PathVariable Integer artisanId
+  ) {
+    return reviewService.getReviewsByArtisanId(artisanId);
   }
 
   @PostMapping("/product/{productId}")
@@ -95,6 +106,51 @@ public class ReviewController {
     Review review = new Review();
     review.setApplicationUser(user);
     review.setProducts(product.get());
+    review.setRating(reviewDTO.getRating());
+    review.setComment(reviewDTO.getComment());
+    review.setReviewDate(LocalDateTime.now());
+
+    // Add the review to the database
+    Review newReview = reviewService.addReview(review);
+    return ResponseEntity.ok(convertToDTO(newReview));
+  }
+
+  @PostMapping("/artisan/{artisanId}")
+  public ResponseEntity<Object> addArtisanReview(
+    @PathVariable Integer artisanId,
+    @RequestBody ReviewDTO reviewDTO,
+    Principal principal
+  ) {
+    // Similar logic to addReview, but for artisan reviews
+    // Check if a user is logged in
+    if (principal == null) {
+      return ResponseEntity
+        .status(HttpStatus.FORBIDDEN)
+        .body("You must be logged in to add a review.");
+    }
+
+    // Retrieve the logged-in user's details
+    ApplicationUser user = userService.findByUsername(principal.getName());
+    if (user == null) {
+      return ResponseEntity
+        .status(HttpStatus.FORBIDDEN)
+        .body("You must be logged in to add a review.");
+    }
+
+    // Verify that the artisan exists
+    Optional<ArtisanProfile> artisanProfile = artisanProfileService.getArtisanProfileById(
+      artisanId
+    );
+    if (!artisanProfile.isPresent()) {
+      return ResponseEntity
+        .status(HttpStatus.NOT_FOUND)
+        .body("Artisan not found.");
+    }
+
+    // Create a new Review object and set its fields
+    Review review = new Review();
+    review.setApplicationUser(user);
+    review.setArtisan(artisanProfile.get());
     review.setRating(reviewDTO.getRating());
     review.setComment(reviewDTO.getComment());
     review.setReviewDate(LocalDateTime.now());
@@ -199,7 +255,9 @@ public class ReviewController {
     dto.setComment(review.getComment());
     dto.setRating(review.getRating());
     dto.setReviewDate(review.getReviewDate());
-    dto.setProducts(convertProductToDTO(review.getProducts()));
+    if (review.getProducts() != null) {
+      dto.setProducts(convertProductToDTO(review.getProducts()));
+    }
     dto.setApplicationUser(
       convertApplicationUserDTO(review.getApplicationUser())
     );

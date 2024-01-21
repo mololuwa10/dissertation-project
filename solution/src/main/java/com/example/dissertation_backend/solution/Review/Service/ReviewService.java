@@ -103,6 +103,14 @@ public class ReviewService {
     return review.stream().map(this::convertToDTO).collect(Collectors.toList());
   }
 
+  public List<ReviewDTO> getReviewsByArtisanId(Integer artisanId) {
+    if (artisanId == null) {
+      return null;
+    }
+    List<Review> review = reviewRepository.findByArtisan_ArtisanId(artisanId);
+    return review.stream().map(this::convertToDTO).collect(Collectors.toList());
+  }
+
   private ReviewDTO convertToDTO(Review review) {
     ReviewDTO dto = new ReviewDTO();
     dto.setReviewId(review.getReviewId());

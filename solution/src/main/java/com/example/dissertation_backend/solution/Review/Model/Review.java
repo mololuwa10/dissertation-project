@@ -1,6 +1,7 @@
 package com.example.dissertation_backend.solution.Review.Model;
 
 import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
+import com.example.dissertation_backend.solution.Customers.Model.ArtisanProfile;
 import com.example.dissertation_backend.solution.Products.Model.Products;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -22,6 +23,10 @@ public class Review {
   @ManyToOne
   @JoinColumn(name = "user_id", referencedColumnName = "user_id")
   private ApplicationUser applicationUser;
+
+  @ManyToOne
+  @JoinColumn(name = "artisan_id", referencedColumnName = "artisan_id")
+  private ArtisanProfile artisan;
 
   @Column(name = "rating")
   private Integer rating;
@@ -48,7 +53,8 @@ public class Review {
     ApplicationUser applicationUser,
     Integer rating,
     String comment,
-    LocalDateTime reviewDate
+    LocalDateTime reviewDate,
+    ArtisanProfile artisanProfile
   ) {
     super();
     this.reviewId = reviewId;
@@ -57,6 +63,7 @@ public class Review {
     this.rating = rating;
     this.comment = comment;
     this.reviewDate = reviewDate;
+    this.artisan = artisanProfile;
   }
 
   // Getters and setters
@@ -106,5 +113,13 @@ public class Review {
 
   public void setReviewDate(LocalDateTime reviewDate) {
     this.reviewDate = reviewDate;
+  }
+
+  public ArtisanProfile getArtisan() {
+    return artisan;
+  }
+
+  public void setArtisan(ArtisanProfile artisan) {
+    this.artisan = artisan;
   }
 }
