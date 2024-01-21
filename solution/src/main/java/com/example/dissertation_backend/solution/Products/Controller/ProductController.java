@@ -35,6 +35,16 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/products")
+@CrossOrigin(
+  origins = { "*" },
+  methods = {
+    RequestMethod.OPTIONS,
+    RequestMethod.GET,
+    RequestMethod.PUT,
+    RequestMethod.DELETE,
+    RequestMethod.POST,
+  }
+)
 public class ProductController {
 
   @Autowired

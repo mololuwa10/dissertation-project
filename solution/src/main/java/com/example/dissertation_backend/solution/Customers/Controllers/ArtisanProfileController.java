@@ -8,6 +8,16 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/artisan")
+@CrossOrigin(
+  origins = { "*" },
+  methods = {
+    RequestMethod.OPTIONS,
+    RequestMethod.GET,
+    RequestMethod.PUT,
+    RequestMethod.DELETE,
+    RequestMethod.POST,
+  }
+)
 public class ArtisanProfileController {
 
   @Autowired

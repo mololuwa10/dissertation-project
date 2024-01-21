@@ -1,8 +1,12 @@
 package com.example.dissertation_backend.solution.Testimonial.Service;
 
+import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
+import com.example.dissertation_backend.solution.DTO.ApplicationUserDTO;
+import com.example.dissertation_backend.solution.DTO.TestimonialDTO;
 import com.example.dissertation_backend.solution.Testimonial.Model.Testimonial;
 import com.example.dissertation_backend.solution.Testimonial.Repository.TestimonialRepo;
 import java.util.*;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,16 +16,20 @@ public class TestimonialService {
   @Autowired
   private TestimonialRepo testimonialRepo;
 
-  public List<Testimonial> getAllTestimonials() {
-    return testimonialRepo.findAll();
+  public List<TestimonialDTO> getAllTestimonialDTOs() {
+    List<Testimonial> testimonials = testimonialRepo.findAll();
+    return testimonials
+      .stream()
+      .map(this::convertToDTO)
+      .collect(Collectors.toList());
   }
 
-  public Optional<Testimonial> getTestimonialById(Integer id) {
+  public Optional<TestimonialDTO> getTestimonialByIdDTOs(Integer id) {
     if (id == null) {
       return null;
     }
     Optional<Testimonial> testimonial = testimonialRepo.findById(id);
-    return testimonial;
+    return testimonial.map(this::convertToDTO);
   }
 
   // Add a new review to the database, returns the newly created object on success and an
@@ -39,5 +47,38 @@ public class TestimonialService {
       return;
     }
     testimonialRepo.deleteById(id);
+  }
+
+  private TestimonialDTO convertToDTO(Testimonial testimonial) {
+    TestimonialDTO dto = new TestimonialDTO();
+    dto.setTestimonialId(testimonial.getTestimonialId());
+    dto.setRating(testimonial.getRating());
+    dto.setComment(testimonial.getTestimonial());
+    dto.setTestimonialDate(testimonial.getTestimonialDate());
+    dto.setApplicationUser(
+      convertApplicationUserDTO(testimonial.getApplicationUser())
+    );
+
+    return dto;
+  }
+
+  private ApplicationUserDTO convertApplicationUserDTO(
+    ApplicationUser applicationUser
+  ) {
+    ApplicationUserDTO dto = new ApplicationUserDTO();
+    dto.setUserId(applicationUser.getUserId());
+    dto.setFirstname(applicationUser.getFirstname());
+    dto.setLastname(applicationUser.getLastname());
+    dto.setUsername(applicationUser.getUsername());
+    dto.setPassword(applicationUser.getPassword());
+    dto.setUser_email(applicationUser.getUser_email());
+    dto.setBankAccountNo(applicationUser.getBankAccountNo());
+    dto.setBankSortCode(applicationUser.getBankSortCode());
+    dto.setContactTelephone(applicationUser.getContactTelephone());
+    dto.setContactAddress(applicationUser.getContactAddress());
+    dto.setAuthorities(applicationUser.getAuthorities());
+    dto.setDateJoined(applicationUser.getDateJoined());
+
+    return dto;
   }
 }

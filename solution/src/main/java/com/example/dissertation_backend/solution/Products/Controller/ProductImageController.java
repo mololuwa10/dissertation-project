@@ -22,6 +22,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/productImages")
+@CrossOrigin(
+  origins = { "*" },
+  methods = {
+    RequestMethod.OPTIONS,
+    RequestMethod.GET,
+    RequestMethod.PUT,
+    RequestMethod.DELETE,
+    RequestMethod.POST,
+  }
+)
 public class ProductImageController {
 
   @Autowired

@@ -17,7 +17,16 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin")
-@CrossOrigin("*")
+@CrossOrigin(
+  origins = { "*" },
+  methods = {
+    RequestMethod.OPTIONS,
+    RequestMethod.GET,
+    RequestMethod.PUT,
+    RequestMethod.DELETE,
+    RequestMethod.POST,
+  }
+)
 public class AdminController {
 
   @Autowired
