@@ -81,6 +81,7 @@ public class ShoppingCartController {
     return ResponseEntity.ok(response);
   }
 
+  // Getting the cart for the user thats logged in
   @GetMapping("/getCart")
   public ResponseEntity<?> getCart(Principal principal) {
     if (principal == null) {
@@ -96,6 +97,7 @@ public class ShoppingCartController {
     return ResponseEntity.ok(cartDTO);
   }
 
+  // Updating cart item for the user
   @PutMapping("/cartItem/{cartItemId}")
   public ResponseEntity<?> updateCartItemQuantity(
     @PathVariable Integer cartItemId,
@@ -134,6 +136,7 @@ public class ShoppingCartController {
     return ResponseEntity.ok(response);
   }
 
+  // Removing item from cart
   @DeleteMapping("/cartItem/{cartItemId}")
   public ResponseEntity<?> removeCartItem(
     @PathVariable Integer cartItemId,
