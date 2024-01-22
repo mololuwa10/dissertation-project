@@ -2,11 +2,9 @@ package com.example.dissertation_backend.solution.Category.Controller;
 
 import com.example.dissertation_backend.solution.Category.Model.Category;
 import com.example.dissertation_backend.solution.Category.Repository.CategoryRepository;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(
@@ -25,6 +23,11 @@ public class CategoryController {
 
   @Autowired
   private CategoryRepository categoryRepository;
+
+  @GetMapping
+  public List<Category> getAllCategories() {
+    return categoryRepository.findAll();
+  }
 
   @GetMapping("/{id}")
   public ResponseEntity<Category> getCategoryById(
@@ -50,7 +53,6 @@ public class CategoryController {
     if (existingCategory.size() > 0) {
       return null;
     }
-    // return categoryRepository.save(category);
     return categoryRepository.save(category);
   }
 
