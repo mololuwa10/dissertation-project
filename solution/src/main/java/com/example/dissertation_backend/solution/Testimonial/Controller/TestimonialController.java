@@ -5,6 +5,7 @@ import com.example.dissertation_backend.solution.Customers.Service.UserService;
 import com.example.dissertation_backend.solution.DTO.ApplicationUserDTO;
 import com.example.dissertation_backend.solution.DTO.TestimonialDTO;
 import com.example.dissertation_backend.solution.Testimonial.Model.Testimonial;
+import com.example.dissertation_backend.solution.Testimonial.Repository.TestimonialRepo;
 import com.example.dissertation_backend.solution.Testimonial.Service.TestimonialService;
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -35,6 +36,9 @@ public class TestimonialController {
   @Autowired
   private UserService userService;
 
+  @Autowired
+  private TestimonialRepo testimonialRepo;
+
   @GetMapping
   public List<TestimonialDTO> getAllTestimonials() {
     return testimonialService.getAllTestimonialDTOs();
@@ -45,8 +49,18 @@ public class TestimonialController {
     return testimonialService.getTestimonialByIdDTOs(id);
   }
 
+  @GetMapping("/user/{userId}")
+  public ResponseEntity<List<TestimonialDTO>> getTestimonialsByUserId(
+    @PathVariable Integer userId
+  ) {
+    List<TestimonialDTO> testimonials = testimonialService.getTestimonialsByUserId(
+      userId
+    );
+    return ResponseEntity.ok(testimonials);
+  }
+
   @PostMapping
-  public ResponseEntity<Object> saveOrUpdateTestimonial(
+  public ResponseEntity<Object> saveTestimonial(
     @RequestBody TestimonialDTO testimonialDTO,
     Principal principal
   ) {
@@ -54,7 +68,7 @@ public class TestimonialController {
     if (principal == null) {
       return ResponseEntity
         .status(HttpStatus.FORBIDDEN)
-        .body("You must be logged in to add a review.");
+        .body("You must be logged in to add a testimonial.");
     }
 
     // Retrieve the logged-in user's details
@@ -62,7 +76,7 @@ public class TestimonialController {
     if (user == null) {
       return ResponseEntity
         .status(HttpStatus.FORBIDDEN)
-        .body("You must be logged in to add a review.");
+        .body("You must be logged in to add a testimonial.");
     }
 
     // Create a new Testimonial object and set its fields
@@ -79,9 +93,94 @@ public class TestimonialController {
     return ResponseEntity.ok(convertToDTO(newTestimonial));
   }
 
+  @PutMapping("/user/{id}")
+  public ResponseEntity<Object> updateTestimonial(
+    @PathVariable Integer id,
+    @RequestBody TestimonialDTO testimonialDTO,
+    Principal principal
+  ) {
+    // Check if a user is logged in
+    if (principal == null) {
+      return ResponseEntity
+        .status(HttpStatus.FORBIDDEN)
+        .body("You must be logged in to update a testimonial.");
+    }
+
+    // Retrieve the logged-in user's details
+    ApplicationUser user = userService.findByUsername(principal.getName());
+    if (user == null) {
+      return ResponseEntity
+        .status(HttpStatus.FORBIDDEN)
+        .body("You must be logged in to update a testimonial.");
+    }
+
+    // Fetch the existing testimonial
+    if (id == null) {
+      return null;
+    }
+    Optional<Testimonial> existingTestimonialOpt = testimonialRepo.findById(id);
+    if (!existingTestimonialOpt.isPresent()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    Testimonial existingTestimonial = existingTestimonialOpt.get();
+
+    // Check if the current user is the one who created the testimonial
+    if (!existingTestimonial.getApplicationUser().equals(user)) {
+      return ResponseEntity
+        .status(HttpStatus.FORBIDDEN)
+        .body(
+          "Access denied: You are not authorized to update this testimonial"
+        );
+    }
+
+    // Update the testimonial with new details
+    existingTestimonial.setRating(testimonialDTO.getRating());
+    existingTestimonial.setTestimonial(testimonialDTO.getComment());
+    existingTestimonial.setTestimonialDate(LocalDateTime.now()); // Update the date if necessary
+
+    // Save the updated testimonial
+    Testimonial updatedTestimonial = testimonialService.saveOrUpdateTestimonial(
+      existingTestimonial
+    );
+
+    return ResponseEntity.ok(convertToDTO(updatedTestimonial));
+  }
+
   @DeleteMapping("/{id}")
-  public void deleteTestimonial(@PathVariable Integer id) {
-    testimonialService.deleteTestimonial(id);
+  public ResponseEntity<?> deleteTestimonial(
+    @PathVariable Integer id,
+    Principal principal
+  ) {
+    if (id == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    Optional<Testimonial> testimonialOpt = testimonialRepo.findById(id);
+    if (!testimonialOpt.isPresent()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    Testimonial testimonial = testimonialOpt.get();
+    ApplicationUser currentUser = userService.findByUsername(
+      principal.getName()
+    );
+
+    // Check if the current user is the one who created the testimonial
+    if (
+      currentUser == null ||
+      !testimonial.getApplicationUser().equals(currentUser)
+    ) {
+      return ResponseEntity
+        .status(HttpStatus.FORBIDDEN)
+        .body(
+          "Access denied: You are not authorized to delete this testimonial"
+        );
+    }
+
+    // Delete the testimonial
+    testimonialRepo.delete(testimonial);
+    return ResponseEntity.ok().build();
   }
 
   private TestimonialDTO convertToDTO(Testimonial testimonial) {

@@ -32,6 +32,19 @@ public class TestimonialService {
     return testimonial.map(this::convertToDTO);
   }
 
+  public List<TestimonialDTO> getTestimonialsByUserId(Integer userId) {
+    if (userId == null) {
+      return Collections.emptyList();
+    }
+    List<Testimonial> testimonials = testimonialRepo.findByApplicationUser_UserId(
+      userId
+    );
+    return testimonials
+      .stream()
+      .map(this::convertToDTO)
+      .collect(Collectors.toList());
+  }
+
   // Add a new review to the database, returns the newly created object on success and an
   // empty object on failure
   public Testimonial saveOrUpdateTestimonial(Testimonial testimonial) {
