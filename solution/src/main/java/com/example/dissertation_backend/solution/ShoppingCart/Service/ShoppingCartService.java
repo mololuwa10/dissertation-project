@@ -9,6 +9,7 @@ import com.example.dissertation_backend.solution.DTO.CartItemDTO;
 import com.example.dissertation_backend.solution.DTO.CategoryDTO;
 import com.example.dissertation_backend.solution.DTO.ProductDTO;
 import com.example.dissertation_backend.solution.DTO.ShoppingCartDTO;
+import com.example.dissertation_backend.solution.Products.Model.ProductImages;
 import com.example.dissertation_backend.solution.Products.Model.Products;
 import com.example.dissertation_backend.solution.Products.Repository.ProductRepository;
 import com.example.dissertation_backend.solution.ShoppingCart.Model.CartItem;
@@ -16,9 +17,12 @@ import com.example.dissertation_backend.solution.ShoppingCart.Model.ShoppingCart
 import com.example.dissertation_backend.solution.ShoppingCart.Repository.CartItemRepository;
 import com.example.dissertation_backend.solution.ShoppingCart.Repository.ShoppingCartRepository;
 import jakarta.transaction.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,9 +32,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ShoppingCartService {
-
-  // @Autowired
-  // private ShoppingCartRepository shoppingCartRepository;
 
   @Autowired
   private CartItemRepository cartItemRepository;
@@ -98,17 +99,17 @@ public class ShoppingCartService {
     if (existingCartItem.isPresent()) {
       // If the product is already in the cart, just update the quantity
       CartItem cartItem = existingCartItem.get();
-      System.out.println(
-        "Found existingCartItem: " +
-        cartItem.getProduct().getProductId() +
-        ", Quantity: " +
-        cartItem.getQuantity()
-      );
       int newQuantity = cartItem.getQuantity() + quantity;
-      Double totalProductPrice = product.getProductPrice() * newQuantity;
+      // Double totalProductPrice = product.getProductPrice() * newQuantity;
       if (product.getProductStockQuantity() >= newQuantity) {
+        // Setting the total Product Price to 2 decimal places
+        BigDecimal totalProductPrice = BigDecimal
+          .valueOf(product.getProductPrice())
+          .multiply(BigDecimal.valueOf(newQuantity))
+          .setScale(2, RoundingMode.HALF_UP);
+
         cartItem.setQuantity(newQuantity);
-        cartItem.setTotalProductPrice(totalProductPrice);
+        cartItem.setTotalProductPrice(totalProductPrice.doubleValue());
         cartItemDTO = convertCartItemToDTO(cartItemRepository.save(cartItem));
       } else {
         throw new RuntimeException(
@@ -121,11 +122,70 @@ public class ShoppingCartService {
       cartItem.setProduct(product);
       cartItem.setShoppingCart(cart);
       cartItem.setQuantity(quantity);
-      cartItem.setTotalProductPrice(product.getProductPrice());
+
+      // Setting the total Product Price to 2 decimal places
+      BigDecimal totalProductPrice = BigDecimal
+        .valueOf(product.getProductPrice())
+        .multiply(BigDecimal.valueOf(quantity))
+        .setScale(2, RoundingMode.HALF_UP);
+
+      cartItem.setTotalProductPrice(totalProductPrice.doubleValue());
       cartItemDTO = convertCartItemToDTO(cartItemRepository.save(cartItem));
     }
 
     return cartItemDTO;
+  }
+
+  public CartItemDTO updateCartItem(Integer cartItemId, Integer newQuantity) {
+    if (cartItemId == null) {
+      throw new RuntimeException("Cart item id must be provided");
+    }
+
+    CartItem cartItem = cartItemRepository
+      .findById(cartItemId)
+      .orElseThrow(() -> new RuntimeException("Cart item not found"));
+
+    if (newQuantity <= 0) {
+      throw new RuntimeException("Quantity must be greater than zero");
+    }
+
+    Products product = cartItem.getProduct();
+    if (newQuantity > product.getProductStockQuantity()) {
+      throw new RuntimeException("Insufficient stock available");
+    }
+
+    cartItem.setQuantity(newQuantity);
+    // Use BigDecimal for price calculation
+    BigDecimal totalProductPrice = BigDecimal
+      .valueOf(product.getProductPrice())
+      .multiply(BigDecimal.valueOf(newQuantity))
+      .setScale(2, RoundingMode.HALF_UP);
+
+    cartItem.setTotalProductPrice(totalProductPrice.doubleValue());
+    CartItem updatedCartItem = cartItemRepository.save(cartItem);
+
+    return convertCartItemToDTO(updatedCartItem);
+  }
+
+  public void removeCartItem(ApplicationUser user, Integer cartItemId) {
+    if (cartItemId == null) {
+      throw new IllegalArgumentException("Cart item ID must not be null");
+    }
+
+    // Fetch the cart item
+    CartItem cartItem = cartItemRepository
+      .findById(cartItemId)
+      .orElseThrow(() -> new RuntimeException("Cart item not found"));
+
+    // Check if the cart item belongs to the user's cart
+    if (!cartItem.getShoppingCart().getUser().equals(user)) {
+      throw new RuntimeException(
+        "Access denied: You do not own this cart item"
+      );
+    }
+
+    // Remove the cart item
+    cartItemRepository.delete(cartItem);
   }
 
   public ShoppingCartDTO getCartByUsername(String username) {
@@ -142,7 +202,7 @@ public class ShoppingCartService {
     cartItemDTO.setCartItemId(cartItem.getCartItemId());
     cartItemDTO.setProduct(convertProductToDTO(cartItem.getProduct()));
     cartItemDTO.setQuantity(cartItem.getQuantity());
-    // cartItemDTO.setTotalProductPrice(cartItem.getTotalProductPrice());
+    cartItemDTO.setTotalProductPrice(cartItem.getTotalProductPrice());
     return cartItemDTO;
   }
 
@@ -162,13 +222,21 @@ public class ShoppingCartService {
   }
 
   private ProductDTO convertProductToDTO(Products product) {
+    Set<String> imageUrls = product
+      .getImages()
+      .stream()
+      .map(ProductImages::getImageUrl)
+      .collect(Collectors.toSet());
+
     ProductDTO productDTO = new ProductDTO();
     productDTO.setProductId(product.getProductId());
     productDTO.setProductName(product.getProductName());
     productDTO.setProductPrice(product.getProductPrice());
     productDTO.setProductStockQuantity(product.getProductStockQuantity());
     productDTO.setProductDescription(product.getProductDescription());
-    // productDTO.setProductImage(product.getProductImage());
+    productDTO.setImageUrls(imageUrls);
+    productDTO.setDateTimeListed(product.getDateListed());
+    productDTO.setDateTimeUpdated(product.getDateTimeUpdated());
 
     ArtisanProfile artisanProfile = product.getArtisan();
     ArtisanProfileDTO artisanProfileDTO = convertArtisanProfileToDTO(
