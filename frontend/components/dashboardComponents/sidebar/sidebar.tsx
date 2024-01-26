@@ -11,6 +11,7 @@ import {
 	MdOutlineSettings,
 	MdHelpCenter,
 	MdLogout,
+	MdCategory,
 } from "react-icons/md";
 import MenuLink from "./menuLink/menuLink";
 
@@ -25,17 +26,22 @@ const menuItems = [
 			},
 			{
 				title: "Users",
-				path: "/Dashboard/users",
+				path: "/Dashboard/Users",
 				icon: <MdSupervisedUserCircle />,
 			},
 			{
 				title: "Products",
-				path: "/Dashboard/products",
+				path: "/Dashboard/Products",
 				icon: <MdShoppingBag />,
 			},
 			{
+				title: "Categories",
+				path: "/Dashboard/Category",
+				icon: <MdCategory />,
+			},
+			{
 				title: "Transactions",
-				path: "/Dashboard/transactions",
+				path: "/Dashboard/Transactions",
 				icon: <MdAttachMoney />,
 			},
 		],
