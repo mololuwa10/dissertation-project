@@ -15,7 +15,8 @@ import { useFetchUserInfo, checkLogin, useLogout } from "@/lib/data";
 import { Button } from "../ui/button";
 
 const ProfileButton = () => {
-	const { isLoggedIn } = useFetchUserInfo();
+	const { isLoggedIn, userRole } = useFetchUserInfo();
+	const logout = useLogout();
 	if (!isLoggedIn) {
 		return (
 			<Link href="/SignIn">
@@ -39,14 +40,16 @@ const ProfileButton = () => {
 					<DropdownMenuItem className="cursor-pointer">
 						<Link href={"/Profile"}>Profile</Link>
 					</DropdownMenuItem>
-					<DropdownMenuItem className="cursor-pointer">
-						<Link href={"/Dashboard"}>Dashboard</Link>
-					</DropdownMenuItem>
+					{isLoggedIn && userRole === "ADMIN" && (
+						<DropdownMenuItem className="cursor-pointer">
+							<Link href="/Dashboard">Dashboard</Link>
+						</DropdownMenuItem>
+					)}
 					<DropdownMenuItem className="cursor-pointer">
 						Settings
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem className="cursor-pointer">
+					<DropdownMenuItem className="cursor-pointer" onClick={logout}>
 						Log out
 					</DropdownMenuItem>
 				</DropdownMenuContent>

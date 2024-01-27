@@ -1,3 +1,4 @@
+import Footer from "@/components/layoutComponents/Footer";
 import Header from "@/components/layoutComponents/Header";
 import Image from "next/image";
 
@@ -7,6 +8,8 @@ export default function Home() {
 			<main className="flex min-h-screen flex-col justify-between">
 				<Header />
 			</main>
+
+			<Footer />
 		</>
 	);
 }

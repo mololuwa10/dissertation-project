@@ -74,8 +74,15 @@ export const useFetchUserInfo = () => {
 						return response.json();
 					})
 					.then((data) => {
-						setUserDetails(data.userDetails);
-						setUserRole(data.userRole);
+						setUserDetails(data);
+
+						// CHECKING IF THE USER LOGGED IN IS AN ADMIN
+						const isAdmin = data.authorities.some(
+							(authority: { roleId: number; authority: string }) =>
+								authority.authority === "ADMIN"
+						);
+
+						setUserRole(isAdmin ? "ADMIN" : "USER");
 						setIsLoggedIn(true);
 					})
 					.catch((error) => {
@@ -111,7 +118,7 @@ export const useLogout = () => {
 		localStorage.removeItem("jwt");
 		setIsLoggedIn(false);
 		setUserDetails(null);
-		router.push("/login");
+		router.push("/SignIn");
 	};
 
 	return handleLogout;
