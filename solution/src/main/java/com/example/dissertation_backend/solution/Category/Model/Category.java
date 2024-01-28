@@ -17,6 +17,9 @@ public class Category {
   @Column(name = "category_description")
   private String categoryDescription;
 
+  @Column(name = "category_image_url")
+  private String categoryImageUrl;
+
   // Constructor
   public Category() {
     super();
@@ -49,5 +52,13 @@ public class Category {
 
   public void setCategoryDescription(String categoryDescription) {
     this.categoryDescription = categoryDescription;
+  }
+
+  public String getCategoryImageUrl() {
+    return categoryImageUrl;
+  }
+
+  public void setCategoryImageUrl(String categoryImageUrl) {
+    this.categoryImageUrl = categoryImageUrl;
   }
 }

@@ -45,6 +45,9 @@ public class CategoryService {
       updatedCategory.setCategoryDescription(
         categoryDetails.getCategoryDescription()
       );
+      updatedCategory.setCategoryImageUrl(
+        categoryDetails.getCategoryImageUrl()
+      );
       categoryRepository.save(updatedCategory);
       return Optional.of(updatedCategory);
     } else {
