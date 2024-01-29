@@ -15,7 +15,7 @@ const products = [
 export default function TrendingSections() {
 	return (
 		<>
-			<div className="">
+			<div className="mt-[-90px]">
 				<div className="mx-auto sm:px-6 sm:py-16 lg:px-8 lg:max-w-[88rem]">
 					<h2 className="text-2xl font-bold tracking-tight text-gray-900">
 						Customers also purchased

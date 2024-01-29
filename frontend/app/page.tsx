@@ -19,7 +19,6 @@ export default function Home() {
 				<TrendingSections />
 
 				<Blog />
-
 				<hr className=" mx-20 border-t-2 border-gray-600" />
 			</main>
 

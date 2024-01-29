@@ -23,12 +23,10 @@ export default function Blog() {
 				</h1>
 				<div className="mt-5 grid gap-6 grid-cols-3 px-20">
 					<article className="overflow-hidden rounded-lg shadow transition hover:shadow-lg">
-						<Image
+						<img
 							alt="Office"
 							src="/astronaut.png"
 							className="h-56 w-full object-cover"
-							width={100}
-							height={100}
 						/>
 
 						<div className="bg-white p-4 sm:p-6">
@@ -56,12 +54,10 @@ export default function Blog() {
 					</article>
 
 					<article className="overflow-hidden rounded-lg shadow transition hover:shadow-lg">
-						<Image
+						<img
 							alt="Office"
 							src="/astronaut.png"
 							className="h-56 w-full object-cover"
-							width={100}
-							height={100}
 						/>
 
 						<div className="bg-white p-4 sm:p-6">
@@ -89,12 +85,10 @@ export default function Blog() {
 					</article>
 
 					<article className="overflow-hidden rounded-lg shadow transition hover:shadow-lg">
-						<Image
+						<img
 							alt="Office"
 							src="/astronaut.png"
 							className="h-56 w-full object-cover"
-							width={100}
-							height={100}
 						/>
 
 						<div className="bg-white p-4 sm:p-6">
