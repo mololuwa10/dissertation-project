@@ -7,6 +7,7 @@ export const useFetchCategories = () => {
 		categoryId: number;
 		categoryName: string;
 		categoryDescription: string;
+		categoryImageUrl: string;
 	}
 	const [categories, setCategories] = useState([]);
 
@@ -18,6 +19,7 @@ export const useFetchCategories = () => {
 					value: category.categoryId,
 					label: category.categoryName,
 					description: category.categoryDescription,
+					image: category.categoryImageUrl,
 					checked: false,
 				}));
 				setCategories(formattedData);

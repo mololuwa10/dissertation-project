@@ -19,6 +19,7 @@ export default function Category() {
 		value: number;
 		label: string;
 		description: string;
+		image: string;
 	}
 
 	// Fetch category data

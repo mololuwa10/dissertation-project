@@ -157,7 +157,7 @@ public class CategoryController {
       Files.copy(image.getInputStream(), uploadDir.resolve(filename));
 
       // Return the URL of the image
-      return "/uploads/category/" + filename;
+      return "/uploads/" + filename;
     }
     return null;
   }
