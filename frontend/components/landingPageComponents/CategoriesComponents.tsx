@@ -9,6 +9,7 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from "../ui/carousel";
+import Link from "next/link";
 
 export default function CategoriesComponents() {
 	interface Category {
@@ -24,9 +25,16 @@ export default function CategoriesComponents() {
 		<>
 			<div className="">
 				<div className="mx-auto sm:px-6 sm:py-16 lg:px-8 lg:max-w-[88rem]">
-					<h2 className="text-2xl font-bold tracking-tight text-gray-900">
-						Shop Our Top Categories
-					</h2>
+					<div className="flex justify-between items-center">
+						<h2 className="text-2xl font-bold tracking-tight text-gray-900 hover:text-gray-700 transition duration-300">
+							Shop Our Top Categories
+						</h2>
+						<Link
+							className="text-lg font-medium tracking-tight text-gray-900 hover:text-blue-600 hover:underline"
+							href="#">
+							View All Categories
+						</Link>
+					</div>
 
 					<div className="py-8">
 						<Carousel
@@ -35,7 +43,7 @@ export default function CategoriesComponents() {
 							}}
 							className="w-full p-4">
 							<CarouselContent>
-								{categories.map((category, index) => (
+								{categories.slice(0, 10).map((category, index) => (
 									<CarouselItem
 										key={index}
 										className="md:basis-1/2 lg:basis-1/3">

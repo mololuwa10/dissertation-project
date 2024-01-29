@@ -12,6 +12,7 @@ import {
 	MdHelpCenter,
 	MdLogout,
 	MdCategory,
+	MdReorder,
 } from "react-icons/md";
 import MenuLink from "./menuLink/menuLink";
 
@@ -40,9 +41,14 @@ const menuItems = [
 				icon: <MdCategory />,
 			},
 			{
-				title: "Transactions",
-				path: "/Dashboard/Transactions",
-				icon: <MdAttachMoney />,
+				title: "Orders",
+				path: "/Dashboard/Orders",
+				icon: <MdReorder />,
+			},
+			{
+				title: "Testimonials",
+				path: "/Dashboard/Testimonials",
+				icon: <MdSupervisedUserCircle />,
 			},
 		],
 	},

@@ -13,6 +13,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useFetchUsers } from "@/lib/dbModels";
+import Link from "next/link";
 
 export default function Users() {
 	interface User {
@@ -34,6 +35,11 @@ export default function Users() {
 	const { users } = useFetchUsers() as { users: User[] };
 	return (
 		<>
+			<Link href="/Dashboard/Users/Add">
+				<Button size={"lg"} className="my-4">
+					+ Add User
+				</Button>
+			</Link>
 			<Table>
 				<TableCaption>User List</TableCaption>
 				<TableHeader>

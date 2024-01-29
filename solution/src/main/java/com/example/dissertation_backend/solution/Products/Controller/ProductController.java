@@ -108,7 +108,14 @@ public class ProductController {
         artisan = artisanProfileOpt.get();
       } else if (isAdmin) {
         // Create a new ArtisanProfile for the admin
-        artisan = new ArtisanProfile(user, "Admin's bio", null, "Northampton");
+        artisan =
+          new ArtisanProfile(
+            user,
+            "Admin's bio",
+            null,
+            "Northampton",
+            "CraftWise Artisans"
+          );
         artisanProfileService.saveOrUpdateArtisanProfile(artisan);
       } else {
         throw new RuntimeException("Artisan profile not found for user");
@@ -246,7 +253,14 @@ public class ProductController {
         artisan = artisanProfileOpt.get();
       } else if (isAdmin) {
         // Create a new ArtisanProfile for the admin
-        artisan = new ArtisanProfile(user, "Admin's bio", null, "Northampton");
+        artisan =
+          new ArtisanProfile(
+            user,
+            "Admin's bio",
+            null,
+            "Northampton",
+            "CraftWise Artisans"
+          );
         artisanProfileService.saveOrUpdateArtisanProfile(artisan);
       } else {
         throw new RuntimeException("Artisan profile not found for user");

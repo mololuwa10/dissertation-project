@@ -25,6 +25,9 @@ public class ArtisanProfile {
   @Column(name = "location")
   private String location;
 
+  @Column(name = "store_name")
+  private String storeName;
+
   // Constructor
   public ArtisanProfile() {
     super();
@@ -34,12 +37,14 @@ public class ArtisanProfile {
     ApplicationUser artisan,
     String bio,
     String profilePicture,
-    String location
+    String location,
+    String storeName
   ) {
     this.artisan = artisan;
     this.bio = bio;
     this.profilePicture = profilePicture;
     this.location = location;
+    this.storeName = storeName;
   }
 
   // Getters and Setters
@@ -81,5 +86,13 @@ public class ArtisanProfile {
 
   public void setLocation(String location) {
     this.location = location;
+  }
+
+  public String getStoreName() {
+    return storeName;
+  }
+
+  public void setStoreName(String storeName) {
+    this.storeName = storeName;
   }
 }

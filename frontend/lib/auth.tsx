@@ -37,3 +37,49 @@ export const useLogin = () => {
 
 	return { login, error };
 };
+
+export const createCategory = async (formData: FormData, jwt: string) => {
+	// The createCategory function now accepts FormData and the JWT token directly
+	try {
+		const response = await fetch("http://localhost:8080/api/categories", {
+			// Ensure this is the correct endpoint
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${jwt}`,
+			},
+			body: formData,
+		});
+
+		if (response.ok) {
+			const data = await response.json();
+			alert("Category Added Successfully");
+			window.location.reload();
+			return data;
+		} else {
+			const errorText = await response.text();
+			throw new Error(`Failed to add category: ${errorText}`);
+		}
+	} catch (error) {
+		console.error("Error adding category: ", error);
+		throw error; // Throw the error to be handled by the calling component
+	}
+};
+
+export const deleteCategory = async (categoryId: number, jwt: string) => {
+	try {
+		const response = await fetch(
+			`http://localhost:8080/api/categories/${categoryId}`,
+			{
+				method: "DELETE",
+				headers: {
+					Authorization: `Bearer ${jwt}`,
+				},
+			}
+		);
+
+		if (!response.ok) throw new Error("Could not delete category");
+	} catch (err) {
+		console.error("Error deleting category: ", err);
+		throw err;
+	}
+};
