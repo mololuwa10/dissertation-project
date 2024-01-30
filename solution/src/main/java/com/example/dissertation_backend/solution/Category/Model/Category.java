@@ -1,6 +1,8 @@
 package com.example.dissertation_backend.solution.Category.Model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "category")
@@ -19,6 +21,15 @@ public class Category {
 
   @Column(name = "category_image_url")
   private String categoryImageUrl;
+
+  // Reference to the parent category
+  @ManyToOne
+  @JoinColumn(name = "parent_id")
+  private Category parentCategory;
+
+  // List of subcategories
+  @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL)
+  private List<Category> subCategories = new ArrayList<>();
 
   // Constructor
   public Category() {
@@ -60,5 +71,27 @@ public class Category {
 
   public void setCategoryImageUrl(String categoryImageUrl) {
     this.categoryImageUrl = categoryImageUrl;
+  }
+
+  public Category getParentCategory() {
+    return parentCategory;
+  }
+
+  public void setParentCategory(Category parentCategory) {
+    this.parentCategory = parentCategory;
+  }
+
+  public List<Category> getSubCategories() {
+    return subCategories;
+  }
+
+  public void setSubCategories(List<Category> subCategories) {
+    this.subCategories = subCategories;
+  }
+
+  // Helper method to add a subcategory
+  public void addSubCategory(Category subCategory) {
+    this.subCategories.add(subCategory);
+    subCategory.setParentCategory(this);
   }
 }

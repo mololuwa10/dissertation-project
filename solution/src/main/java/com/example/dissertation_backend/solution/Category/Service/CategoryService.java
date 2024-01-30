@@ -31,6 +31,23 @@ public class CategoryService {
     return categoryRepository.save(category);
   }
 
+  public Optional<Category> addSubCategory(
+    Integer parentId,
+    Category subCategory
+  ) {
+    if (parentId == null || subCategory == null) {
+      return Optional.empty();
+    }
+
+    Optional<Category> parentCategory = categoryRepository.findById(parentId);
+    if (parentCategory.isPresent()) {
+      subCategory.setParentCategory(parentCategory.get());
+      return Optional.of(categoryRepository.save(subCategory));
+    } else {
+      return Optional.empty();
+    }
+  }
+
   public Optional<Category> updateCategory(
     Integer categoryId,
     Category categoryDetails
@@ -48,6 +65,17 @@ public class CategoryService {
       updatedCategory.setCategoryImageUrl(
         categoryDetails.getCategoryImageUrl()
       );
+
+      // Update the parent category if it's different and not null
+      if (
+        categoryDetails.getParentCategory() != null &&
+        !categoryDetails
+          .getParentCategory()
+          .equals(updatedCategory.getParentCategory())
+      ) {
+        updatedCategory.setParentCategory(categoryDetails.getParentCategory());
+      }
+
       categoryRepository.save(updatedCategory);
       return Optional.of(updatedCategory);
     } else {

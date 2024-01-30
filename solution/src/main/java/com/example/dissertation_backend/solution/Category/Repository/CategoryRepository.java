@@ -9,4 +9,10 @@ import org.springframework.stereotype.Repository;
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
   // Add custom query methods if needed
   List<Category> findByCategoryName(String categoryName);
+
+  // Find all subcategories for a given parent category
+  List<Category> findByParentCategory(Category parentCategory);
+
+  // Find all top-level categories (categories with no parent)
+  List<Category> findByParentCategoryIsNull();
 }

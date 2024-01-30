@@ -46,6 +46,9 @@ public class Products {
   @Column(name = "date_time_listed")
   private LocalDateTime dateTimeListed;
 
+  @Column(name = "product_discount")
+  private Double productDiscount;
+
   @Column(name = "product_date_updated")
   private LocalDateTime dateTimeUpdated;
 
@@ -62,7 +65,8 @@ public class Products {
     Double productPrice,
     Integer productStockQuantity,
     LocalDateTime dateTimeListed,
-    LocalDateTime dateTimeUpdated
+    LocalDateTime dateTimeUpdated,
+    Double productDiscount
   ) {
     this.artisan = artisan;
     this.category = category;
@@ -72,6 +76,7 @@ public class Products {
     this.productStockQuantity = productStockQuantity;
     this.dateTimeListed = dateTimeListed;
     this.dateTimeUpdated = dateTimeUpdated;
+    this.productDiscount = productDiscount;
   }
 
   // GETTERS AND SETTERS
@@ -145,6 +150,22 @@ public class Products {
 
   public void setImages(Set<ProductImages> images) {
     this.images = images;
+  }
+
+  public LocalDateTime getDateTimeListed() {
+    return dateTimeListed;
+  }
+
+  public void setDateTimeListed(LocalDateTime dateTimeListed) {
+    this.dateTimeListed = dateTimeListed;
+  }
+
+  public Double getProductDiscount() {
+    return productDiscount;
+  }
+
+  public void setProductDiscount(Double productDiscount) {
+    this.productDiscount = productDiscount;
   }
 
   // Method to add an image to the product
