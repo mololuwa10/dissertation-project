@@ -29,6 +29,24 @@ export const useFetchCategories = () => {
 	return { categories };
 };
 
+export const useFetchSubcategories = (categoryId: any) => {
+	const [subcategories, setSubcategories] = useState([]);
+
+	useEffect(() => {
+		fetch(`http://localhost:8080/api/categories/${categoryId}/subcategories`)
+			.then((response) => response.json())
+			.then((data) => {
+				// Format and set the subcategories as needed
+				setSubcategories(data);
+			})
+			.catch((error) => {
+				console.error("Error fetching subcategories:", error);
+			});
+	}, [categoryId]); // Dependency array ensures the effect runs when categoryId changes
+
+	return { subcategories };
+};
+
 export const useFetchProducts = () => {
 	// Product function
 	interface Product {

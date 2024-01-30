@@ -31,8 +31,25 @@ public class CategoryController {
   private CategoryRepository categoryRepository;
 
   @GetMapping
-  public List<Category> getAllCategories() {
-    return categoryRepository.findAll();
+  public ResponseEntity<List<Category>> getAllParentCategories() {
+    List<Category> parentCategories = categoryRepository.findByParentCategoryIsNull();
+    return ResponseEntity.ok(parentCategories);
+  }
+
+  @GetMapping("/{categoryId}/subcategories")
+  public ResponseEntity<List<Category>> getSubcategories(
+    @PathVariable Integer categoryId
+  ) {
+    if (categoryId == null) {
+      return null;
+    }
+    Optional<Category> category = categoryRepository.findById(categoryId);
+    if (category.isPresent()) {
+      List<Category> subcategories = category.get().getSubCategories();
+      return ResponseEntity.ok(subcategories);
+    } else {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
   }
 
   @GetMapping("/{id}")
