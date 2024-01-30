@@ -1,5 +1,7 @@
 package com.example.dissertation_backend.solution.Category.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +25,13 @@ public class Category {
   private String categoryImageUrl;
 
   // Reference to the parent category
+  @JsonBackReference
   @ManyToOne
   @JoinColumn(name = "parent_id")
   private Category parentCategory;
 
   // List of subcategories
+  @JsonManagedReference
   @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL)
   private List<Category> subCategories = new ArrayList<>();
 

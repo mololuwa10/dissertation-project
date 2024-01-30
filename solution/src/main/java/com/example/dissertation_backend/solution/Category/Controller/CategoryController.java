@@ -2,7 +2,6 @@ package com.example.dissertation_backend.solution.Category.Controller;
 
 import com.example.dissertation_backend.solution.Category.Model.Category;
 import com.example.dissertation_backend.solution.Category.Repository.CategoryRepository;
-import com.example.dissertation_backend.solution.Category.Service.CategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,9 +29,6 @@ public class CategoryController {
 
   @Autowired
   private CategoryRepository categoryRepository;
-
-  @Autowired
-  private CategoryService categoryService;
 
   @GetMapping
   public List<Category> getAllCategories() {
@@ -85,18 +81,56 @@ public class CategoryController {
   }
 
   @PostMapping("/{parentId}/subcategories")
-  public ResponseEntity<Category> addSubCategory(
+  public ResponseEntity<Object> addSubCategory(
     @PathVariable(value = "parentId") Integer parentId,
-    @RequestBody Category subCategory
+    @RequestParam("image") MultipartFile image,
+    @RequestParam("subCategory") String categoryStr
   ) {
-    // Logic to add subcategory
-    Optional<Category> addedSubCategory = categoryService.addSubCategory(
-      parentId,
-      subCategory
-    );
-    return addedSubCategory
-      .map(category -> ResponseEntity.status(HttpStatus.CREATED).body(category))
-      .orElseGet(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+    try {
+      String imageUrl = storeImage(image); // Store the image and get the URL
+
+      ObjectMapper mapper = new ObjectMapper();
+      Category subCategory = mapper.readValue(categoryStr, Category.class);
+      subCategory.setCategoryImageUrl(imageUrl);
+
+      if (parentId == null) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+      }
+
+      // Check if the parent category exists
+      Optional<Category> parentCategoryOpt = categoryRepository.findById(
+        parentId
+      );
+      if (!parentCategoryOpt.isPresent()) {
+        return ResponseEntity
+          .status(HttpStatus.NOT_FOUND)
+          .body("Parent category not found");
+      }
+
+      // Set the parent category
+      subCategory.setParentCategory(parentCategoryOpt.get());
+
+      // Check if a subcategory with the same name already exists under this parent
+      if (
+        parentCategoryOpt
+          .get()
+          .getSubCategories()
+          .stream()
+          .anyMatch(c ->
+            c.getCategoryName().equalsIgnoreCase(subCategory.getCategoryName())
+          )
+      ) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+      }
+
+      Category savedSubCategory = categoryRepository.save(subCategory);
+      return ResponseEntity.ok(savedSubCategory);
+    } catch (IOException e) {
+      e.printStackTrace();
+      return ResponseEntity
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body("Failed to add subcategory");
+    }
   }
 
   @PutMapping("/{id}")
