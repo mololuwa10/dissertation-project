@@ -14,6 +14,7 @@ import {
 	NavigationMenuTrigger,
 	navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { useFetchCategories } from "@/lib/dbModels";
 
 // import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 
@@ -41,18 +42,33 @@ const components: { title: string; href: string }[] = [
 ];
 
 export function NavigationMenuDemo() {
+	interface Category {
+		value: number;
+		label: string;
+		description: string;
+		image: string;
+	}
+
+	// Fetch category data
+	const { categories } = useFetchCategories() as { categories: Category[] };
 	return (
 		<NavigationMenu>
 			<NavigationMenuList>
 				<NavigationMenuItem>
 					<NavigationMenuTrigger>Categories</NavigationMenuTrigger>
 					<NavigationMenuContent>
-						<ul className="grid w-[400px] gap-2 p-4 md:w-[500px] md:grid-cols-1 lg:w-[320px] ">
-							{components.map((component) => (
-								<ListItem
-									key={component.title}
-									title={component.title}
-									href={component.href}></ListItem>
+						<ul className="grid w-[450px] gap-2 p-4 md:w-[500px] md:grid-cols-2 lg:w-[480px] ">
+							{categories.map((category) => (
+								<ListItem key={category.value}>
+									<Link
+										href={{
+											pathname: `/Categories`,
+											query: { categoryId: category.value },
+										}}
+										className="text-gray-900 font-bold">
+										{category.label}
+									</Link>
+								</ListItem>
 							))}
 						</ul>
 					</NavigationMenuContent>

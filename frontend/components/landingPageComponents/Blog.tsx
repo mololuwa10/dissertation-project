@@ -25,7 +25,7 @@ export default function Blog() {
 					<article className="overflow-hidden rounded-lg shadow transition hover:shadow-lg">
 						<img
 							alt="Office"
-							src="/astronaut.png"
+							src="/payment.jpg"
 							className="h-56 w-full object-cover"
 						/>
 
@@ -56,7 +56,7 @@ export default function Blog() {
 					<article className="overflow-hidden rounded-lg shadow transition hover:shadow-lg">
 						<img
 							alt="Office"
-							src="/astronaut.png"
+							src="/FAQs.jpg"
 							className="h-56 w-full object-cover"
 						/>
 
@@ -87,7 +87,7 @@ export default function Blog() {
 					<article className="overflow-hidden rounded-lg shadow transition hover:shadow-lg">
 						<img
 							alt="Office"
-							src="/astronaut.png"
+							src="/homedelivery.jpg"
 							className="h-56 w-full object-cover"
 						/>
 
