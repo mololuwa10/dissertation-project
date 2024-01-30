@@ -2,6 +2,7 @@ package com.example.dissertation_backend.solution.Category.Controller;
 
 import com.example.dissertation_backend.solution.Category.Model.Category;
 import com.example.dissertation_backend.solution.Category.Repository.CategoryRepository;
+import com.example.dissertation_backend.solution.Category.Service.CategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,6 +30,9 @@ public class CategoryController {
 
   @Autowired
   private CategoryRepository categoryRepository;
+
+  @Autowired
+  private CategoryService categoryService;
 
   @GetMapping
   public List<Category> getAllCategories() {
@@ -78,6 +82,21 @@ public class CategoryController {
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .body("Failed to add category");
     }
+  }
+
+  @PostMapping("/{parentId}/subcategories")
+  public ResponseEntity<Category> addSubCategory(
+    @PathVariable(value = "parentId") Integer parentId,
+    @RequestBody Category subCategory
+  ) {
+    // Logic to add subcategory
+    Optional<Category> addedSubCategory = categoryService.addSubCategory(
+      parentId,
+      subCategory
+    );
+    return addedSubCategory
+      .map(category -> ResponseEntity.status(HttpStatus.CREATED).body(category))
+      .orElseGet(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
   }
 
   @PutMapping("/{id}")
