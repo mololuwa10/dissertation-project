@@ -4,9 +4,7 @@ import com.example.dissertation_backend.solution.Category.Model.Category;
 import com.example.dissertation_backend.solution.Category.Repository.CategoryRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -66,6 +64,32 @@ public class CategoryController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
   }
+
+  // @GetMapping("/{id}")
+  // public ResponseEntity<CategoryDTO> getCategoryById(
+  //   @PathVariable(value = "id") Integer categoryId
+  // ) {
+  //   if (categoryId == null) {
+  //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+  //   }
+  //   return categoryRepository
+  //     .findById(categoryId)
+  //     .map(category -> {
+  //       CategoryDTO categoryDto = new CategoryDTO();
+  //       categoryDto.setCategoryId(category.getCategoryId());
+  //       categoryDto.setCategoryName(category.getCategoryName());
+  //       categoryDto.setCategoryDescription(category.getCategoryDescription());
+  //       categoryDto.setCategoryImageUrl(category.getCategoryImageUrl());
+  //       categoryDto.setParentCategoryId(
+  //         category.getParentCategory() != null
+  //           ? category.getParentCategory().getCategoryId()
+  //           : null
+  //       );
+  //       // Set other fields in categoryDto as needed
+  //       return ResponseEntity.ok().body(categoryDto);
+  //     })
+  //     .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+  // }
 
   @PostMapping
   public ResponseEntity<Object> addCategory(

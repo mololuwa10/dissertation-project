@@ -38,6 +38,7 @@ export const useLogin = () => {
 	return { login, error };
 };
 
+// Category Function
 export const createCategory = async (formData: FormData, jwt: string) => {
 	// The createCategory function now accepts FormData and the JWT token directly
 	try {
@@ -83,3 +84,5 @@ export const deleteCategory = async (categoryId: number, jwt: string) => {
 		throw err;
 	}
 };
+
+// Users Function

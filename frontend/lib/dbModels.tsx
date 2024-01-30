@@ -30,14 +30,27 @@ export const useFetchCategories = () => {
 };
 
 export const useFetchSubcategories = (categoryId: any) => {
+	interface Category {
+		categoryId: number;
+		categoryName: string;
+		categoryDescription: string;
+		categoryImageUrl: string;
+	}
 	const [subcategories, setSubcategories] = useState([]);
 
 	useEffect(() => {
 		fetch(`http://localhost:8080/api/categories/${categoryId}/subcategories`)
 			.then((response) => response.json())
 			.then((data) => {
-				// Format and set the subcategories as needed
-				setSubcategories(data);
+				const formattedData = data.map((category: Category) => ({
+					value: category.categoryId,
+					label: category.categoryName,
+					description: category.categoryDescription,
+					image: category.categoryImageUrl,
+					checked: false,
+				}));
+				setSubcategories(formattedData);
+				console.log(formattedData);
 			})
 			.catch((error) => {
 				console.error("Error fetching subcategories:", error);
@@ -45,6 +58,39 @@ export const useFetchSubcategories = (categoryId: any) => {
 	}, [categoryId]); // Dependency array ensures the effect runs when categoryId changes
 
 	return { subcategories };
+};
+
+export const useFetchCategoryById = (categoryId: any) => {
+	interface Category {
+		categoryId: number;
+		categoryName: string;
+		categoryDescription: string;
+		categoryImageUrl: string;
+	}
+
+	const [category, setCategory] = useState<Category | null>(null);
+
+	useEffect(() => {
+		if (!categoryId) return;
+
+		fetch(`http://localhost:8080/api/categories/${categoryId}`)
+			.then((response) => response.json())
+			.then((data) => {
+				const formattedData: Category = {
+					categoryId: data.categoryId,
+					categoryName: data.categoryName,
+					categoryDescription: data.categoryDescription,
+					categoryImageUrl: data.categoryImageUrl,
+				};
+				setCategory(formattedData);
+				console.log(formattedData);
+			})
+			.catch((error) => {
+				console.error("Error fetching category:", error);
+			});
+	}, [categoryId]);
+
+	return { category };
 };
 
 export const useFetchProducts = () => {

@@ -43,7 +43,7 @@ export default function CategoriesComponents() {
 							}}
 							className="w-full p-4">
 							<CarouselContent>
-								{categories.slice(0, 10).map((category, index) => (
+								{categories.map((category, index) => (
 									<CarouselItem
 										key={index}
 										className="md:basis-1/2 lg:basis-1/3">

@@ -1,15 +1,22 @@
 package com.example.dissertation_backend.solution.DTO;
 
 public class CategoryDTO {
+
   private Integer categoryId;
   private String categoryName;
   private String categoryDescription;
+  private String categoryImageUrl;
+  private Integer parentCategoryId;
 
   public CategoryDTO() {
     super();
   }
 
-  public CategoryDTO(Integer categoryId, String categoryName, String categoryDescription) {
+  public CategoryDTO(
+    Integer categoryId,
+    String categoryName,
+    String categoryDescription
+  ) {
     super();
     this.categoryId = categoryId;
     this.categoryName = categoryName;
@@ -40,4 +47,19 @@ public class CategoryDTO {
     this.categoryDescription = categoryDescription;
   }
 
+  public String getCategoryImageUrl() {
+    return categoryImageUrl;
+  }
+
+  public void setCategoryImageUrl(String categoryImageUrl) {
+    this.categoryImageUrl = categoryImageUrl;
+  }
+
+  public Integer getParentCategoryId() {
+    return parentCategoryId;
+  }
+
+  public void setParentCategoryId(Integer parentCategoryId) {
+    this.parentCategoryId = parentCategoryId;
+  }
 }
