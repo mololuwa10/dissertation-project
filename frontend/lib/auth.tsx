@@ -86,3 +86,32 @@ export const deleteCategory = async (categoryId: number, jwt: string) => {
 };
 
 // Users Function
+export const registerUser = async (userData: any) => {
+	try {
+		const response = await fetch("http://localhost:8080/api/auth/register", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(userData),
+		});
+
+		if (response.ok) {
+			const data = await response.json();
+			localStorage.setItem("jwt", data.jwt); // Handle JWT securely
+			alert("User Registered Successfully");
+			return data;
+		} else {
+			// Handle non-OK responses
+			let errorMessage = `Error during registration: ${response.status}`;
+			if (response.headers.get("Content-Type")?.includes("application/json")) {
+				const errorData = await response.json();
+				errorMessage = errorData.message || errorMessage;
+			}
+			throw new Error(errorMessage);
+		}
+	} catch (error) {
+		console.error("There was an error registering the user:", error);
+		throw error; // Rethrow the error to be handled by the caller
+	}
+};
