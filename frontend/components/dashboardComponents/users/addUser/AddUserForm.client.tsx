@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { registerUser } from "@/lib/auth";
 import styles from "@/components/dashboardComponents/users/addUser/addUser.module.css";
 

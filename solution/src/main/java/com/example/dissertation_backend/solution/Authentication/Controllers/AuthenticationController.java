@@ -4,8 +4,11 @@ import com.example.dissertation_backend.solution.Authentication.Services.Authent
 import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
 import com.example.dissertation_backend.solution.DTO.LoginResponseDTO;
 import com.example.dissertation_backend.solution.DTO.RegistrationDTO;
+import com.example.dissertation_backend.solution.Exception.InvalidCredentialsException;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,10 +37,17 @@ public class AuthenticationController {
   }
 
   @PostMapping("/login")
-  public LoginResponseDTO loginUser(@RequestBody RegistrationDTO body) {
-    return authenticationService.loginUser(
-      body.getUsername(),
-      body.getPassword()
-    );
+  public ResponseEntity<LoginResponseDTO> loginUser(
+    @RequestBody RegistrationDTO body
+  ) {
+    try {
+      LoginResponseDTO response = authenticationService.loginUser(
+        body.getUsername(),
+        body.getPassword()
+      );
+      return ResponseEntity.ok(response);
+    } catch (InvalidCredentialsException e) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+    }
   }
 }

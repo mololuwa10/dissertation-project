@@ -5,6 +5,7 @@ import com.example.dissertation_backend.solution.Customers.Model.Roles;
 import com.example.dissertation_backend.solution.Customers.Repository.RoleRepository;
 import com.example.dissertation_backend.solution.Customers.Repository.UserRepository;
 import com.example.dissertation_backend.solution.DTO.LoginResponseDTO;
+import com.example.dissertation_backend.solution.Exception.InvalidCredentialsException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -88,7 +89,7 @@ public class AuthenticationService {
         token
       );
     } catch (AuthenticationException e) {
-      return new LoginResponseDTO(null, "");
+      throw new InvalidCredentialsException("Invalid credentials");
     }
   }
 }

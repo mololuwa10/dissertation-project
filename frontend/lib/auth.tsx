@@ -18,13 +18,16 @@ export const useLogin = () => {
 
 				if (response.status === 200) {
 					const data = await response.json();
-					console.log(data);
-					alert("Succesful Login");
 					localStorage.setItem("jwt", data.jwt);
+					console.log(data);
+					alert("Successful Login");
 					router.push("/");
+				} else if (response.status === 401) {
+					// Handle invalid credentials
+					setError("Invalid username or password.");
 				} else {
-					// Handle non-200 responses
-					setError("Invalid credentials or server error.");
+					// Handle other non-200 responses
+					setError("An error occurred during login.");
 					console.error("Login failed: ", response.statusText);
 				}
 			} catch (error) {
