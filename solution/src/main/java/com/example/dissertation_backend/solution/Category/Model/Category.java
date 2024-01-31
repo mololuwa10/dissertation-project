@@ -24,7 +24,7 @@ public class Category {
   private String categoryImageUrl;
 
   // Reference to the parent category
-  @JsonIgnore
+  @JsonBackReference
   @ManyToOne
   @JoinColumn(name = "parent_id")
   private Category parentCategory;

@@ -2,6 +2,7 @@ package com.example.dissertation_backend.solution.Category.Controller;
 
 import com.example.dissertation_backend.solution.Category.Model.Category;
 import com.example.dissertation_backend.solution.Category.Repository.CategoryRepository;
+import com.example.dissertation_backend.solution.Category.Service.CategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.*;
@@ -27,6 +28,9 @@ public class CategoryController {
 
   @Autowired
   private CategoryRepository categoryRepository;
+
+  @Autowired
+  private CategoryService categoryService;
 
   @GetMapping
   public ResponseEntity<List<Category>> getAllParentCategories() {
@@ -57,39 +61,13 @@ public class CategoryController {
     if (categoryId == null) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
-    Optional<Category> category = categoryRepository.findById(categoryId);
+    Optional<Category> category = categoryService.getCategoryById(categoryId);
     if (category.isPresent()) {
       return ResponseEntity.ok().body(category.get());
     } else {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
   }
-
-  // @GetMapping("/{id}")
-  // public ResponseEntity<CategoryDTO> getCategoryById(
-  //   @PathVariable(value = "id") Integer categoryId
-  // ) {
-  //   if (categoryId == null) {
-  //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-  //   }
-  //   return categoryRepository
-  //     .findById(categoryId)
-  //     .map(category -> {
-  //       CategoryDTO categoryDto = new CategoryDTO();
-  //       categoryDto.setCategoryId(category.getCategoryId());
-  //       categoryDto.setCategoryName(category.getCategoryName());
-  //       categoryDto.setCategoryDescription(category.getCategoryDescription());
-  //       categoryDto.setCategoryImageUrl(category.getCategoryImageUrl());
-  //       categoryDto.setParentCategoryId(
-  //         category.getParentCategory() != null
-  //           ? category.getParentCategory().getCategoryId()
-  //           : null
-  //       );
-  //       // Set other fields in categoryDto as needed
-  //       return ResponseEntity.ok().body(categoryDto);
-  //     })
-  //     .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-  // }
 
   @PostMapping
   public ResponseEntity<Object> addCategory(
@@ -110,7 +88,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
       }
 
-      Category savedCategory = categoryRepository.save(category);
+      Category savedCategory = categoryService.addCategory(category);
       return ResponseEntity.ok(savedCategory);
     } catch (IOException e) {
       // Handling IOException
@@ -164,7 +142,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
       }
 
-      Category savedSubCategory = categoryRepository.save(subCategory);
+      Category savedSubCategory = categoryService.addCategory(subCategory);
       return ResponseEntity.ok(savedSubCategory);
     } catch (IOException e) {
       e.printStackTrace();
@@ -187,7 +165,7 @@ public class CategoryController {
       if (categoryId == null) {
         return null;
       }
-      Optional<Category> categoryOptional = categoryRepository.findById(
+      Optional<Category> categoryOptional = categoryService.getCategoryById(
         categoryId
       );
       if (categoryOptional.isPresent()) {
@@ -205,7 +183,7 @@ public class CategoryController {
           categoryDetails.getCategoryDescription()
         );
 
-        categoryRepository.save(existingCategory);
+        categoryService.addCategory(existingCategory);
         return ResponseEntity.ok(existingCategory);
       } else {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -226,12 +204,12 @@ public class CategoryController {
     if (categoryId == null) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
-    Optional<Category> category = categoryRepository.findById(categoryId);
-    category.ifPresent(categoryRepository::delete);
 
-    return category.isPresent()
-      ? ResponseEntity.ok().build()
-      : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    boolean isDeleted = categoryService.deleteCategory(categoryId);
+
+    return isDeleted
+      ? ResponseEntity.ok().build() // Deletion successful
+      : ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Category not found
   }
 
   private String storeImage(MultipartFile image) throws IOException {

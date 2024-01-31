@@ -192,6 +192,16 @@ export default function Category() {
 										className="hover:bg-gray-700">
 										Delete
 									</Button>
+
+									<Button className="hover:bg-gray-700 ml-2">
+										<Link
+											href={{
+												pathname: "/Dashboard/Category/SubCategory",
+												query: { categoryId: category.value },
+											}}>
+											View Sub Category
+										</Link>
+									</Button>
 								</div>
 							</TableCell>
 						</TableRow>

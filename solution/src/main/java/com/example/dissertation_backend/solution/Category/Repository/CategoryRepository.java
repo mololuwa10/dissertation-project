@@ -15,4 +15,6 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
   // Find all top-level categories (categories with no parent)
   List<Category> findByParentCategoryIsNull();
+  // @Query("SELECT c FROM Category c WHERE c.parentCategory IS NOT NULL")
+  // List<Category> findAllSubCategories();
 }

@@ -3,29 +3,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
-export const words = [
-	"a",
-	"about",
-	"all",
-	"also",
-	"and",
-	"as",
-	"at",
-	"be",
-	"because",
-	"but",
-	"by",
-	"can",
-	"come",
-	"could",
-	"will",
-	"with",
-	"would",
-	"year",
-	"you",
-	"your",
-];
-
 // Fetch user info thats logged in
 export const useFetchUserInfo = () => {
 	const [userDetails, setUserDetails] = useState(null);
@@ -77,6 +54,29 @@ export const useFetchUserInfo = () => {
 
 	return { userDetails, userRole, isLoggedIn };
 };
+
+export const words = [
+	"a",
+	"about",
+	"all",
+	"also",
+	"and",
+	"as",
+	"at",
+	"be",
+	"because",
+	"but",
+	"by",
+	"can",
+	"come",
+	"could",
+	"will",
+	"with",
+	"would",
+	"year",
+	"you",
+	"your",
+];
 
 export const checkLogin = () => {
 	const jwt = localStorage.getItem("jwt");

@@ -48,6 +48,10 @@ public class CategoryService {
     }
   }
 
+  // public List<Category> getAllSubCategories() {
+  //   return categoryRepository.findAllSubCategories();
+  // }
+
   public Optional<Category> updateCategory(
     Integer categoryId,
     Category categoryDetails

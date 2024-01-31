@@ -11,12 +11,14 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { useFetchUserInfo, checkLogin, useLogout } from "@/lib/data";
+import { useFetchUserInfo, useLogout } from "@/lib/data";
 import { Button } from "../ui/button";
 
 const ProfileButton = () => {
 	const { isLoggedIn, userRole } = useFetchUserInfo();
+
 	const logout = useLogout();
+
 	if (!isLoggedIn) {
 		return (
 			<Link href="/SignIn">

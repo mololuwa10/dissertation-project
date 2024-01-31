@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { Button } from "../ui/button";
+
 export default function ImageCarousel() {
 	return (
 		<>
@@ -15,11 +18,11 @@ export default function ImageCarousel() {
 						</p>
 
 						<div className="mt-4 sm:mt-8">
-							<a
-								href="#"
-								className="inline-block rounded-full bg-indigo-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-yellow-400">
-								Get Yours Today
-							</a>
+							<Link href="#">
+								<Button className="inline-block rounded-full bg-gray-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-gray-700 focus:outline-none focus:ring focus:ring-yellow-400">
+									Get Yours Today
+								</Button>
+							</Link>
 						</div>
 					</div>
 				</div>

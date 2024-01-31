@@ -1,65 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-
-export const useFetchCategories = () => {
-	interface Category {
-		categoryId: number;
-		categoryName: string;
-		categoryDescription: string;
-		categoryImageUrl: string;
-	}
-	const [categories, setCategories] = useState([]);
-
-	useEffect(() => {
-		fetch("http://localhost:8080/api/categories")
-			.then((response) => response.json())
-			.then((data) => {
-				const formattedData = data.map((category: Category) => ({
-					value: category.categoryId,
-					label: category.categoryName,
-					description: category.categoryDescription,
-					image: category.categoryImageUrl,
-					checked: false,
-				}));
-				setCategories(formattedData);
-			});
-	}, []);
-
-	return { categories };
-};
-
-export const useFetchSubcategories = (categoryId: any) => {
-	interface Category {
-		categoryId: number;
-		categoryName: string;
-		categoryDescription: string;
-		categoryImageUrl: string;
-	}
-	const [subcategories, setSubcategories] = useState([]);
-
-	useEffect(() => {
-		fetch(`http://localhost:8080/api/categories/${categoryId}/subcategories`)
-			.then((response) => response.json())
-			.then((data) => {
-				const formattedData = data.map((category: Category) => ({
-					value: category.categoryId,
-					label: category.categoryName,
-					description: category.categoryDescription,
-					image: category.categoryImageUrl,
-					checked: false,
-				}));
-				setSubcategories(formattedData);
-				console.log(formattedData);
-			})
-			.catch((error) => {
-				console.error("Error fetching subcategories:", error);
-			});
-	}, [categoryId]); // Dependency array ensures the effect runs when categoryId changes
-
-	return { subcategories };
-};
-
 export const useFetchCategoryById = (categoryId: any) => {
 	interface Category {
 		categoryId: number;
@@ -91,49 +32,6 @@ export const useFetchCategoryById = (categoryId: any) => {
 	}, [categoryId]);
 
 	return { category };
-};
-
-export const useFetchProducts = () => {
-	// Product function
-	interface Product {
-		productId: number;
-		productName: string;
-		productDescription: string;
-		productPrice: number;
-		productStockQuantity: number;
-		productImage: string;
-		category: {
-			categoryId: number;
-		};
-		artisanProfile: {
-			artisanId: number;
-		};
-		dateTimeUpdated: string;
-	}
-	const [products, setProducts] = useState([]);
-	// Fetch products with selected category filter
-	useEffect(() => {
-		fetch("http://localhost:8080/api/products")
-			.then((response) => response.json())
-			.then((data) => {
-				const formattedData = data.map((product: Product) => ({
-					value: product.productId,
-					label: product.productName,
-					description: product.productDescription,
-					price: product.productPrice,
-					quantity: product.productStockQuantity,
-					image: product.productImage,
-					dateTimeUpdated: product.dateTimeUpdated,
-					category: product.category.categoryId,
-					artisan: product.artisanProfile.artisanId,
-					checked: false,
-				}));
-				console.log(formattedData);
-				setProducts(formattedData);
-			});
-	}, []);
-
-	return { products };
 };
 
 export const useFetchUsers = () => {
@@ -204,4 +102,105 @@ export const useFetchUsers = () => {
 	}, []);
 
 	return { users };
+};
+
+export const useFetchProducts = () => {
+	// Product function
+	interface Product {
+		productId: number;
+		productName: string;
+		productDescription: string;
+		productPrice: number;
+		productStockQuantity: number;
+		imageUrls: string[];
+		category: {
+			categoryId: number;
+		};
+		artisanProfile: {
+			artisanId: number;
+		};
+		dateTimeUpdated: string;
+	}
+	const [products, setProducts] = useState([]);
+	// Fetch products with selected category filter
+	useEffect(() => {
+		fetch("http://localhost:8080/api/products")
+			.then((response) => response.json())
+			.then((data) => {
+				const formattedData = data.map((product: Product) => ({
+					value: product.productId,
+					label: product.productName,
+					description: product.productDescription,
+					price: product.productPrice,
+					quantity: product.productStockQuantity,
+					image: product.imageUrls[0],
+					dateTimeUpdated: product.dateTimeUpdated,
+					category: product.category,
+					artisan: product.artisanProfile,
+					checked: false,
+				}));
+				console.log(formattedData);
+				setProducts(formattedData);
+			});
+	}, []);
+
+	return { products };
+};
+
+export const useFetchCategories = () => {
+	interface Category {
+		categoryId: number;
+		categoryName: string;
+		categoryDescription: string;
+		categoryImageUrl: string;
+	}
+	const [categories, setCategories] = useState([]);
+
+	useEffect(() => {
+		fetch("http://localhost:8080/api/categories")
+			.then((response) => response.json())
+			.then((data) => {
+				const formattedData = data.map((category: Category) => ({
+					value: category.categoryId,
+					label: category.categoryName,
+					description: category.categoryDescription,
+					image: category.categoryImageUrl,
+					checked: false,
+				}));
+				setCategories(formattedData);
+			});
+	}, []);
+
+	return { categories };
+};
+
+export const useFetchSubcategories = (categoryId: any) => {
+	interface Category {
+		categoryId: number;
+		categoryName: string;
+		categoryDescription: string;
+		categoryImageUrl: string;
+	}
+	const [subcategories, setSubcategories] = useState([]);
+
+	useEffect(() => {
+		fetch(`http://localhost:8080/api/categories/${categoryId}/subcategories`)
+			.then((response) => response.json())
+			.then((data) => {
+				const formattedData = data.map((category: Category) => ({
+					value: category.categoryId,
+					label: category.categoryName,
+					description: category.categoryDescription,
+					image: category.categoryImageUrl,
+					checked: false,
+				}));
+				setSubcategories(formattedData);
+				console.log(formattedData);
+			})
+			.catch((error) => {
+				console.error("Error fetching subcategories:", error);
+			});
+	}, [categoryId]); // Dependency array ensures the effect runs when categoryId changes
+
+	return { subcategories };
 };

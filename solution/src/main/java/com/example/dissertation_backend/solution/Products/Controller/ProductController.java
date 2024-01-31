@@ -169,7 +169,8 @@ public class ProductController {
     for (MultipartFile file : files) {
       try {
         // Process file - you can resize or convert format if needed
-        byte[] resizedImage = resizeImage(file.getBytes(), 300, 300);
+        // byte[] resizedImage = resizeImage(file.getBytes(), 300, 300);
+        byte[] resizedImage = file.getBytes();
 
         // The directory name
         String directoryName = "uploads";
