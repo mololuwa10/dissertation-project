@@ -13,6 +13,10 @@ import {
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useFetchProducts } from "@/lib/dbModels";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
+import { useState } from "react";
+import { PaginationComponent } from "@/components/ui/PaginationDemo";
 
 export default function Products() {
 	interface Product {
@@ -29,8 +33,40 @@ export default function Products() {
 
 	// Fetch product data
 	const { products } = useFetchProducts() as { products: Product[] };
+	const [currentPage, setCurrentPage] = useState(1);
+	const [searchTerm, setSearchTerm] = useState("");
+
+	const itemsPerPage = 10;
+
+	const paginate = (pageNumber: any) => setCurrentPage(pageNumber);
+
+	const indexOfLastItem = currentPage * itemsPerPage;
+	const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+	const currentItems = products.slice(indexOfFirstItem, indexOfLastItem);
+
+	const totalPages = Math.ceil(products.length / itemsPerPage);
+
+	// Filter products handler
+	const filteredProducts = currentItems.filter((product) => {
+		return product.label.toLowerCase().includes(searchTerm.toLowerCase());
+	});
+
 	return (
 		<>
+			<Link href="/Dashboard/Products/Add">
+				<Button size={"lg"} className="my-4">
+					+ Add Product
+				</Button>
+			</Link>
+
+			<Input
+				className="mb-5 w-64 rounded border border-black text-black"
+				placeholder="Filter by product details..."
+				type="text"
+				value={searchTerm}
+				onChange={(e) => setSearchTerm(e.target.value)}
+			/>
+
 			<Table>
 				<TableCaption>Product List</TableCaption>
 				<TableHeader>
@@ -47,7 +83,7 @@ export default function Products() {
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{products.map((product) => (
+					{filteredProducts.map((product) => (
 						<>
 							<TableRow key={product.value}>
 								<TableCell>{product.value}</TableCell>
@@ -80,6 +116,12 @@ export default function Products() {
 					))}
 				</TableBody>
 			</Table>
+
+			<PaginationComponent
+				totalPages={totalPages}
+				paginate={paginate}
+				currentPage={currentPage}
+			/>
 		</>
 	);
 }

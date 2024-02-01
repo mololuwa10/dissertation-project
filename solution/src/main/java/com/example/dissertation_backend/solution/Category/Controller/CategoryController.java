@@ -32,6 +32,12 @@ public class CategoryController {
   @Autowired
   private CategoryService categoryService;
 
+  @GetMapping("/allCategories")
+  public ResponseEntity<List<Category>> getAllCategories() {
+    List<Category> categories = categoryRepository.findAll();
+    return ResponseEntity.ok(categories);
+  }
+
   @GetMapping
   public ResponseEntity<List<Category>> getAllParentCategories() {
     List<Category> parentCategories = categoryRepository.findByParentCategoryIsNull();

@@ -147,6 +147,35 @@ export const useFetchProducts = () => {
 	return { products };
 };
 
+// Get All categories
+export const useFetchAllCategories = () => {
+	interface Category {
+		categoryId: number;
+		categoryName: string;
+		categoryDescription: string;
+		categoryImageUrl: string;
+	}
+	const [categories, setCategories] = useState([]);
+
+	useEffect(() => {
+		fetch("http://localhost:8080/api/categories/allCategories")
+			.then((response) => response.json())
+			.then((data) => {
+				const formattedData = data.map((category: Category) => ({
+					value: category.categoryId,
+					label: category.categoryName,
+					description: category.categoryDescription,
+					image: category.categoryImageUrl,
+					checked: false,
+				}));
+				setCategories(formattedData);
+			});
+	}, []);
+
+	return { categories };
+};
+
+// Get Parent Categories
 export const useFetchCategories = () => {
 	interface Category {
 		categoryId: number;

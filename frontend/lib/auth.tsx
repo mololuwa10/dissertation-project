@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { format } from "path";
 
 export const useLogin = () => {
 	const router = useRouter();
@@ -136,6 +137,39 @@ export const registerUser = async (userData: any) => {
 };
 
 // Product Function
-// export const addProduct = (0) = {
+export const addProduct = async (
+	productData: any,
+	images: File[],
+	jwt: string
+) => {
+	try {
+		const url = "http://localhost:8080/api/products";
+		const formData = new FormData();
+		formData.append("product", JSON.stringify(productData));
 
-// }
+		images.forEach((image) => {
+			formData.append("images", image);
+		});
+
+		const response = await fetch(url, {
+			method: "POST",
+			headers: {
+				Authorization: "Bearer " + jwt,
+			},
+			body: formData,
+		});
+
+		if (response.ok) {
+			const data = await response.json();
+			alert("Product Added Successfully");
+			window.location.reload();
+			return data;
+		} else {
+			const errorText = await response.text();
+			throw new Error(`Failed to add product: ${errorText}`);
+		}
+	} catch (error) {
+		console.error("Error adding product: ", error);
+		throw error;
+	}
+};

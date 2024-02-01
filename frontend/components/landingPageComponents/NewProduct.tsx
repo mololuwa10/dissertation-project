@@ -42,7 +42,7 @@ export default function NewProduct() {
 					</header>
 
 					<div className="mt-5 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-						<div className="bg-blue-500 text-white rounded-lg overflow-hidden shadow-lg max-w-sm">
+						<div className="bg-blue-500 text-white rounded-lg overflow-hidden shadow-lg max-w-sm h-[355px]">
 							<div className="p-5">
 								<h2 className="text-lg font-semibold mb-2">
 									Top 10 Best Sellers

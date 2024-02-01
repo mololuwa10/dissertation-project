@@ -62,13 +62,17 @@ export default function CategoriesComponents() {
 											<div className="mt-4 flex justify-between">
 												<div>
 													<h3 className="text-sm text-gray-700">
-														<a href={"#"}>
+														<Link
+															href={{
+																pathname: "/Categories",
+																query: { categoryId: category.value },
+															}}>
 															<span
 																aria-hidden="true"
 																className="absolute inset-0"
 															/>
 															{category.label}
-														</a>
+														</Link>
 													</h3>
 												</div>
 											</div>
