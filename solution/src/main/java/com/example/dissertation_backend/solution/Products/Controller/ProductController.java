@@ -78,7 +78,8 @@ public class ProductController {
   @PostMapping
   public ResponseEntity<Object> createProduct(
     Principal principal,
-    @RequestParam("product") String productStr
+    @RequestParam("product") String productStr,
+    @RequestParam("images") MultipartFile[] files
   ) {
     try {
       // Converting the JSON string to a product object
@@ -130,6 +131,55 @@ public class ProductController {
       product.setArtisan(artisan);
       product.setDateListed(LocalDateTime.now());
       Products createdProduct = productService.saveOrUpdateProduct(product);
+
+      for (MultipartFile file : files) {
+        try {
+          // Process file - you can resize or convert format if needed
+          byte[] resizedImage = file.getBytes();
+
+          // The directory name
+          String directoryName = "uploads";
+
+          // Ensure directory exists or create it
+          Path uploadDirPath = Paths.get(directoryName).toAbsolutePath();
+          Files.createDirectories(uploadDirPath);
+
+          // Extract file extension
+          String originalFilename = file.getOriginalFilename();
+          String fileExtension = "";
+
+          if (originalFilename != null && originalFilename.contains(".")) {
+            fileExtension =
+              originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+          }
+
+          // Generate a unique filename using the current time and the original filename
+          String fileName =
+            System.currentTimeMillis() + "_" + file.getOriginalFilename();
+
+          // Resolve the file extension if necessary
+          if (!fileExtension.isEmpty()) {
+            fileName = fileName + "." + fileExtension;
+          }
+
+          Path destinationFilePath = uploadDirPath.resolve(fileName);
+
+          // Write the resized image to the file
+          Files.write(destinationFilePath, resizedImage);
+
+          // Generate the retrievable URL or relative path
+          String imageUrl = "/" + directoryName + "/" + fileName;
+
+          // Create ProductImages instance and save
+          ProductImages productImage = new ProductImages(
+            createdProduct,
+            imageUrl
+          );
+          productImageService.saveImage(productImage);
+        } catch (IOException ex) {
+          throw new ImageStorageException("Error processing image", ex);
+        }
+      }
       return ResponseEntity.ok(createdProduct);
     } catch (IOException e) {
       // Handling IOException
@@ -169,7 +219,6 @@ public class ProductController {
     for (MultipartFile file : files) {
       try {
         // Process file - you can resize or convert format if needed
-        // byte[] resizedImage = resizeImage(file.getBytes(), 300, 300);
         byte[] resizedImage = file.getBytes();
 
         // The directory name

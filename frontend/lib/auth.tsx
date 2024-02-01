@@ -134,3 +134,8 @@ export const registerUser = async (userData: any) => {
 		throw error; // Rethrow the error to be handled by the caller
 	}
 };
+
+// Product Function
+// export const addProduct = (0) = {
+
+// }
