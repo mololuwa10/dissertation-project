@@ -56,8 +56,8 @@ export default function Products() {
 								<TableCell>{product.price}</TableCell>
 								<TableCell>{product.quantity}</TableCell>
 								<TableCell>{product.dateTimeUpdated}</TableCell>
-								<TableCell>{product.category}</TableCell>
-								<TableCell>{product.artisan}</TableCell>
+								<TableCell>{product.category.categoryId}</TableCell>
+								<TableCell>{product.artisan.artisanId}</TableCell>
 
 								<TableCell>
 									<div className="p-2 flex">
