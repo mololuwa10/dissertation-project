@@ -10,7 +10,7 @@ export const useFetchUserInfo = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 	useEffect(() => {
-		const fetchUserInfo = async () => {
+		const fetchUserInfo = () => {
 			try {
 				const jwt = localStorage.getItem("jwt");
 
@@ -52,6 +52,7 @@ export const useFetchUserInfo = () => {
 		fetchUserInfo();
 	}, []);
 
+	console.log(userDetails);
 	return { userDetails, userRole, isLoggedIn };
 };
 

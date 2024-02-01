@@ -42,11 +42,18 @@ export const useLogin = () => {
 };
 
 // Category Function
-export const createCategory = async (formData: FormData, jwt: string) => {
-	// The createCategory function now accepts FormData and the JWT token directly
+export const createCategoryOrSubcategory = async (
+	formData: FormData,
+	jwt: string,
+	parentId?: number | string
+) => {
 	try {
-		const response = await fetch("http://localhost:8080/api/categories", {
-			// Ensure this is the correct endpoint
+		let url = "http://localhost:8080/api/categories";
+		if (parentId !== undefined) {
+			url += `/${parentId}/subcategories`; // Appending the parentId for subcategory creation
+		}
+
+		const response = await fetch(url, {
 			method: "POST",
 			headers: {
 				Authorization: `Bearer ${jwt}`,
@@ -56,16 +63,25 @@ export const createCategory = async (formData: FormData, jwt: string) => {
 
 		if (response.ok) {
 			const data = await response.json();
-			alert("Category Added Successfully");
+			alert(
+				parentId
+					? "Subcategory Added Successfully"
+					: "Category Added Successfully"
+			);
 			window.location.reload();
 			return data;
 		} else {
 			const errorText = await response.text();
-			throw new Error(`Failed to add category: ${errorText}`);
+			throw new Error(
+				`Failed to add ${parentId ? "subcategory" : "category"}: ${errorText}`
+			);
 		}
 	} catch (error) {
-		console.error("Error adding category: ", error);
-		throw error; // Throw the error to be handled by the calling component
+		console.error(
+			`Error adding ${parentId ? "subcategory" : "category"}: `,
+			error
+		);
+		throw error;
 	}
 };
 

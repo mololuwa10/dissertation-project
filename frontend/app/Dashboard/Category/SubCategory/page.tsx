@@ -73,7 +73,7 @@ export default function SubCategory() {
 					query: { categoryId: categoryId },
 				}}>
 				<Button size={"lg"} className="my-4">
-					+ Add Category
+					+ Add Sub Category
 				</Button>
 			</Link>
 			<Input

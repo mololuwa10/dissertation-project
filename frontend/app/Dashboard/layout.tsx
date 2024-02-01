@@ -5,8 +5,8 @@ import Footer from "@/components/dashboardComponents/footer/footer";
 import { useFetchUserInfo } from "@/lib/data";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-	// const { isLoggedIn, userRole } = useFetchUserInfo();
-	// if (!isLoggedIn || userRole !== "ADMIN") {
+	// const { userDetails, userRole, isLoggedIn } = useFetchUserInfo();
+	// if (!isLoggedIn || userRole !== "ADMIN" || userDetails == null) {
 	// 	return <div>You are not authorized to view this page</div>;
 	// }
 	return (

@@ -3,14 +3,20 @@
 import styles from "@/components/dashboardComponents/users/addUser/addUser.module.css";
 import { useRef, useState } from "react";
 import { createCategoryOrSubcategory } from "@/lib/auth";
+import { useSearchParams } from "next/navigation";
 
-const AddCategoryPage = () => {
+const AddSubCategoryPage = () => {
 	const [selectedImage, setSelectedImage] = useState<File | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [categoryName, setCategoryName] = useState("");
 	const [categoryDescription, setCategoryDescription] = useState("");
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
+
+	const searchParams = useSearchParams();
+	const categoryId = searchParams.get("categoryId");
+
+	if (!categoryId) return <div>No Category ID provided</div>;
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -27,13 +33,17 @@ const AddCategoryPage = () => {
 
 			const formData = new FormData();
 			formData.append(
-				"category",
+				"subCategory",
 				JSON.stringify({ categoryName, categoryDescription })
 			);
 			formData.append("image", selectedImage);
 
 			setLoading(true);
-			const response = await createCategoryOrSubcategory(formData, jwt);
+			const response = await createCategoryOrSubcategory(
+				formData,
+				jwt,
+				categoryId
+			);
 			console.log(response);
 			// Handle the success scenario, like redirecting or clearing the form
 			setCategoryName("");
@@ -65,7 +75,7 @@ const AddCategoryPage = () => {
 			<form className={styles.form} onSubmit={handleSubmit}>
 				<input
 					type="text"
-					placeholder="Category Name"
+					placeholder="Sub Category Name"
 					name="categoryName"
 					value={categoryName}
 					onChange={(event) => setCategoryName(event.target.value)}
@@ -77,7 +87,7 @@ const AddCategoryPage = () => {
 					rows="16"
 					value={categoryDescription}
 					onChange={(event) => setCategoryDescription(event.target.value)}
-					placeholder="Category Description"></textarea>
+					placeholder="Sub Category Description"></textarea>
 				<input
 					type="file"
 					ref={fileInputRef}
@@ -100,4 +110,4 @@ const AddCategoryPage = () => {
 	);
 };
 
-export default AddCategoryPage;
+export default AddSubCategoryPage;

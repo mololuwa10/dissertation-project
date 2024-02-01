@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import styles from "./sidebar.module.css";
 import {
@@ -15,6 +17,7 @@ import {
 	MdReorder,
 } from "react-icons/md";
 import MenuLink from "./menuLink/menuLink";
+import { useFetchUserInfo } from "@/lib/data";
 
 const menuItems = [
 	{
@@ -89,7 +92,9 @@ const menuItems = [
 	},
 ];
 
-const Sidebar = async () => {
+const Sidebar = () => {
+	const { userDetails } = useFetchUserInfo();
+
 	return (
 		<div className={styles.container}>
 			<div className={styles.user}>
@@ -101,8 +106,14 @@ const Sidebar = async () => {
 					height="50"
 				/>
 				<div className={styles.userDetail}>
-					<span className={styles.username}></span>
-					<span className={styles.userTitle}>Administrator</span>
+					{userDetails && (
+						<>
+							<span className={styles.username}></span>
+							<span className={styles.userTitle}>
+								{userDetails.firstname} {userDetails.lastname}
+							</span>
+						</>
+					)}
 				</div>
 			</div>
 			<ul className={styles.list}>
