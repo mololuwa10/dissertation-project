@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useState } from "react";
 import { PaginationComponent } from "@/components/ui/PaginationDemo";
+import { deleteProduct } from "@/lib/auth";
 
 export default function Products() {
 	interface Product {
@@ -50,6 +51,28 @@ export default function Products() {
 	const filteredProducts = currentItems.filter((product) => {
 		return product.label.toLowerCase().includes(searchTerm.toLowerCase());
 	});
+
+	// Handling delete Product
+	const handleDelete = async (productId: any) => {
+		const confirmation = window.confirm(
+			"Are you sure you want to delete this product?"
+		);
+		if (!confirmation) return;
+
+		try {
+			const jwt = localStorage.getItem("jwt");
+			if (!jwt) {
+				throw new Error("Authentication token not found.");
+			}
+
+			await deleteProduct(productId, jwt);
+			alert("Product deleted successfully");
+			window.location.reload();
+		} catch (error) {
+			console.error("Error deleting product:", error);
+			alert("Failed to delete product");
+		}
+	};
 
 	return (
 		<>
@@ -97,15 +120,12 @@ export default function Products() {
 
 								<TableCell>
 									<div className="p-2 flex">
-										<Button
-											size={"lg"}
-											// variant={"outline"}
-											className="mr-2 mb-2 flex">
+										<Button size={"lg"} className="mr-2 mb-2 flex">
 											Edit
 										</Button>
 										<Button
 											size={"lg"}
-											// variant={"outline"}
+											onClick={() => handleDelete(product.value)}
 											className="mr-2 mb-2 flex">
 											Delete
 										</Button>

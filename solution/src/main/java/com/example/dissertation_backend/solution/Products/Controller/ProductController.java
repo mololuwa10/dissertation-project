@@ -89,16 +89,19 @@ public class ProductController {
       // Getting the user from user service
       ApplicationUser user = userService.findByUsername(principal.getName());
 
-      // Check if the user is an admin
-      boolean isAdmin = user
+      // Check if the user is an artisan or an admin
+      boolean isArtisanOrAdmin = user
         .getAuthorities()
         .stream()
-        .anyMatch(role -> role.getAuthority().equals("ADMIN"));
+        .anyMatch(role ->
+          role.getAuthority().equals("ARTISAN") ||
+          role.getAuthority().equals("ADMIN")
+        );
 
-      if (!isAdmin) {
+      if (!isArtisanOrAdmin) {
         return ResponseEntity
           .status(HttpStatus.FORBIDDEN)
-          .body("Access denied: User is not an admin");
+          .body("Access denied: User is not authorized to create products");
       }
 
       Optional<ArtisanProfile> artisanProfileOpt = artisanProfileService.findByArtisan(
@@ -107,7 +110,7 @@ public class ProductController {
       ArtisanProfile artisan;
       if (artisanProfileOpt.isPresent()) {
         artisan = artisanProfileOpt.get();
-      } else if (isAdmin) {
+      } else if (isArtisanOrAdmin) {
         // Create a new ArtisanProfile for the admin
         artisan =
           new ArtisanProfile(
@@ -334,9 +337,42 @@ public class ProductController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteProduct(@PathVariable Integer id) {
-    productService.deleteProduct(id);
-    return ResponseEntity.ok().build();
+  public ResponseEntity<Void> deleteProduct(
+    @PathVariable Integer id,
+    Principal principal
+  ) {
+    // Assuming 'findByUsername' method returns a user object with roles and other details
+    ApplicationUser currentUser = userService.findByUsername(
+      principal.getName()
+    );
+
+    // Check if the user is an admin
+    boolean isAdmin = currentUser
+      .getAuthorities()
+      .stream()
+      .anyMatch(role -> role.getAuthority().equals("ADMIN"));
+
+    // Retrieve the product to check for ownership
+    Optional<Products> product = productService.getProductById(id);
+    if (product.isPresent()) {
+      // Check if the current user is the owner of the product or an admin
+      boolean isOwner = product
+        .get()
+        .getArtisan()
+        .getArtisan()
+        .getUsername()
+        .equals(principal.getName());
+      if (isAdmin || isOwner) {
+        productService.deleteProduct(id);
+        return ResponseEntity.ok().build();
+      } else {
+        // User is neither admin nor owner
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+      }
+    } else {
+      // Product not found
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
   }
 
   // Additional endpoint methods added here

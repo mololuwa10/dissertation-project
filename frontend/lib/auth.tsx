@@ -136,7 +136,8 @@ export const registerUser = async (userData: any) => {
 	}
 };
 
-// Product Function
+// Product Function---------------------------------------------------------------------------------------------------------
+// Add Product
 export const addProduct = async (
 	productData: any,
 	images: File[],
@@ -171,5 +172,25 @@ export const addProduct = async (
 	} catch (error) {
 		console.error("Error adding product: ", error);
 		throw error;
+	}
+};
+
+// Delete Product
+export const deleteProduct = async (productId: number, jwt: string) => {
+	try {
+		const response = await fetch(
+			`http://localhost:8080/api/products/${productId}`,
+			{
+				method: "DELETE",
+				headers: {
+					Authorization: `Bearer ${jwt}`,
+				},
+			}
+		);
+
+		if (!response.ok) throw new Error("Could not delete product");
+	} catch (err) {
+		console.error("Error deleting product: ", err);
+		throw err;
 	}
 };
