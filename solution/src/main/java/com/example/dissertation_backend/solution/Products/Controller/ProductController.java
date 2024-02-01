@@ -283,14 +283,20 @@ public class ProductController {
       // Getting the user from user service
       ApplicationUser user = userService.findByUsername(principal.getName());
 
-      boolean isAdmin = user
+      boolean isArtisanOrAdmin = user
         .getAuthorities()
         .stream()
-        .anyMatch(role -> role.getAuthority().equals("ADMIN"));
+        .anyMatch(role ->
+          role.getAuthority().equals("ARTISAN") ||
+          role.getAuthority().equals("ADMIN")
+        );
 
       // Check if the user is not an admin and not the owner of the product
       ArtisanProfile artisan = existingProduct.get().getArtisan();
-      if (!isAdmin && (artisan == null || !artisan.getArtisan().equals(user))) {
+      if (
+        !isArtisanOrAdmin &&
+        (artisan == null || !artisan.getArtisan().equals(user))
+      ) {
         return ResponseEntity
           .status(HttpStatus.FORBIDDEN)
           .body(
@@ -304,7 +310,7 @@ public class ProductController {
 
       if (artisanProfileOpt.isPresent()) {
         artisan = artisanProfileOpt.get();
-      } else if (isAdmin) {
+      } else if (isArtisanOrAdmin) {
         // Create a new ArtisanProfile for the admin
         artisan =
           new ArtisanProfile(
