@@ -71,12 +71,19 @@ export default function Users() {
 								<TableCell>{user.authorities}</TableCell>
 								<TableCell>
 									<div className="p-2 flex">
-										<Button
-											size={"lg"}
-											// variant={"outline"}
-											className="mr-2 mb-2 flex">
-											Edit
-										</Button>
+										<Link
+											href={{
+												pathname: "/Dashboard/Users/Edit",
+												query: { userId: user.userId },
+											}}>
+											<Button
+												size={"lg"}
+												// variant={"outline"}
+												className="mr-2 mb-2 flex">
+												Edit
+											</Button>
+										</Link>
+
 										<Button
 											size={"lg"}
 											// variant={"outline"}

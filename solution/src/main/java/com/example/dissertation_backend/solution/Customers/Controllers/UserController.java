@@ -86,8 +86,19 @@ public class UserController {
         ? authenticatedUserIdLong.intValue()
         : null;
 
+      // Check if the authenticated user has an admin role
+      boolean isAdmin = authentication
+        .getAuthorities()
+        .stream()
+        .anyMatch(grantedAuthority ->
+          grantedAuthority.getAuthority().equals("ROLE_ADMIN")
+        );
+
       // Checking if the authenticated user is trying to update their own details
-      if (authenticatedUserId == null || !userId.equals(authenticatedUserId)) {
+      if (
+        !isAdmin &&
+        (authenticatedUserId == null || !userId.equals(authenticatedUserId))
+      ) {
         return ResponseEntity
           .status(HttpStatus.UNAUTHORIZED)
           .body("You can only update your own details.");

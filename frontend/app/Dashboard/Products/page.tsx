@@ -10,7 +10,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useFetchProducts } from "@/lib/dbModels";
 import { Input } from "@/components/ui/input";
@@ -73,6 +72,8 @@ export default function Products() {
 			alert("Failed to delete product");
 		}
 	};
+
+	// Handling Edit Product
 
 	return (
 		<>

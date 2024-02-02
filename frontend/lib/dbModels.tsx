@@ -34,6 +34,7 @@ export const useFetchCategoryById = (categoryId: any) => {
 	return { category };
 };
 
+// User Function
 export const useFetchUsers = () => {
 	// Define User interface
 	interface User {
@@ -103,6 +104,56 @@ export const useFetchUsers = () => {
 
 	return { users };
 };
+
+// get user by id
+export async function fetchUserById(userId: any, jwt: string) {
+	try {
+		const response = await fetch(
+			`http://localhost:8080/api/admin/user/${userId}`,
+			{
+				method: "GET",
+				headers: {
+					Authorization: `Bearer ${jwt}`,
+					"Content-Type": "application/json",
+				},
+			}
+		);
+
+		if (!response.ok) {
+			// Handle HTTP errors
+			throw new Error(`Error fetching user: ${response.status}`);
+		}
+
+		// Assuming the response is JSON
+		const user = await response.json();
+		return user;
+	} catch (error) {
+		console.error("Fetching user failed:", error);
+		throw error;
+	}
+}
+
+export async function fetchAllRoles(jwt: string) {
+	try {
+		const response = await fetch("http://localhost:8080/api/admin/allRoles", {
+			method: "GET",
+			headers: {
+				Authorization: `Bearer ${jwt}`,
+				"Content-Type": "application/json",
+			},
+		});
+
+		if (!response.ok) {
+			throw new Error("Failed to fetch roles");
+		}
+
+		const roles = await response.json();
+		return roles;
+	} catch (error) {
+		console.error("Error fetching roles:", error);
+		throw error;
+	}
+}
 
 export const useFetchProducts = () => {
 	// Product function

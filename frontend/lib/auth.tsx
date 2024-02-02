@@ -42,7 +42,7 @@ export const useLogin = () => {
 	return { login, error };
 };
 
-// Category Function
+// Category Function------------------------------------
 export const createCategoryOrSubcategory = async (
 	formData: FormData,
 	jwt: string,
@@ -104,6 +104,7 @@ export const deleteCategory = async (categoryId: number, jwt: string) => {
 		throw err;
 	}
 };
+// -------------------------------------
 
 // Users Function
 export const registerUser = async (userData: any) => {
@@ -133,6 +134,37 @@ export const registerUser = async (userData: any) => {
 	} catch (error) {
 		console.error("There was an error registering the user:", error);
 		throw error; // Rethrow the error to be handled by the caller
+	}
+};
+
+// Update User
+export const updateUser = async (
+	userId: number,
+	userData: any,
+	jwt: string
+) => {
+	try {
+		const url = `http://localhost:8080/api/admin/updateUser/${userId}`;
+		const response = await fetch(url, {
+			method: "PUT",
+			headers: {
+				Authorization: `Bearer ${jwt}`,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(userData),
+		});
+
+		if (response.ok) {
+			const data = await response.json();
+			alert("User Updated Successfully");
+			return data;
+		} else {
+			const errorText = await response.text();
+			throw new Error(`Failed to update user: ${errorText}`);
+		}
+	} catch (error) {
+		console.error("Error updating user: ", error);
+		throw error;
 	}
 };
 
@@ -192,5 +224,43 @@ export const deleteProduct = async (productId: number, jwt: string) => {
 	} catch (err) {
 		console.error("Error deleting product: ", err);
 		throw err;
+	}
+};
+
+// Update Product
+export const updateProduct = async (
+	productId: number,
+	productData: any,
+	images: File[],
+	jwt: string
+) => {
+	try {
+		const url = `http://localhost:8080/api/products/${productId}`;
+		const formData = new FormData();
+		formData.append("product", JSON.stringify(productData));
+
+		images.forEach((image) => {
+			formData.append("images", image);
+		});
+
+		const response = await fetch(url, {
+			method: "PUT",
+			headers: {
+				Authorization: `Bearer ${jwt}`,
+			},
+			body: formData,
+		});
+
+		if (response.ok) {
+			const data = await response.json();
+			alert("Product Updated Successfully");
+			return data;
+		} else {
+			const errorText = await response.text();
+			throw new Error(`Failed to update product: ${errorText}`);
+		}
+	} catch (error) {
+		console.error("Error updating product: ", error);
+		throw error;
 	}
 };

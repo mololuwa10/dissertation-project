@@ -184,6 +184,13 @@ public class UserService implements UserDetailsService {
     return roleRepository.findAll();
   }
 
+  public ApplicationUser getUserById(Integer userId) {
+    if (userId == null) {
+      return null;
+    }
+    return userRepository.findById(userId).orElse(null);
+  }
+
   @Override
   public UserDetails loadUserByUsername(String username)
     throws UsernameNotFoundException {
@@ -207,9 +214,6 @@ public class UserService implements UserDetailsService {
     ApplicationUser user = userRepository
       .findByUsername(username)
       .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-    // Check if the user already has an artisan request or profile
-    // and throw an exception or handle accordingly
 
     boolean hasRole = false;
     for (Roles role : user.getAuthorities()) {

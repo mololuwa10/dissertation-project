@@ -11,6 +11,7 @@ import com.example.dissertation_backend.solution.DTO.ProductDTO;
 import com.example.dissertation_backend.solution.Products.Service.ProductServices;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +55,23 @@ public class AdminController {
   @GetMapping("/allUsers")
   public List<ApplicationUser> getAllUsers() {
     return userService.getAllUsers();
+  }
+
+  @GetMapping("/user/{userId}")
+  @PreAuthorize("hasAuthority('ADMIN')")
+  public ResponseEntity<?> getUserById(@PathVariable Integer userId) {
+    try {
+      ApplicationUser user = userService.getUserById(userId);
+      if (user != null) {
+        return ResponseEntity.ok(user);
+      } else {
+        return ResponseEntity
+          .status(HttpStatus.NOT_FOUND)
+          .body("User not found");
+      }
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
   }
 
   @GetMapping("/allArtisans")
