@@ -7,6 +7,7 @@ import {
 	useFetchAllCategories,
 	fetchAllArtisans,
 } from "@/lib/dbModels";
+import { updateProduct } from "@/lib/auth";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
@@ -72,6 +73,7 @@ export default function EditProduct() {
 	const [selectedCategoryId, setSelectedCategoryId] = useState<number | string>(
 		""
 	);
+	const [productImages, setProductImages] = useState<File[]>([]);
 	const [allArtisans, setAllArtisans] = useState<ArtisanProfile[]>([]);
 	const searchParams = useSearchParams();
 	const productId = searchParams.get("productId");
@@ -115,64 +117,83 @@ export default function EditProduct() {
 		return <div>Loading...</div>;
 	}
 
-	// const handleSubmit = async (event: any) => {
-	// 	event.preventDefault();
+	const handleSubmit = async (event: any) => {
+		event.preventDefault();
 
-	// 	const jwt = localStorage.getItem("jwt");
-	// 	if (!jwt) {
-	// 		alert("Authentication token not found.");
-	// 		return;
-	// 	}
+		const jwt = localStorage.getItem("jwt");
+		if (!jwt) {
+			alert("Authentication token not found.");
+			return;
+		}
 
-	// 	const updatedUserData = {
-	// 		firstname: user.firstname,
-	// 		lastname: user.lastname,
-	// 		username: user.username,
-	// 		user_email: user.user_email,
-	// 		contactTelephone: user?.contactTelephone,
-	// 		contactAddress: user?.contactAddress,
-	// 		authorities: [
-	// 			{
-	// 				roleId: parseInt(selectedRoleId),
-	// 				authority: roles.find(
-	// 					(role) => role.roleId === parseInt(selectedRoleId)
-	// 				)?.authority,
-	// 			},
-	// 		],
-	// 	};
+		const productData = {
+			productName: product?.productName,
+			productDescription: product?.productDescription,
+			productPrice: product?.productPrice,
+			productStockQuantity: product?.productStockQuantity,
+			category: {
+				categoryId: selectedCategoryId,
+			},
+			// artisanProfile: {
+			// 	artisanId: selectedArtisanId,
+			// },
+			productDiscount: product?.productDiscount,
+		};
 
-	// 	// Call the updateUser function
-	// 	try {
-	// 		await updateUser(user.userId, updatedUserData, jwt);
-	// 	} catch (error) {
-	// 		if (error instanceof Error) {
-	// 			console.error("Failed to update the user:", error.message);
-	// 		} else {
-	// 			console.error("Failed to update the user:", error);
-	// 		}
-	// 	}
-	// };
+		// const formData = new FormData();
+		// formData.append("product", JSON.stringify(productData));
+		// // Append product images if any
+		// productImages.forEach((file) => {
+		// 	formData.append("images", file);
+		// });
 
-	// const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-	// 	const { name, value } = e.target;
-	// 	setUser((prevUser) => (prevUser ? { ...prevUser, [name]: value } : null));
-	// };
+		try {
+			await updateProduct(product?.productId, productData, jwt);
+		} catch (error) {
+			if (error instanceof Error) {
+				console.error("Failed to update the product:", error.message);
+				alert(error.message || "Failed to update the product.");
+			} else {
+				console.error("Failed to update the product:", error);
+				alert("Failed to update the product.");
+			}
+		}
+	};
+
+	const handleFileChange = (event: any) => {
+		// Assuming you're handling multiple images
+		if (event.target.files) {
+			setProductImages([...event.target.files]);
+		}
+	};
+
+	const handleInputChange = (event: any) => {
+		const { name, value } = event.target;
+		setProduct((prevProduct) => {
+			if (prevProduct) {
+				return { ...prevProduct, [name]: value };
+			}
+			return null;
+		});
+	};
 
 	return (
 		<div className={styles.container}>
 			<div className={styles.infoContainer}>
 				<div className={styles.imgContainer}>
-					{/* <Image src={user.img || "/noavatar.png"} alt="" fill /> */}
-					<Image
-						src={`http://localhost:8080${product.imageUrls}` || "/noavatar.png"}
-						alt=""
-						fill
-					/>
+					{product?.imageUrls.map((imageUrl, index) => (
+						<Image
+							key={index}
+							src={`http://localhost:8080${imageUrl}` || "/noavatar.png"}
+							alt={`Product Image ${index + 1}`}
+							fill
+						/>
+					))}
 				</div>
 				{/* {user.username} */}
 			</div>
 			<div className={styles.formContainer}>
-				<form className={styles.form}>
+				<form className={styles.form} onSubmit={handleSubmit}>
 					<input type="hidden" name="id" />
 					<label>Product Name</label>
 					<input
@@ -180,7 +201,7 @@ export default function EditProduct() {
 						name="productName"
 						placeholder={product.productName}
 						value={product.productName}
-						// onChange={handleInputChange}
+						onChange={handleInputChange}
 					/>
 					<label>Product Price</label>
 					<input
@@ -188,7 +209,7 @@ export default function EditProduct() {
 						name="productPrice"
 						placeholder={String(product.productPrice)}
 						value={product.productPrice}
-						// onChange={handleInputChange}
+						onChange={handleInputChange}
 					/>
 					<label>Product Stock Quantity</label>
 					<input
@@ -196,22 +217,22 @@ export default function EditProduct() {
 						name="stockQuanitiy"
 						placeholder={String(product.productStockQuantity)}
 						value={product.productStockQuantity}
-						// onChange={handleInputChange}
+						onChange={handleInputChange}
 					/>
 					<label>Product Discount</label>
 					<input
-						type="email"
-						name="email"
+						type="text"
+						name="productDiscount"
 						placeholder={String(product.productDiscount)}
 						value={product.productDiscount}
-						// onChange={handleInputChange}
+						onChange={handleInputChange}
 					/>
 					<label>Product Description</label>
 					<textarea
 						name="productDescription"
 						placeholder={product.productDescription}
 						value={product.productDescription}
-						// onChange={handleInputChange}
+						onChange={handleInputChange}
 					/>
 					<label>Category</label>
 					<select
@@ -241,6 +262,8 @@ export default function EditProduct() {
 								</option>
 							))}
 					</select>
+
+					<input type="file" multiple onChange={handleFileChange} />
 					<button>Update</button>
 				</form>
 			</div>

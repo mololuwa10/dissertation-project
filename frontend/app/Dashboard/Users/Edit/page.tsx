@@ -44,7 +44,7 @@ export default function EditUser() {
 	useEffect(() => {
 		if (user && user.authorities.length > 0) {
 			// Assuming a user can have multiple roles but only one is selectable for simplicity
-			setSelectedRoleId(user.authorities[0].roleId.toString()); // Ensure the roleId is a string if your option values are strings
+			setSelectedRoleId(user.authorities[0].roleId.toString());
 		}
 	}, [user]);
 
@@ -119,7 +119,7 @@ export default function EditUser() {
 					{/* <Image src={user.img || "/noavatar.png"} alt="" fill /> */}
 					<Image src={"/noavatar.png"} alt="" fill />
 				</div>
-				{/* {user.username} */}
+				{user.username}
 			</div>
 			<div className={styles.formContainer}>
 				<form className={styles.form} onSubmit={handleSubmit}>
