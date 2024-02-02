@@ -1,7 +1,9 @@
 package com.example.dissertation_backend.solution.Customers.Controllers;
 
 import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
+import com.example.dissertation_backend.solution.Customers.Model.ArtisanProfile;
 import com.example.dissertation_backend.solution.Customers.Repository.UserRepository;
+import com.example.dissertation_backend.solution.Customers.Service.ArtisanProfileService;
 import com.example.dissertation_backend.solution.Customers.Service.UserService;
 import java.security.Principal;
 import java.util.*;
@@ -35,9 +37,17 @@ public class UserController {
   @Autowired
   private UserService userService;
 
+  @Autowired
+  private ArtisanProfileService artisanProfileService;
+
   @GetMapping("/")
   public String helloUserController() {
     return "User access level";
+  }
+
+  @GetMapping("/allArtisans")
+  public List<ArtisanProfile> getAllArtisanProfiles() {
+    return artisanProfileService.getAllArtisanProfiles();
   }
 
   @GetMapping("/info")

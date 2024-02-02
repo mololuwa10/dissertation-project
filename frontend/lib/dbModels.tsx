@@ -155,6 +155,23 @@ export async function fetchAllRoles(jwt: string) {
 	}
 }
 
+// Get all artisans
+export async function fetchAllArtisans() {
+	const response = await fetch("http://localhost:8080/api/user/allArtisans", {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	});
+
+	if (!response.ok) {
+		throw new Error("Failed to fetch artisans");
+	}
+
+	return response.json();
+}
+
+// Product function
 export const useFetchProducts = () => {
 	// Product function
 	interface Product {
@@ -164,6 +181,7 @@ export const useFetchProducts = () => {
 		productPrice: number;
 		productStockQuantity: number;
 		imageUrls: string[];
+		productDiscount: number;
 		category: {
 			categoryId: number;
 		};
@@ -186,6 +204,7 @@ export const useFetchProducts = () => {
 					quantity: product.productStockQuantity,
 					image: product.imageUrls[0],
 					dateTimeUpdated: product.dateTimeUpdated,
+					discount: product.productDiscount,
 					category: product.category,
 					artisan: product.artisanProfile,
 					checked: false,
@@ -198,6 +217,33 @@ export const useFetchProducts = () => {
 	return { products };
 };
 
+// get product by id
+export async function fetchProductById(productId: any) {
+	try {
+		const response = await fetch(
+			`http://localhost:8080/api/products/${productId}`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error(`Error fetching product: ${response.status}`);
+		}
+
+		// Assuming the response is JSON
+		const product = await response.json();
+		console.log(product);
+		return product;
+	} catch (error) {
+		console.error("Fetching product failed:", error);
+		throw error;
+	}
+}
+
 // Get All categories
 export const useFetchAllCategories = () => {
 	interface Category {
@@ -206,7 +252,7 @@ export const useFetchAllCategories = () => {
 		categoryDescription: string;
 		categoryImageUrl: string;
 	}
-	const [categories, setCategories] = useState([]);
+	const [categories, setCategories] = useState<Category[]>([]);
 
 	useEffect(() => {
 		fetch("http://localhost:8080/api/categories/allCategories")

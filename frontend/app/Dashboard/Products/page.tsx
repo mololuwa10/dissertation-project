@@ -26,6 +26,7 @@ export default function Products() {
 		price: number;
 		quantity: number;
 		image: string;
+		discount: number;
 		dateTimeUpdated: string;
 		category: any;
 		artisan: any;
@@ -100,6 +101,7 @@ export default function Products() {
 						<TableHead>Product Description</TableHead>
 						<TableHead>Product Price</TableHead>
 						<TableHead>Product Quantity</TableHead>
+						<TableHead>Product Discount</TableHead>
 						<TableHead>Product Date Updated</TableHead>
 						<TableHead>Category Id</TableHead>
 						<TableHead>Artisan Profile</TableHead>
@@ -115,15 +117,22 @@ export default function Products() {
 								<TableCell>{product.description}</TableCell>
 								<TableCell>{product.price}</TableCell>
 								<TableCell>{product.quantity}</TableCell>
+								<TableCell>{product.discount}</TableCell>
 								<TableCell>{product.dateTimeUpdated}</TableCell>
 								<TableCell>{product.category.categoryId}</TableCell>
 								<TableCell>{product.artisan.artisanId}</TableCell>
 
 								<TableCell>
 									<div className="p-2 flex">
-										<Button size={"lg"} className="mr-2 mb-2 flex">
-											Edit
-										</Button>
+										<Link
+											href={{
+												pathname: "/Dashboard/Products/Edit",
+												query: { productId: product.value },
+											}}>
+											<Button size={"lg"} className="mr-2 mb-2 flex">
+												Edit
+											</Button>
+										</Link>
 										<Button
 											size={"lg"}
 											onClick={() => handleDelete(product.value)}

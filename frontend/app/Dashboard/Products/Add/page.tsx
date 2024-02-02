@@ -25,7 +25,9 @@ const AddProductPage = () => {
 	}
 
 	// Fetch category data
-	const { categories } = useFetchAllCategories() as { categories: Category[] };
+	const { categories } = useFetchAllCategories() as unknown as {
+		categories: Category[];
+	};
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();

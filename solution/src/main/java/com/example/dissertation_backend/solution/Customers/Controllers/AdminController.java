@@ -3,9 +3,9 @@ package com.example.dissertation_backend.solution.Customers.Controllers;
 import com.example.dissertation_backend.solution.Category.Model.Category;
 import com.example.dissertation_backend.solution.Category.Repository.CategoryRepository;
 import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
-import com.example.dissertation_backend.solution.Customers.Model.ArtisanProfile;
+// import com.example.dissertation_backend.solution.Customers.Model.ArtisanProfile;
 import com.example.dissertation_backend.solution.Customers.Model.Roles;
-import com.example.dissertation_backend.solution.Customers.Service.ArtisanProfileService;
+// import com.example.dissertation_backend.solution.Customers.Service.ArtisanProfileService;
 import com.example.dissertation_backend.solution.Customers.Service.UserService;
 import com.example.dissertation_backend.solution.DTO.ProductDTO;
 import com.example.dissertation_backend.solution.Products.Service.ProductServices;
@@ -39,9 +39,6 @@ public class AdminController {
   @Autowired
   private ProductServices productServices;
 
-  @Autowired
-  private ArtisanProfileService artisanProfileService;
-
   @GetMapping("/")
   public String helloAdminController() {
     return "Admin access level";
@@ -72,11 +69,6 @@ public class AdminController {
     } catch (Exception e) {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
-  }
-
-  @GetMapping("/allArtisans")
-  public List<ArtisanProfile> getAllArtisanProfiles() {
-    return artisanProfileService.getAllArtisanProfiles();
   }
 
   @GetMapping("/allCategories")

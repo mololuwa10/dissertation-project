@@ -13,6 +13,7 @@ public class ProductDTO {
   private ArtisanProfileDTO artisanProfile;
   private LocalDateTime dateTimeListed;
   private LocalDateTime dateTimeUpdated;
+  private Double productDiscount;
   private CategoryDTO category;
   private Set<String> imageUrls;
 
@@ -26,6 +27,7 @@ public class ProductDTO {
     String productDescription,
     Double productPrice,
     Integer productStockQuantity,
+    Double productDiscount,
     ArtisanProfileDTO artisanProfile,
     CategoryDTO category,
     Set<String> imageUrls,
@@ -38,6 +40,7 @@ public class ProductDTO {
     this.productDescription = productDescription;
     this.productPrice = productPrice;
     this.productStockQuantity = productStockQuantity;
+    this.productDiscount = productDiscount;
     this.artisanProfile = artisanProfile;
     this.category = category;
     this.imageUrls = imageUrls;
@@ -123,5 +126,13 @@ public class ProductDTO {
 
   public void setDateTimeUpdated(LocalDateTime dateTimeUpdated) {
     this.dateTimeUpdated = dateTimeUpdated;
+  }
+
+  public Double getProductDiscount() {
+    return productDiscount;
+  }
+
+  public void setProductDiscount(Double productDiscount) {
+    this.productDiscount = productDiscount;
   }
 }

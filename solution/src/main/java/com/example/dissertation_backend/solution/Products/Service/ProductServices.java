@@ -115,6 +115,7 @@ public class ProductServices {
     dto.setProductDescription(product.getProductDescription());
     dto.setProductPrice(product.getProductPrice());
     dto.setProductStockQuantity(product.getProductStockQuantity());
+    dto.setProductDiscount(product.getProductDiscount());
     dto.setArtisanProfile(convertArtisanProfileToDTO(product.getArtisan()));
     dto.setCategory(convertCategoryToDTO(product.getCategory()));
     dto.setImageUrls(imageUrls);
