@@ -43,9 +43,9 @@ public class ArtisanProfileService {
 
   // Method to find ArtisanProfile by ApplicationUser
   public Optional<ArtisanProfile> findByArtisan(ApplicationUser artisan) {
-    List<ArtisanProfile> profiles = artisanProfileRepository.findByArtisan(
+    Optional<ArtisanProfile> profiles = artisanProfileRepository.findByArtisan(
       artisan
     );
-    return profiles.isEmpty() ? Optional.empty() : Optional.of(profiles.get(0));
+    return profiles.isEmpty() ? Optional.empty() : Optional.of(profiles.get());
   }
 }

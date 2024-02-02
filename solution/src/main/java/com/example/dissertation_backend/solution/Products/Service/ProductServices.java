@@ -69,6 +69,7 @@ public class ProductServices {
     artisanProfileDTO.setBio(artisanProfile.getBio());
     artisanProfileDTO.setProfilePicture(artisanProfile.getProfilePicture());
     artisanProfileDTO.setLocation(artisanProfile.getLocation());
+    artisanProfileDTO.setStoreName(artisanProfile.getStoreName());
 
     // Map other fields from ApplicationUser to ArtisanProfileDTO as needed
     artisanProfileDTO.setFirstname(artisanProfile.getArtisan().getFirstname());
@@ -97,6 +98,7 @@ public class ProductServices {
     categoryDTO.setCategoryId(category.getCategoryId());
     categoryDTO.setCategoryName(category.getCategoryName());
     categoryDTO.setCategoryDescription(category.getCategoryDescription());
+    categoryDTO.setCategoryImageUrl(category.getCategoryImageUrl());
 
     return categoryDTO;
   }

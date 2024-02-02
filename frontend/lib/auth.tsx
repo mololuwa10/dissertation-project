@@ -168,6 +168,37 @@ export const updateUser = async (
 	}
 };
 
+// Assuming createArtisanProfile takes the user ID and some profile data
+export const createArtisanProfile = async (userId: number, jwt: string) => {
+	if (!jwt) {
+		throw new Error("No JWT provided");
+	}
+	try {
+		const response = await fetch(
+			`http://localhost:8080/api/admin/createArtisanProfile/${userId}`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${jwt}`,
+				},
+			}
+		);
+
+		if (response.ok) {
+			const data = await response.json();
+			alert("Artisan profile created successfully");
+			return data;
+		} else {
+			const errorText = await response.text();
+			throw new Error(`Failed to create artisan profile: ${errorText}`);
+		}
+	} catch (error) {
+		console.error("Error creating artisan profile:", error);
+		throw error;
+	}
+};
+
 // Product Function---------------------------------------------------------------------------------------------------------
 // Add Product
 export const addProduct = async (

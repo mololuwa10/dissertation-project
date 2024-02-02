@@ -15,12 +15,14 @@ public class CategoryDTO {
   public CategoryDTO(
     Integer categoryId,
     String categoryName,
-    String categoryDescription
+    String categoryDescription,
+    String categoryImageUrl
   ) {
     super();
     this.categoryId = categoryId;
     this.categoryName = categoryName;
     this.categoryDescription = categoryDescription;
+    this.categoryImageUrl = categoryImageUrl;
   }
 
   public Integer getCategoryId() {

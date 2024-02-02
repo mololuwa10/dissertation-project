@@ -8,6 +8,7 @@ import com.example.dissertation_backend.solution.Customers.Repository.ArtisanPro
 import com.example.dissertation_backend.solution.Customers.Repository.RoleRepository;
 import com.example.dissertation_backend.solution.Customers.Repository.RoleRequestRepository;
 import com.example.dissertation_backend.solution.Customers.Repository.UserRepository;
+import com.example.dissertation_backend.solution.DTO.ArtisanProfileDTO;
 import com.example.dissertation_backend.solution.utils.EncryptionUtil;
 import jakarta.transaction.Transactional;
 import java.util.*;
@@ -41,6 +42,13 @@ public class UserService implements UserDetailsService {
 
   @Autowired
   private ArtisanProfileRepository artisanProfileRepository;
+
+  public Optional<ApplicationUser> findById(Integer userId) {
+    if (userId == null) {
+      return Optional.empty();
+    }
+    return userRepository.findById(userId);
+  }
 
   public List<ApplicationUser> getAllUsers() {
     List<ApplicationUser> users = userRepository.findAll();
@@ -281,5 +289,29 @@ public class UserService implements UserDetailsService {
     } else {
       throw new IllegalStateException("User is already an artisan.");
     }
+  }
+
+  public ArtisanProfile createOrUpdateArtisanProfile(
+    Integer userId,
+    ArtisanProfileDTO profileData
+  ) {
+    if (userId == null) {
+      return null;
+    }
+    ApplicationUser user = userRepository
+      .findById(userId)
+      .orElseThrow(() -> new RuntimeException("User not found"));
+
+    ArtisanProfile profile = artisanProfileRepository
+      .findByArtisan(user)
+      .orElse(new ArtisanProfile());
+
+    profile.setArtisan(user);
+    profile.setBio(profileData.getBio());
+    profile.setProfilePicture(profileData.getProfilePicture());
+    profile.setLocation(profileData.getLocation());
+    profile.setStoreName(profileData.getStoreName());
+
+    return artisanProfileRepository.save(profile);
   }
 }

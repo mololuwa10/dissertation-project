@@ -2,7 +2,7 @@ package com.example.dissertation_backend.solution.Customers.Repository;
 
 import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
 import com.example.dissertation_backend.solution.Customers.Model.ArtisanProfile;
-import java.util.List;
+import java.util.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface ArtisanProfileRepository
   extends JpaRepository<ArtisanProfile, Integer> {
   // Add custom query methods if needed
-  List<ArtisanProfile> findByArtisan(ApplicationUser artisan);
+  Optional<ArtisanProfile> findByArtisan(ApplicationUser artisan);
 }

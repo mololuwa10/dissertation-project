@@ -6,6 +6,7 @@ public class ArtisanProfileDTO {
   private String bio;
   private String profilePicture;
   private String location;
+  private String storeName;
 
   // Fields from ApplicationUser
   private String firstname;
@@ -20,13 +21,25 @@ public class ArtisanProfileDTO {
     super();
   }
 
-  public ArtisanProfileDTO(Integer artisanId, String bio, String profilePicture, String location, String firstname,
-      String lastname, String user_email, String bankAccountNo, String bankSortCode, String contactTelephone,
-      String contactAddress) {
+  public ArtisanProfileDTO(
+    Integer artisanId,
+    String bio,
+    String profilePicture,
+    String location,
+    String storeName,
+    String firstname,
+    String lastname,
+    String user_email,
+    String bankAccountNo,
+    String bankSortCode,
+    String contactTelephone,
+    String contactAddress
+  ) {
     this.artisanId = artisanId;
     this.bio = bio;
     this.profilePicture = profilePicture;
     this.location = location;
+    this.storeName = storeName;
     this.firstname = firstname;
     this.lastname = lastname;
     this.user_email = user_email;
@@ -122,5 +135,13 @@ public class ArtisanProfileDTO {
 
   public void setContactAddress(String contactAddress) {
     this.contactAddress = contactAddress;
+  }
+
+  public String getStoreName() {
+    return storeName;
+  }
+
+  public void setStoreName(String storeName) {
+    this.storeName = storeName;
   }
 }
