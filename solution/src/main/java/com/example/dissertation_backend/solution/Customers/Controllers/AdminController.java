@@ -3,23 +3,20 @@ package com.example.dissertation_backend.solution.Customers.Controllers;
 import com.example.dissertation_backend.solution.Category.Model.Category;
 import com.example.dissertation_backend.solution.Category.Repository.CategoryRepository;
 import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
-import com.example.dissertation_backend.solution.Customers.Model.ArtisanProfile;
 // import com.example.dissertation_backend.solution.Customers.Model.ArtisanProfile;
 import com.example.dissertation_backend.solution.Customers.Model.Roles;
-import com.example.dissertation_backend.solution.Customers.Service.ArtisanProfileService;
+// import com.example.dissertation_backend.solution.Customers.Service.ArtisanProfileService;
 // import com.example.dissertation_backend.solution.Customers.Service.ArtisanProfileService;
 import com.example.dissertation_backend.solution.Customers.Service.UserService;
 // import com.example.dissertation_backend.solution.DTO.ArtisanProfileDTO;
 import com.example.dissertation_backend.solution.DTO.ProductDTO;
 import com.example.dissertation_backend.solution.Products.Service.ProductServices;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -44,8 +41,8 @@ public class AdminController {
   @Autowired
   private ProductServices productServices;
 
-  @Autowired
-  private ArtisanProfileService artisanProfileService;
+  // @Autowired
+  // private ArtisanProfileService artisanProfileService;
 
   @GetMapping("/")
   public String helloAdminController() {
@@ -109,43 +106,5 @@ public class AdminController {
   public ResponseEntity<?> approveArtisanRequest(@PathVariable Integer userId) {
     userService.approveArtisanRequest(userId);
     return ResponseEntity.ok("User approved as an artisan.");
-  }
-
-  @PreAuthorize("hasAuthority('ADMIN')")
-  @PostMapping("/createArtisanProfile/{userId}")
-  public ResponseEntity<?> createArtisanProfile(@PathVariable Integer userId) {
-    try {
-      // Check if the user exists
-      ApplicationUser user = userService
-        .findById(userId)
-        .orElseThrow(() ->
-          new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
-        );
-
-      // Check if the user already has an artisan profile
-      Optional<ArtisanProfile> existingProfile = artisanProfileService.findByArtisan(
-        user
-      );
-      if (existingProfile.isPresent()) {
-        return ResponseEntity
-          .badRequest()
-          .body("Artisan profile already exists for this user.");
-      }
-
-      // Create a new artisan profile for the user
-      ArtisanProfile newProfile = new ArtisanProfile();
-      newProfile.setArtisan(user);
-      newProfile.setBio("Default bio");
-
-      ArtisanProfile createdProfile = artisanProfileService.saveOrUpdateArtisanProfile(
-        newProfile
-      );
-
-      return ResponseEntity.ok(createdProfile);
-    } catch (Exception e) {
-      return ResponseEntity
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .body(e.getMessage());
-    }
   }
 }

@@ -6,7 +6,6 @@ import {
 	MdDashboard,
 	MdSupervisedUserCircle,
 	MdShoppingBag,
-	MdAttachMoney,
 	MdWork,
 	MdAnalytics,
 	MdPeople,
@@ -15,6 +14,8 @@ import {
 	MdLogout,
 	MdCategory,
 	MdReorder,
+	MdContacts,
+	MdEmail,
 } from "react-icons/md";
 import MenuLink from "./menuLink/menuLink";
 import { useFetchUserInfo } from "@/lib/data";
@@ -52,6 +53,11 @@ const menuItems = [
 				title: "Testimonials",
 				path: "/Dashboard/Testimonials",
 				icon: <MdSupervisedUserCircle />,
+			},
+			{
+				title: "Contact Us Queries",
+				path: "/Dashboard/Contacts",
+				icon: <MdEmail />,
 			},
 		],
 	},

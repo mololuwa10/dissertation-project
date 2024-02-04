@@ -168,14 +168,13 @@ export const updateUser = async (
 	}
 };
 
-// Assuming createArtisanProfile takes the user ID and some profile data
 export const createArtisanProfile = async (userId: number, jwt: string) => {
 	if (!jwt) {
 		throw new Error("No JWT provided");
 	}
 	try {
 		const response = await fetch(
-			`http://localhost:8080/api/admin/createArtisanProfile/${userId}`,
+			`http://localhost:8080/api/user/createArtisanProfile/${userId}`,
 			{
 				method: "POST",
 				headers: {

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { fetchUserById, fetchAllRoles } from "@/lib/dbModels";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { updateUser } from "@/lib/auth";
+import { createArtisanProfile, updateUser } from "@/lib/auth";
 
 export default function EditUser() {
 	interface Authority {
@@ -29,7 +29,8 @@ export default function EditUser() {
 	const [user, setUser] = useState<User | null>(null);
 	const [error, setError] = useState("");
 	const [roles, setRoles] = useState([]);
-	const [selectedRoleId, setSelectedRoleId] = useState<string>("");
+	const [selectedRoleId, setSelectedRoleId] = useState<string | number>("");
+	const [hasArtisanProfile, setHasArtisanProfile] = useState(false);
 
 	const searchParams = useSearchParams();
 	const userId = searchParams.get("userId");
@@ -54,6 +55,22 @@ export default function EditUser() {
 		if (userId && jwt) {
 			fetchUserById(Number(userId), jwt)
 				.then((fetchedUser) => setUser(fetchedUser))
+				.catch((err) => {
+					console.error(err);
+					setError("Failed to fetch user details");
+				});
+		}
+	}, [userId]);
+
+	// Assuming fetchUserById now includes information about the artisan profile
+	useEffect(() => {
+		const jwt = localStorage.getItem("jwt");
+		if (userId && jwt) {
+			fetchUserById(Number(userId), jwt)
+				.then((fetchedUser) => {
+					setUser(fetchedUser);
+					setHasArtisanProfile(fetchedUser.hasArtisanProfile);
+				})
 				.catch((err) => {
 					console.error(err);
 					setError("Failed to fetch user details");
@@ -87,17 +104,36 @@ export default function EditUser() {
 			contactAddress: user?.contactAddress,
 			authorities: [
 				{
-					roleId: parseInt(selectedRoleId),
-					authority: roles.find(
-						(role) => role.roleId === parseInt(selectedRoleId)
-					)?.authority,
+					roleId: selectedRoleId,
+					authority: roles.find((role) => role.roleId === selectedRoleId)
+						?.authority,
 				},
 			],
 		};
 
+		const isArtisanRoleSelected = selectedRoleId === 3;
+		if (isArtisanRoleSelected && !hasArtisanProfile) {
+			try {
+				await createArtisanProfile(user.userId, jwt);
+				setHasArtisanProfile(true);
+			} catch (error) {
+				console.error("Failed to create artisan profile:", error);
+				alert("Failed to create artisan profile.");
+				return;
+			}
+		}
+
 		// Call the updateUser function
 		try {
+			// Check if the "Artisan" role is selected and the user does not already have an artisan profile
+			// const isArtisanRoleSelected = roles.some(
+			// 	(role) => role.roleId === selectedRoleId && role.authority === "ARTISAN"
+			// );
+
 			await updateUser(user.userId, updatedUserData, jwt);
+			// if (isArtisanRoleSelected && !hasArtisanProfile) {
+			// 	await createArtisanProfile(user.userId, jwt);
+			// }
 		} catch (error) {
 			if (error instanceof Error) {
 				console.error("Failed to update the user:", error.message);

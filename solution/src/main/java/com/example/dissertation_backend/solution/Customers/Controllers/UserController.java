@@ -10,6 +10,7 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+// import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -133,5 +134,42 @@ public class UserController {
     return ResponseEntity.ok(
       "Request to become an artisan submitted successfully."
     );
+  }
+
+  @PostMapping("/createArtisanProfile/{userId}")
+  public ResponseEntity<?> createArtisanProfile(@PathVariable Integer userId) {
+    try {
+      // Check if the user exists
+      ApplicationUser user = userService
+        .findById(userId)
+        .orElseThrow(() ->
+          new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+        );
+
+      // Check if the user already has an artisan profile
+      Optional<ArtisanProfile> existingProfile = artisanProfileService.findByArtisan(
+        user
+      );
+      if (existingProfile.isPresent()) {
+        return ResponseEntity
+          .badRequest()
+          .body("Artisan profile already exists for this user.");
+      }
+
+      // Create a new artisan profile for the user
+      ArtisanProfile newProfile = new ArtisanProfile();
+      newProfile.setArtisan(user);
+      newProfile.setBio("Default bio");
+
+      ArtisanProfile createdProfile = artisanProfileService.saveOrUpdateArtisanProfile(
+        newProfile
+      );
+
+      return ResponseEntity.ok(createdProfile);
+    } catch (Exception e) {
+      return ResponseEntity
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body(e.getMessage());
+    }
   }
 }
