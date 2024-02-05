@@ -1,12 +1,12 @@
 "use client";
 
-import { useFetchProducts, useFetchReviewsByProduct } from "@/lib/dbModels";
+import { useFetchProducts } from "@/lib/dbModels";
 import { Button } from "../ui/button";
 import { Heart, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 
 // Convert fetching logic into a standalone async function
-const fetchReviewsByProduct = async (productId) => {
+const fetchReviewsByProduct = async (productId: any) => {
 	try {
 		const response = await fetch(
 			`http://localhost:8080/api/reviews/product/${productId}`
@@ -53,13 +53,31 @@ export default function TrendingSections() {
 		};
 	}
 
-	// const {productReviews} = useFetchReviewsByProduct() as {productReviews: Review[]};
-
 	const { products } = useFetchProducts() as { products: Product[] };
+	const [reviewCounts, setReviewCounts] = useState<{ [key: number]: number }>(
+		{}
+	);
 
 	const [averageRatings, setAverageRatings] = useState<{
 		[key: number]: number;
 	}>({});
+
+	useEffect(() => {
+		const fetchAndCountReviews = async () => {
+			const counts: { [key: number]: number } = {};
+			for (const product of products) {
+				// Assume fetchReviewsByProduct correctly fetches reviews for a given product ID
+				const reviews = await fetchReviewsByProduct(product.value);
+				// Store the number of reviews instead of calculating an average
+				counts[product.value] = reviews.length;
+			}
+			setReviewCounts(counts);
+		};
+
+		if (products.length > 0) {
+			fetchAndCountReviews();
+		}
+	}, [products]);
 
 	useEffect(() => {
 		const calculateAndSetRatings = async () => {
@@ -81,14 +99,6 @@ export default function TrendingSections() {
 			calculateAndSetRatings();
 		}
 	}, [products]);
-
-	// Function to calculate the average rating
-	// const calculateAverageRating = (reviews: Review[]) => {
-	// 	const total = reviews.reduce((acc, review) => acc + review.rating, 0);
-	// 	return reviews.length > 0
-	// 		? (total / reviews.length).toFixed(1)
-	// 		: "No Reviews";
-	// };
 
 	return (
 		<>
@@ -149,8 +159,8 @@ export default function TrendingSections() {
 										/>
 									))}
 									<span className="ml-2">
-										{averageRatings[product.value]
-											? averageRatings[product.value]
+										{reviewCounts[product.value] > 0
+											? `(${reviewCounts[product.value]}) Reviews`
 											: "No Reviews"}
 									</span>
 								</div>

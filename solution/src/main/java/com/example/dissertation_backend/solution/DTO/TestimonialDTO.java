@@ -6,6 +6,7 @@ public class TestimonialDTO {
 
   private Integer testimonialId;
   private ApplicationUserDTO applicationUser;
+  private String testimonialTitle;
   private Integer rating;
   private String comment;
   private LocalDateTime testimonialDate;
@@ -15,12 +16,14 @@ public class TestimonialDTO {
     Integer testimonialId,
     ApplicationUserDTO applicationUser,
     Integer rating,
+    String testimonialTitle,
     String comment,
     LocalDateTime testimonialDate
   ) {
     super();
     this.testimonialId = testimonialId;
     this.applicationUser = applicationUser;
+    this.testimonialTitle = testimonialTitle;
     this.rating = rating;
     this.comment = comment;
     this.testimonialDate = testimonialDate;
@@ -41,6 +44,14 @@ public class TestimonialDTO {
 
   public void setApplicationUser(ApplicationUserDTO applicationUser) {
     this.applicationUser = applicationUser;
+  }
+
+  public String getTestimonialTitle() {
+    return testimonialTitle;
+  }
+
+  public void setTestimonialTitle(String testimonialTitle) {
+    this.testimonialTitle = testimonialTitle;
   }
 
   public Integer getRating() {

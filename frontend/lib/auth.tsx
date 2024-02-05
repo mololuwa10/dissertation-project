@@ -293,3 +293,29 @@ export const updateProduct = async (
 		throw error;
 	}
 };
+
+// Testimonial Section
+export const addTestimonial = async (testimonialData: any, jwt: string) => {
+	try {
+		const response = await fetch("http://localhost:8080/api/testimonials", {
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${jwt}`,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(testimonialData),
+		});
+
+		if (!response.ok) {
+			const errorData = await response.json();
+			throw new Error(errorData.message || "Could not add testimonial");
+		}
+
+		const data = await response.json();
+		alert("Testimonial Added Successfully");
+		return data;
+	} catch (error) {
+		console.error("Error adding testimonial: ", error);
+		throw error;
+	}
+};

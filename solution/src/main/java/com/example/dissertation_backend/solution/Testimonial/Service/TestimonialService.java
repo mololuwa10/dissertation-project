@@ -65,6 +65,7 @@ public class TestimonialService {
   private TestimonialDTO convertToDTO(Testimonial testimonial) {
     TestimonialDTO dto = new TestimonialDTO();
     dto.setTestimonialId(testimonial.getTestimonialId());
+    dto.setTestimonialTitle(testimonial.getTestimonialTitle());
     dto.setRating(testimonial.getRating());
     dto.setComment(testimonial.getTestimonial());
     dto.setTestimonialDate(testimonial.getTestimonialDate());

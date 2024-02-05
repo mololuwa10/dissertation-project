@@ -82,6 +82,7 @@ public class TestimonialController {
     // Create a new Testimonial object and set its fields
     Testimonial testimonial = new Testimonial();
     testimonial.setApplicationUser(user);
+    testimonial.setTestimonialTitle(testimonialDTO.getTestimonialTitle());
     testimonial.setRating(testimonialDTO.getRating());
     testimonial.setTestimonial(testimonialDTO.getComment());
     testimonial.setTestimonialDate(LocalDateTime.now());

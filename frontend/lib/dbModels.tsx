@@ -330,3 +330,47 @@ export const useFetchSubcategories = (categoryId: any) => {
 
 	return { subcategories };
 };
+
+// Get all testimonials
+export const useGetTestimonials = () => {
+	interface Testimonials {
+		testimonialId: number;
+		testimonialTitle: string;
+		rating: number;
+		comment: string;
+		reviewDate: string;
+		applicationUser: {
+			userId: number;
+			firstname: string;
+			lastname: string;
+			username: string;
+		};
+	}
+	const [testimonials, setTestimonials] = useState<Testimonials[]>([]);
+	useEffect(() => {
+		const fetchTestimonials = async () => {
+			try {
+				const response = await fetch("http://localhost:8080/api/testimonials", {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				});
+
+				if (!response.ok) {
+					throw new Error("Failed to fetch testimonials");
+				}
+
+				const data = await response.json();
+				setTestimonials(data);
+				console.log(data);
+			} catch (error) {
+				console.error("Error fetching testimonials: ", error);
+			}
+		};
+
+		fetchTestimonials();
+	}, []);
+
+	return { testimonials };
+};

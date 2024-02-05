@@ -17,6 +17,9 @@ public class Testimonial {
   @JoinColumn(name = "user_id", referencedColumnName = "user_id")
   private ApplicationUser applicationUser;
 
+  @Column(name = "testimonial_title")
+  private String testimonialTitle;
+
   @Column(name = "testimonial_content")
   private String testimonial;
 
@@ -35,11 +38,13 @@ public class Testimonial {
     Integer testimonialId,
     ApplicationUser applicationUser,
     String testimonial,
+    String testimonialTitle,
     Integer rating,
     LocalDateTime testimonialDate
   ) {
     super();
     this.testimonialId = testimonialId;
+    this.testimonialTitle = testimonialTitle;
     this.applicationUser = applicationUser;
     this.testimonial = testimonial;
     this.rating = rating;
@@ -65,6 +70,14 @@ public class Testimonial {
 
   public String getTestimonial() {
     return testimonial;
+  }
+
+  public String getTestimonialTitle() {
+    return testimonialTitle;
+  }
+
+  public void setTestimonialTitle(String testimonialTitle) {
+    this.testimonialTitle = testimonialTitle;
   }
 
   public void setTestimonial(String testimonial) {

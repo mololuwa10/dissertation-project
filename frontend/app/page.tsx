@@ -4,6 +4,7 @@ import CategoriesDeals from "@/components/landingPageComponents/CategoriesDeals"
 import ImageCarousel from "@/components/landingPageComponents/ImageCarousel";
 import NewProduct from "@/components/landingPageComponents/NewProduct";
 import SellerStoreComponent from "@/components/landingPageComponents/SellerStoreComponent";
+import TestimonialsComponents from "@/components/landingPageComponents/TestimonialsComponents";
 import TrendingSections from "@/components/landingPageComponents/TrendingSection";
 import Footer from "@/components/layoutComponents/Footer";
 import Header from "@/components/layoutComponents/Header";
@@ -26,6 +27,8 @@ export default function Home() {
 				<NewProduct />
 
 				<SellerStoreComponent />
+
+				<TestimonialsComponents />
 
 				<Blog />
 				<hr className=" mx-20 border-t-2 border-gray-600" />
