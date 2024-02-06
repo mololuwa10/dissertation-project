@@ -30,16 +30,16 @@ export const useFetchUserInfo = () => {
 						return response.json();
 					})
 					.then((data) => {
-						setUserDetails(data);
-
 						// CHECKING IF THE USER LOGGED IN IS AN ADMIN
 						const isAdmin = data.authorities.some(
 							(authority: { roleId: number; authority: string }) =>
 								authority.authority === "ADMIN"
 						);
 
+						setUserDetails(data);
 						setUserRole(isAdmin ? "ADMIN" : "USER");
 						setIsLoggedIn(true);
+						console.log(data);
 					})
 					.catch((error) => {
 						console.error("Error:", error);
@@ -52,7 +52,6 @@ export const useFetchUserInfo = () => {
 		fetchUserInfo();
 	}, []);
 
-	console.log(userDetails);
 	return { userDetails, userRole, isLoggedIn };
 };
 

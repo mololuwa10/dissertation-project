@@ -1,11 +1,14 @@
 "use client";
 
 import { useLogin } from "@/lib/auth";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import React, { useState } from "react";
 
 export default function SignIn() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
+	const [passwordShown, setPasswordShown] = useState(false);
+	const togglePasswordVisibility = () => setPasswordShown(!passwordShown);
 	const { login, error } = useLogin();
 
 	const handleSubmit = async (event: { preventDefault: () => void }) => {
@@ -47,7 +50,7 @@ export default function SignIn() {
 										className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
 									/>
 								</div>
-								<div className="mb-6">
+								<div className="mb-6 relative">
 									<div className="flex justify-between mb-2">
 										<label
 											htmlFor="password"
@@ -60,16 +63,29 @@ export default function SignIn() {
 											Forgot password?
 										</a>
 									</div>
-									<input
-										type="password"
-										name="password"
-										id="password"
-										placeholder="Your Password"
-										value={password}
-										onChange={(e) => setPassword(e.target.value)}
-										className="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
-									/>
+									<div className="flex items-center border border-gray-300 rounded-md shadow-sm">
+										<input
+											type={passwordShown ? "text" : "password"}
+											name="password"
+											id="password"
+											placeholder="Your Password"
+											value={password}
+											onChange={(e) => setPassword(e.target.value)}
+											className="w-full px-3 py-2 placeholder-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
+										/>
+										<button
+											type="button"
+											onClick={togglePasswordVisibility}
+											className="pr-3 text-gray-600 hover:text-indigo-500">
+											{passwordShown ? (
+												<EyeOffIcon className="h-5 w-5 text-gray-700" />
+											) : (
+												<EyeIcon className="h-5 w-5 text-gray-700" />
+											)}
+										</button>
+									</div>
 								</div>
+
 								{error && <p className="text-red-500">{error}</p>}
 								<div className="mb-6">
 									<button

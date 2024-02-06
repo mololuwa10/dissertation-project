@@ -15,7 +15,7 @@ export default function AddUserForm() {
 			contactAddress: formData.get("address"),
 		};
 		const result = await registerUser(userData);
-		console.log(result); // Here you can handle the response
+		console.log(result);
 	};
 	return (
 		<>
@@ -36,15 +36,10 @@ export default function AddUserForm() {
 						name="password"
 						required
 					/>
-					{/* <select name="isAdmin" id="isAdmin">
-					<option value="">Is Admin?</option>
-					<option value="true">Yes</option>
-					<option value="false">No</option>
-				</select> */}
+
 					<textarea
 						name="address"
 						id="address"
-						rows="16"
 						placeholder="Address"></textarea>
 					<button type="submit">Submit</button>
 				</form>
