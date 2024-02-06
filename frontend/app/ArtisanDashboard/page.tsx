@@ -7,21 +7,21 @@ import Transactions from "@/components/dashboardComponents/transactions/transact
 const cards = [
 	{
 		id: 1,
-		title: "Total Users",
-		number: 10.928,
-		change: 12,
+		title: "New Orders",
+		number: 10,
+		change: 9,
 	},
 	{
 		id: 2,
-		title: "Stock",
-		number: 8.236,
-		change: -2,
+		title: "Messages",
+		number: 8,
+		change: "",
 	},
 	{
 		id: 3,
-		title: "Revenue",
-		number: 6.642,
-		change: 18,
+		title: "Notifications",
+		number: 6,
+		change: "",
 	},
 ];
 

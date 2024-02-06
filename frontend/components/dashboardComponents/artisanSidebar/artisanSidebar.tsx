@@ -38,7 +38,7 @@ const menuItems = [
 				icon: <MdShoppingBag />,
 			},
 			{
-				title: "Categories",
+				title: "Sales",
 				path: "/ArtisanDashboard/Sales",
 				icon: <MdSell />,
 			},
@@ -48,12 +48,12 @@ const menuItems = [
 				icon: <MdReorder />,
 			},
 			{
-				title: "Testimonials",
+				title: "Messages",
 				path: "/ArtisanDashboard/Messages",
 				icon: <MdMessage />,
 			},
 			{
-				title: "Contact Us Queries",
+				title: "Notifications",
 				path: "/ArtisanDashboard/Notifications",
 				icon: <MdNotifications />,
 			},
@@ -82,11 +82,6 @@ const menuItems = [
 	{
 		title: "User",
 		list: [
-			{
-				title: "Settings",
-				path: "/ArtisanDashboard/settings",
-				icon: <MdOutlineSettings />,
-			},
 			{
 				title: "Help",
 				path: "/ArtisanDashboard/help",
