@@ -1,11 +1,12 @@
 import { Button } from "../ui/button";
 import { useFetchUserInfo } from "@/lib/data";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 
 export default function StoriesGallerySkillsComponents() {
 	const { isLoggedIn, userRole, userDetails } = useFetchUserInfo();
-	if (!isLoggedIn || userRole !== "USER") {
-		return null; // or return <div>Unauthorized</div> or any other appropriate JSX
+	if (!isLoggedIn || (userRole !== "ADMIN" && userRole !== "ARTISAN")) {
+		return null;
 	}
 	return (
 		<>
@@ -24,7 +25,7 @@ export default function StoriesGallerySkillsComponents() {
 							className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 						/>
 					</div>
-					<Button className="mt-4 bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
+					<Button className="mt-4 text-white px-6 py-2 rounded hover:bg-blue-600">
 						Save
 					</Button>
 				</form>
@@ -45,11 +46,17 @@ export default function StoriesGallerySkillsComponents() {
 							placeholder="Enter your Skills"
 							className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 						/>
-						<Button className="mt-4 bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
+						<Button
+							size={"lg"}
+							className="mt-4 text-white px-6 py-2 rounded hover:bg-blue-600">
 							Save
 						</Button>
 					</form>
 				</div>
+
+				<Button size={"lg"} className="hover:bg-blue-600">
+					<Link href={"/ArtisanDashboard"}>Go To Seller Dashboard</Link>
+				</Button>
 			</div>
 		</>
 	);

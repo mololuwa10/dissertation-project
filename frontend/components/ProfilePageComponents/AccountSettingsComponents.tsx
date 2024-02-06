@@ -2,6 +2,7 @@ import { useFetchUserInfo } from "@/lib/data";
 import { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import Link from "next/link";
 
 export default function AccountSettingsComponents() {
 	const { isLoggedIn, userRole, userDetails } = useFetchUserInfo();
@@ -126,8 +127,8 @@ export default function AccountSettingsComponents() {
 						</div>
 					</div>
 
-					<Button className="mt-4 bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
-						Upload
+					<Button className="mt-4 text-white px-6 py-2 rounded hover:bg-blue-600">
+						Save
 					</Button>
 				</form>
 			</div>

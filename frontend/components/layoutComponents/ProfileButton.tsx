@@ -47,6 +47,11 @@ const ProfileButton = () => {
 							<Link href="/Dashboard">Dashboard</Link>
 						</DropdownMenuItem>
 					)}
+					{isLoggedIn && userRole === "USER" && (
+						<DropdownMenuItem className="cursor-pointer">
+							<Link href="/">Sell on Crafts Collabrations</Link>
+						</DropdownMenuItem>
+					)}
 					<DropdownMenuItem className="cursor-pointer">
 						Settings
 					</DropdownMenuItem>

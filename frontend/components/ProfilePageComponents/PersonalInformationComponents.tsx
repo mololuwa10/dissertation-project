@@ -118,7 +118,7 @@ export default function PersonalInformationComponents() {
 									className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 								/>
 							</div>
-							<Button className="mt-4 bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
+							<Button className="mt-4 text-white px-6 py-2 rounded hover:bg-blue-600">
 								Save
 							</Button>
 						</>

@@ -36,8 +36,20 @@ export const useFetchUserInfo = () => {
 								authority.authority === "ADMIN"
 						);
 
+						const isArtisan = data.authorities.some(
+							(authority: { roleId: number; authority: string }) =>
+								authority.authority === "ARTISAN"
+						);
+
+						// Set the user details and role
 						setUserDetails(data);
-						setUserRole(isAdmin ? "ADMIN" : "USER");
+						if (isAdmin) {
+							setUserRole("ADMIN");
+						} else if (isArtisan) {
+							setUserRole("ARTISAN");
+						} else {
+							setUserRole("USER");
+						}
 						setIsLoggedIn(true);
 						console.log(data);
 					})
