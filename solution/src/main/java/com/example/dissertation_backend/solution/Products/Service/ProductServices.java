@@ -45,6 +45,16 @@ public class ProductServices {
     return products.map(this::convertToDTO);
   }
 
+  public List<ProductDTO> getProductsByArtisanId(Integer artisanId) {
+    List<Products> products = productRepository.findByArtisan_ArtisanId(
+      artisanId
+    );
+    return products
+      .stream()
+      .map(this::convertToDTO)
+      .collect(Collectors.toList());
+  }
+
   public Products saveOrUpdateProduct(Products product) {
     if (product == null) {
       return null;

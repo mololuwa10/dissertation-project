@@ -75,6 +75,13 @@ public class ProductController {
       .orElse(ResponseEntity.notFound().build());
   }
 
+  @GetMapping("/artisan/{artisanId}")
+  public List<ProductDTO> getProductsByArtisanId(
+    @PathVariable Integer artisanId
+  ) {
+    return productService.getProductsByArtisanId(artisanId);
+  }
+
   @PostMapping
   public ResponseEntity<Object> createProduct(
     Principal principal,
@@ -380,22 +387,6 @@ public class ProductController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
   }
-
-  // Additional endpoint methods added here
-  // @GetMapping("/{productId}/images")
-  // public ResponseEntity<List<ProductImages>> getProductImages(
-  //   @PathVariable Integer productId
-  // ) {
-  //   Products product = productService
-  //     .getProductById(productId)
-  //     .orElseThrow(() ->
-  //       new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found")
-  //     );
-  //   List<ProductImages> images = productImageService.getImagesByProduct(
-  //     product
-  //   );
-  //   return ResponseEntity.ok(images);
-  // }
 
   // Image Resizing
   public byte[] resizeImage(byte[] imageBytes, int width, int height)
