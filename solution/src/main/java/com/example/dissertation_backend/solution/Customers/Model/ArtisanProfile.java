@@ -1,5 +1,6 @@
 package com.example.dissertation_backend.solution.Customers.Model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,8 +12,9 @@ public class ArtisanProfile {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer artisanId;
 
-  @OneToOne
+  @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+  @JsonManagedReference
   private ApplicationUser artisan;
 
   @Column(name = "bio")

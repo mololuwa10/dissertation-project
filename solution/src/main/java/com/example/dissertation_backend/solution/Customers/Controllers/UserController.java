@@ -2,9 +2,11 @@ package com.example.dissertation_backend.solution.Customers.Controllers;
 
 import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
 import com.example.dissertation_backend.solution.Customers.Model.ArtisanProfile;
+import com.example.dissertation_backend.solution.Customers.Repository.ArtisanProfileRepository;
 import com.example.dissertation_backend.solution.Customers.Repository.UserRepository;
 import com.example.dissertation_backend.solution.Customers.Service.ArtisanProfileService;
 import com.example.dissertation_backend.solution.Customers.Service.UserService;
+import com.example.dissertation_backend.solution.DTO.UserDetailsDTO;
 import java.security.Principal;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,9 @@ public class UserController {
   private UserRepository userRepository;
 
   @Autowired
+  private ArtisanProfileRepository artisanProfileRepository;
+
+  @Autowired
   private UserService userService;
 
   @Autowired
@@ -52,7 +57,7 @@ public class UserController {
   }
 
   @GetMapping("/info")
-  public ResponseEntity<ApplicationUser> getUserDetails() {
+  public ResponseEntity<UserDetailsDTO> getUserDetails() {
     Authentication authentication = SecurityContextHolder
       .getContext()
       .getAuthentication();
@@ -65,7 +70,18 @@ public class UserController {
       if (optionalUser.isPresent()) {
         ApplicationUser user = optionalUser.get();
         user.setPassword(null);
-        return ResponseEntity.ok(user);
+
+        ArtisanProfile artisanProfile = null;
+        if (userIsArtisan(user)) {
+          artisanProfile = fetchArtisanProfile(user);
+        }
+
+        UserDetailsDTO userDetailsDTO = new UserDetailsDTO(
+          user,
+          artisanProfile
+        );
+
+        return ResponseEntity.ok(userDetailsDTO);
       } else {
         throw new ResponseStatusException(
           HttpStatus.NOT_FOUND,
@@ -79,6 +95,48 @@ public class UserController {
       );
     }
   }
+
+  private boolean userIsArtisan(ApplicationUser user) {
+    return user
+      .getAuthorities()
+      .stream()
+      .anyMatch(role -> "ARTISAN".equals(role.getAuthority()));
+  }
+
+  private ArtisanProfile fetchArtisanProfile(ApplicationUser user) {
+    return artisanProfileRepository
+      .findByArtisan_UserId(user.getUserId())
+      .orElse(null);
+  }
+
+  // @GetMapping("/info")
+  // public ResponseEntity<ApplicationUser> getUserDetails() {
+  //   Authentication authentication = SecurityContextHolder
+  //     .getContext()
+  //     .getAuthentication();
+  //   if (!(authentication instanceof AnonymousAuthenticationToken)) {
+  //     Jwt jwt = (Jwt) authentication.getPrincipal();
+  //     String username = jwt.getClaim("sub");
+  //     Optional<ApplicationUser> optionalUser = userRepository.findByUsername(
+  //       username
+  //     );
+  //     if (optionalUser.isPresent()) {
+  //       ApplicationUser user = optionalUser.get();
+  //       user.setPassword(null);
+  //       return ResponseEntity.ok(user);
+  //     } else {
+  //       throw new ResponseStatusException(
+  //         HttpStatus.NOT_FOUND,
+  //         "User not found"
+  //       );
+  //     }
+  //   } else {
+  //     throw new ResponseStatusException(
+  //       HttpStatus.UNAUTHORIZED,
+  //       "User not authenticated"
+  //     );
+  //   }
+  // }
 
   @PutMapping("/{userId}")
   public ResponseEntity<?> updateUser(

@@ -1,6 +1,7 @@
 package com.example.dissertation_backend.solution.Products.Service;
 
 import com.example.dissertation_backend.solution.Category.Model.Category;
+// import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
 import com.example.dissertation_backend.solution.Customers.Model.ArtisanProfile;
 import com.example.dissertation_backend.solution.DTO.ArtisanProfileDTO;
 import com.example.dissertation_backend.solution.DTO.CategoryDTO;
@@ -8,6 +9,7 @@ import com.example.dissertation_backend.solution.DTO.ProductDTO;
 import com.example.dissertation_backend.solution.Products.Model.ProductImages;
 import com.example.dissertation_backend.solution.Products.Model.Products;
 import com.example.dissertation_backend.solution.Products.Repository.ProductRepository;
+// import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -44,6 +46,14 @@ public class ProductServices {
     Optional<Products> products = productRepository.findById(id);
     return products.map(this::convertToDTO);
   }
+
+  // public List<ProductDTO> getProductsByUser(ApplicationUser user) {
+  //   if (user.getAuthorities().equals("ARISAN")) {
+  //     return getProductsByArtisanId(user.getArtisanProfile().getId());
+  //   }
+  //   // Handle other roles or default action
+  //   return new ArrayList<>();
+  // }
 
   public List<ProductDTO> getProductsByArtisanId(Integer artisanId) {
     List<Products> products = productRepository.findByArtisan_ArtisanId(

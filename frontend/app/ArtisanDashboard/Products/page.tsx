@@ -11,10 +11,10 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useFetchProducts } from "@/lib/dbModels";
+import { fetchProductsByArtisanId } from "@/lib/dbModels";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PaginationComponent } from "@/components/ui/PaginationDemo";
 import { deleteProduct } from "@/lib/auth";
 
@@ -31,6 +31,21 @@ export default function Products() {
 		category: any;
 		artisan: any;
 	}
+	const [artisanProducts, setArtisanProducts] = useState([]);
+	const artisanId = "your-artisan-id-here";
+
+	useEffect(() => {
+		const fetchAndSetProducts = async () => {
+			try {
+				const products = await fetchProductsByArtisanId(artisanId);
+				setArtisanProducts(products);
+			} catch (error) {
+				console.error("Failed to fetch products:", error);
+			}
+		};
+
+		fetchAndSetProducts();
+	}, []);
 
 	// Fetch product data
 	const { products } = useFetchProducts() as { products: Product[] };

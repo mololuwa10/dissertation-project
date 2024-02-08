@@ -244,6 +244,32 @@ export async function fetchProductById(productId: any) {
 	}
 }
 
+// get product by artisan id
+export async function fetchProductsByArtisanId(artisanId: any) {
+	try {
+		const response = await fetch(
+			`http://localhost:8080/api/products/artisan/${artisanId}`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error(`Error fetching product By Artisan: ${response.status}`);
+		}
+
+		const products = await response.json();
+		console.log(products);
+		return products;
+	} catch (err) {
+		console.error("Fetching products failed:", err);
+		throw err;
+	}
+}
+
 // Get All categories
 export const useFetchAllCategories = () => {
 	interface Category {

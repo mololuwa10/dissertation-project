@@ -6,7 +6,6 @@ import { useState, useEffect } from "react";
 import Header from "@/components/layoutComponents/Header";
 import { Button } from "@/components/ui/button";
 import { useFetchUserInfo, useLogout } from "@/lib/data";
-// import Link from "next/link";
 import React from "react";
 import PersonalInformationComponents from "@/components/ProfilePageComponents/PersonalInformationComponents";
 import AccountSettingsComponents from "@/components/ProfilePageComponents/AccountSettingsComponents";

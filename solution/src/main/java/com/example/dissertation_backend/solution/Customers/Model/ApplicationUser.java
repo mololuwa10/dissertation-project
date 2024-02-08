@@ -1,5 +1,6 @@
 package com.example.dissertation_backend.solution.Customers.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -53,9 +54,23 @@ public class ApplicationUser implements UserDetails {
   @Column(name = "date_joined")
   private LocalDateTime dateJoined;
 
+  @OneToOne(
+    mappedBy = "artisan",
+    cascade = CascadeType.ALL,
+    fetch = FetchType.LAZY,
+    optional = true
+  )
+  @JsonBackReference
+  private ArtisanProfile artisanProfile;
+
   public ApplicationUser() {
     super();
     authorities = new HashSet<Roles>();
+  }
+
+  public ApplicationUser(ArtisanProfile artisanProfile) {
+    super();
+    this.artisanProfile = artisanProfile;
   }
 
   public ApplicationUser(
@@ -181,6 +196,15 @@ public class ApplicationUser implements UserDetails {
 
   public void setDateJoined(LocalDateTime dateJoined) {
     this.dateJoined = dateJoined;
+  }
+
+  // Standard getters and setters
+  public ArtisanProfile getArtisanProfile() {
+    return artisanProfile;
+  }
+
+  public void setArtisanProfile(ArtisanProfile artisanProfile) {
+    this.artisanProfile = artisanProfile;
   }
 
   @Override

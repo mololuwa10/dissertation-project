@@ -1,5 +1,6 @@
 package com.example.dissertation_backend.solution.DTO;
 
+import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
 import com.example.dissertation_backend.solution.Customers.Model.Roles;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -19,6 +20,17 @@ public class ApplicationUserDTO {
   private String password;
   private Set<Roles> authorities;
   private LocalDateTime dateJoined;
+
+  private ApplicationUser user;
+  private ArtisanProfileDTO artisanProfileDTO;
+
+  public ApplicationUserDTO(
+    ApplicationUser user,
+    ArtisanProfileDTO artisanProfileDTO
+  ) {
+    this.user = user;
+    this.artisanProfileDTO = artisanProfileDTO;
+  }
 
   public ApplicationUserDTO() {
     super();
@@ -145,5 +157,21 @@ public class ApplicationUserDTO {
 
   public void setUsername(String username) {
     this.username = username;
+  }
+
+  public ApplicationUser getUser() {
+    return user;
+  }
+
+  public void setUser(ApplicationUser user) {
+    this.user = user;
+  }
+
+  public ArtisanProfileDTO getArtisanProfileDTO() {
+    return artisanProfileDTO;
+  }
+
+  public void setArtisanProfileDTO(ArtisanProfileDTO artisanProfileDTO) {
+    this.artisanProfileDTO = artisanProfileDTO;
   }
 }
