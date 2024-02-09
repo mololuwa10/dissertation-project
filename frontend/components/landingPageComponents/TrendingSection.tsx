@@ -4,6 +4,7 @@ import { useFetchProducts } from "@/lib/dbModels";
 import { Button } from "../ui/button";
 import { Heart, Star } from "lucide-react";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 // Convert fetching logic into a standalone async function
 const fetchReviewsByProduct = async (productId: any) => {
@@ -134,10 +135,14 @@ export default function TrendingSections() {
 								<div className="mt-4 flex justify-between">
 									<div>
 										<h3 className="text-sm text-gray-700">
-											<a href="#">
+											<Link
+												href={{
+													pathname: "/ProductOverview",
+													query: { productId: product.value },
+												}}>
 												<span aria-hidden="true" className="absolute inset-0" />
 												{product.label}
-											</a>
+											</Link>
 										</h3>
 									</div>
 									<p className="text-sm font-medium text-gray-900">
@@ -160,14 +165,10 @@ export default function TrendingSections() {
 									))}
 									<span className="ml-2">
 										{reviewCounts[product.value] > 0
-											? `(${reviewCounts[product.value]}) Reviews`
+											? `(${reviewCounts[product.value]})`
 											: "No Reviews"}
 									</span>
 								</div>
-
-								<button className="mt-4 text-sm px-4 py-2 rounded-2xl hover:bg-blue-700 transition-colors border-2">
-									Add to Cart
-								</button>
 							</div>
 						))}
 					</div>

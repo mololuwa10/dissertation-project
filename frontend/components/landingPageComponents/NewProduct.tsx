@@ -189,14 +189,10 @@ export default function NewProduct() {
 									))}
 									<span className="ml-2">
 										{reviewCounts[product.value] > 0
-											? `(${reviewCounts[product.value]}) Reviews`
+											? `(${reviewCounts[product.value]})`
 											: "No Reviews"}
 									</span>
 								</div>
-
-								<button className="mt-4 text-sm px-4 py-2 rounded-2xl hover:bg-blue-700 transition-colors border-2">
-									Add to Cart
-								</button>
 							</div>
 						))}
 					</div>
