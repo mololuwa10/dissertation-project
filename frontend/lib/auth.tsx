@@ -261,7 +261,6 @@ export const deleteProduct = async (productId: number, jwt: string) => {
 export const updateProduct = async (
 	productId: number,
 	productData: any,
-	images: File[],
 	jwt: string
 ) => {
 	try {
@@ -269,9 +268,9 @@ export const updateProduct = async (
 		const formData = new FormData();
 		formData.append("product", JSON.stringify(productData));
 
-		images.forEach((image) => {
-			formData.append("images", image);
-		});
+		// images.forEach((image) => {
+		// 	formData.append("images", image);
+		// });
 
 		const response = await fetch(url, {
 			method: "PUT",
