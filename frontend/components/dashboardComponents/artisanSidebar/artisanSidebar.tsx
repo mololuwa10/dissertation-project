@@ -109,7 +109,7 @@ const ArtisanSidebar = () => {
 						<>
 							<span className={styles.username}></span>
 							<span className={styles.userTitle}>
-								{userDetails.firstname} {userDetails.lastname}
+								{userDetails.user.firstname} {userDetails.user.lastname}
 							</span>
 						</>
 					)}

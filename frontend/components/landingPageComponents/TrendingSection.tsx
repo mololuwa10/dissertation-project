@@ -145,7 +145,7 @@ export default function TrendingSections() {
 									</p>
 								</div>
 								<p className="text-gray-500 text-sm mt-2">
-									{product.description}
+									{product.description.split(" ").slice(0, 10).join(" ")}
 								</p>
 								<div className="mt-1 flex items-center">
 									{[...Array(5)].map((_, index) => (

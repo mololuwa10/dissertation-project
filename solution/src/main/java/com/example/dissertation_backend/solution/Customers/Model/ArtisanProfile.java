@@ -12,7 +12,7 @@ public class ArtisanProfile {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer artisanId;
 
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "user_id", referencedColumnName = "user_id")
   @JsonManagedReference
   private ApplicationUser artisan;

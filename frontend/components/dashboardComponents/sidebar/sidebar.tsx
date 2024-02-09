@@ -18,7 +18,7 @@ import {
 	MdEmail,
 } from "react-icons/md";
 import MenuLink from "./menuLink/menuLink";
-import { useFetchUserInfo } from "@/lib/data";
+import { useFetchUserInfo, useLogout } from "@/lib/data";
 
 const menuItems = [
 	{
@@ -101,6 +101,8 @@ const menuItems = [
 const Sidebar = () => {
 	const { userDetails } = useFetchUserInfo();
 
+	const logout = useLogout();
+
 	return (
 		<div className={styles.container}>
 			<div className={styles.user}>
@@ -116,7 +118,7 @@ const Sidebar = () => {
 						<>
 							<span className={styles.username}></span>
 							<span className={styles.userTitle}>
-								{userDetails.firstname} {userDetails.lastname}
+								{userDetails.user.firstname} {userDetails.user.lastname}
 							</span>
 						</>
 					)}
@@ -132,7 +134,7 @@ const Sidebar = () => {
 					</li>
 				))}
 			</ul>
-			<form>
+			<form onSubmit={logout}>
 				<button className={styles.logout}>
 					<MdLogout />
 					Logout

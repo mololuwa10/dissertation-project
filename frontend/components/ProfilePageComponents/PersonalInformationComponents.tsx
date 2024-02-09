@@ -6,18 +6,51 @@ export default function PersonalInformationComponents() {
 	const { isLoggedIn, userRole, userDetails } = useFetchUserInfo();
 
 	interface UserDetails {
-		firstname: string;
-		lastname: string;
-		user_email: string;
-		contactTelephone: string;
-		contactAddress: string;
+		user: {
+			userId: number;
+			firstname: string;
+			lastname: string;
+			user_email: string;
+			username: string;
+			password: string | null;
+			bankAccountNo: string | null;
+			bankSortCode: string | null;
+			contactTelephone: string;
+			contactAddress: string;
+			authorities: { roleId: number; authority: string }[];
+			dateJoined: Date | string;
+		};
+		artisanProfile: {
+			artisanId: number;
+			bio: string | null;
+			profilePicture: string | null;
+			location: string | null;
+			storeName: string | null;
+		};
 	}
+
 	const [formDetails, setFormDetails] = useState<UserDetails>({
-		firstname: "",
-		lastname: "",
-		user_email: "",
-		contactTelephone: "",
-		contactAddress: "",
+		user: {
+			userId: 0,
+			firstname: "",
+			lastname: "",
+			user_email: "",
+			contactTelephone: "",
+			contactAddress: "",
+			username: "",
+			password: null,
+			bankAccountNo: null,
+			bankSortCode: null,
+			authorities: [],
+			dateJoined: "",
+		},
+		artisanProfile: {
+			artisanId: 0,
+			bio: null,
+			profilePicture: null,
+			location: null,
+			storeName: null,
+		},
 	});
 
 	useEffect(() => {
@@ -58,7 +91,7 @@ export default function PersonalInformationComponents() {
 								<input
 									type="text"
 									id="firstname"
-									value={formDetails.firstname}
+									value={formDetails.user.firstname}
 									onChange={handleInputChange}
 									className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 								/>
@@ -72,7 +105,7 @@ export default function PersonalInformationComponents() {
 								<input
 									type="text"
 									id="lastname"
-									value={formDetails.lastname}
+									value={formDetails.user.lastname}
 									onChange={handleInputChange}
 									className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 								/>
@@ -86,7 +119,7 @@ export default function PersonalInformationComponents() {
 								<input
 									type="email"
 									id="email"
-									value={formDetails.user_email}
+									value={formDetails.user.user_email}
 									onChange={handleInputChange}
 									className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 								/>
@@ -100,7 +133,7 @@ export default function PersonalInformationComponents() {
 								<input
 									type="tel"
 									id="phone"
-									value={formDetails.contactTelephone}
+									value={formDetails.user.contactTelephone}
 									onChange={handleInputChange}
 									className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 								/>
@@ -113,7 +146,7 @@ export default function PersonalInformationComponents() {
 								</label>
 								<textarea
 									id="address"
-									value={formDetails.contactAddress}
+									value={formDetails.user.contactAddress}
 									onChange={handleInputChange}
 									className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 								/>

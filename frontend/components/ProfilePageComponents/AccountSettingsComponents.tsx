@@ -17,20 +17,51 @@ export default function AccountSettingsComponents() {
 	};
 
 	interface UserDetails {
-		firstname: string;
-		lastname: string;
-		user_email: string;
-		contactTelephone: string;
-		contactAddress: string;
-		username: string;
+		user: {
+			userId: number;
+			firstname: string;
+			lastname: string;
+			user_email: string;
+			username: string;
+			password: string | null;
+			bankAccountNo: string | null;
+			bankSortCode: string | null;
+			contactTelephone: string;
+			contactAddress: string;
+			authorities: { roleId: number; authority: string }[];
+			dateJoined: Date | string;
+		};
+		artisanProfile: {
+			artisanId: number;
+			bio: string | null;
+			profilePicture: string | null;
+			location: string | null;
+			storeName: string | null;
+		};
 	}
+
 	const [formDetails, setFormDetails] = useState<UserDetails>({
-		firstname: "",
-		lastname: "",
-		user_email: "",
-		contactTelephone: "",
-		contactAddress: "",
-		username: "",
+		user: {
+			userId: 0,
+			firstname: "",
+			lastname: "",
+			user_email: "",
+			contactTelephone: "",
+			contactAddress: "",
+			username: "",
+			password: null,
+			bankAccountNo: null,
+			bankSortCode: null,
+			authorities: [],
+			dateJoined: "",
+		},
+		artisanProfile: {
+			artisanId: 0,
+			bio: null,
+			profilePicture: null,
+			location: null,
+			storeName: null,
+		},
 	});
 
 	useEffect(() => {
@@ -69,7 +100,7 @@ export default function AccountSettingsComponents() {
 						<input
 							type="text"
 							id="username"
-							value={formDetails.username}
+							value={formDetails.user.username}
 							onChange={handleInputChange}
 							className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 						/>

@@ -54,9 +54,11 @@ export default function StoriesGallerySkillsComponents() {
 					</form>
 				</div>
 
-				<Button size={"lg"} className="hover:bg-blue-600">
-					<Link href={"/ArtisanDashboard"}>Go To Seller Dashboard</Link>
-				</Button>
+				<Link href={"/ArtisanDashboard"}>
+					<Button size={"lg"} className="hover:bg-blue-600">
+						Go To Seller Dashboard
+					</Button>
+				</Link>
 			</div>
 		</>
 	);

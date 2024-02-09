@@ -134,21 +134,18 @@ export default function EditProduct() {
 			category: {
 				categoryId: selectedCategoryId,
 			},
-			// artisanProfile: {
-			// 	artisanId: selectedArtisanId,
-			// },
 			productDiscount: product?.productDiscount,
 		};
 
-		// const formData = new FormData();
-		// formData.append("product", JSON.stringify(productData));
+		const formData = new FormData();
+		formData.append("product", JSON.stringify(productData));
 		// // Append product images if any
-		// productImages.forEach((file) => {
-		// 	formData.append("images", file);
-		// });
+		productImages.forEach((file) => {
+			formData.append("images", file);
+		});
 
 		try {
-			await updateProduct(product?.productId, productData, jwt);
+			await updateProduct(product?.productId, productData, productImages, jwt);
 		} catch (error) {
 			if (error instanceof Error) {
 				console.error("Failed to update the product:", error.message);
@@ -246,23 +243,6 @@ export default function EditProduct() {
 							</option>
 						))}
 					</select>
-					<label>Artisan</label>
-					<select
-						name="artisan"
-						id="artisan"
-						value={selectedArtisanId}
-						onChange={(e) => setSelectedArtisanId(e.target.value)}>
-						{allArtisans &&
-							allArtisans.map((artisan) => (
-								<option
-									key={artisan.artisanId}
-									value={artisan.artisanId.toString()}>
-									{artisan.artisanId} - {artisan.artisan.firstname}{" "}
-									{artisan.artisan.lastname}
-								</option>
-							))}
-					</select>
-
 					<input type="file" multiple onChange={handleFileChange} />
 					<button>Update</button>
 				</form>

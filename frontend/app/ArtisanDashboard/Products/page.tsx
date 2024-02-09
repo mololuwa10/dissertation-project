@@ -17,22 +17,25 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PaginationComponent } from "@/components/ui/PaginationDemo";
 import { deleteProduct } from "@/lib/auth";
+import { useFetchUserInfo } from "@/lib/data";
 
 export default function Products() {
 	interface Product {
-		value: number;
-		label: string;
-		description: string;
-		price: number;
-		quantity: number;
-		image: string;
-		discount: number;
+		productId: number;
+		productName: string;
+		productDescription: string;
+		productPrice: number;
+		productStockQuantity: number;
+		imageUrls: string;
+		productDiscount: number;
 		dateTimeUpdated: string;
 		category: any;
-		artisan: any;
+		artisanProfile: any;
 	}
+
+	const { userDetails } = useFetchUserInfo();
 	const [artisanProducts, setArtisanProducts] = useState([]);
-	const artisanId = "your-artisan-id-here";
+	const artisanId = userDetails?.artisanProfile?.artisanId ?? "";
 
 	useEffect(() => {
 		const fetchAndSetProducts = async () => {
@@ -45,10 +48,9 @@ export default function Products() {
 		};
 
 		fetchAndSetProducts();
-	}, []);
+	}, [artisanId]);
 
 	// Fetch product data
-	const { products } = useFetchProducts() as { products: Product[] };
 	const [currentPage, setCurrentPage] = useState(1);
 	const [searchTerm, setSearchTerm] = useState("");
 
@@ -58,13 +60,19 @@ export default function Products() {
 
 	const indexOfLastItem = currentPage * itemsPerPage;
 	const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-	const currentItems = products.slice(indexOfFirstItem, indexOfLastItem);
+	const currentItems: Product[] = artisanProducts.slice(
+		indexOfFirstItem,
+		indexOfLastItem
+	);
 
-	const totalPages = Math.ceil(products.length / itemsPerPage);
+	const totalPages = Math.ceil(artisanProducts.length / itemsPerPage);
 
 	// Filter products handler
 	const filteredProducts = currentItems.filter((product) => {
-		return product.label.toLowerCase().includes(searchTerm.toLowerCase());
+		return (
+			product.productName &&
+			product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+		);
 	});
 
 	// Handling delete Product
@@ -93,7 +101,7 @@ export default function Products() {
 
 	return (
 		<>
-			<Link href="/Dashboard/Products/Add">
+			<Link href="/ArtisanDashboard/Products/Add">
 				<Button size={"lg"} className="my-4">
 					+ Add Product
 				</Button>
@@ -119,30 +127,32 @@ export default function Products() {
 						<TableHead>Product Discount</TableHead>
 						<TableHead>Product Date Updated</TableHead>
 						<TableHead>Category Id</TableHead>
-						<TableHead>Artisan Profile</TableHead>
+						<TableHead>Artisan</TableHead>
 						<TableHead>Action</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
 					{filteredProducts.map((product) => (
 						<>
-							<TableRow key={product.value}>
-								<TableCell>{product.value}</TableCell>
-								<TableCell>{product.label}</TableCell>
-								<TableCell>{product.description}</TableCell>
-								<TableCell>{product.price}</TableCell>
-								<TableCell>{product.quantity}</TableCell>
-								<TableCell>{product.discount}</TableCell>
+							<TableRow key={product.productId}>
+								<TableCell>{product.productId}</TableCell>
+								<TableCell>{product.productName}</TableCell>
+								<TableCell>
+									{product.productDescription.split(" ").slice(0, 10).join(" ")}
+								</TableCell>
+								<TableCell>{product.productPrice}</TableCell>
+								<TableCell>{product.productStockQuantity}</TableCell>
+								<TableCell>{product.productDiscount}</TableCell>
 								<TableCell>{product.dateTimeUpdated}</TableCell>
-								<TableCell>{product.category.categoryId}</TableCell>
-								<TableCell>{product.artisan.artisanId}</TableCell>
+								<TableCell>{product.category.categoryName}</TableCell>
+								<TableCell>{product.artisanProfile.firstname}</TableCell>
 
 								<TableCell>
 									<div className="p-2 flex">
 										<Link
 											href={{
-												pathname: "/Dashboard/Products/Edit",
-												query: { productId: product.value },
+												pathname: "/ArtisanDashboard/Products/Edit",
+												query: { productId: product.productId },
 											}}>
 											<Button size={"lg"} className="mr-2 mb-2 flex">
 												Edit
@@ -150,7 +160,7 @@ export default function Products() {
 										</Link>
 										<Button
 											size={"lg"}
-											onClick={() => handleDelete(product.value)}
+											onClick={() => handleDelete(product.productId)}
 											className="mr-2 mb-2 flex">
 											Delete
 										</Button>

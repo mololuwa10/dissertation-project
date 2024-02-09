@@ -49,27 +49,14 @@ const AddProductPage = () => {
 				throw new Error("Authentication token not found.");
 			}
 
-			// const formData = new FormData();
-			// formData.append(
-			// 	"product",
-			// 	JSON.stringify({
-			// 		productName,
-			// 		productDescription,
-			// 		productPrice: parseFloat(productPrice),
-			// 		productStockQuantity: parseInt(productStockQuantity),
-			// 		categoryId: { categoryId },
-			// 		productDiscount: parseFloat(productDiscount),
-			// 	})
-			// );
-			// formData.append("image", selectedImage);
-
 			const productData = {
 				productName,
 				productDescription,
-				productPrice: parseFloat(productPrice), // Assuming price and quantity are numbers
+				productPrice: parseFloat(productPrice),
 				productStockQuantity: parseInt(productStockQuantity),
-				category: { categoryId }, // Make sure this matches the backend structure
+				category: { categoryId },
 				productDiscount: parseFloat(productDiscount),
+				images: [selectedImage], // TODO: Add multiple images support
 			};
 
 			setLoading(true);
@@ -79,7 +66,6 @@ const AddProductPage = () => {
 				jwt
 			);
 			console.log(response);
-			// Handle the success scenario, like redirecting or clearing the form
 			setProductName("");
 			setProductDescription("");
 			setSelectedImage(null);
@@ -163,7 +149,6 @@ const AddProductPage = () => {
 				<textarea
 					name="description"
 					id="productDescription"
-					rows="16"
 					value={productDescription}
 					onChange={(event) => setProductDescription(event.target.value)}
 					placeholder="Product Description"></textarea>
