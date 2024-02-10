@@ -114,6 +114,7 @@ public class ReviewService {
   private ReviewDTO convertToDTO(Review review) {
     ReviewDTO dto = new ReviewDTO();
     dto.setReviewId(review.getReviewId());
+    dto.setReviewTitle(review.getReviewTitle());
     dto.setComment(review.getComment());
     dto.setRating(review.getRating());
     dto.setReviewDate(review.getReviewDate());

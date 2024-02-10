@@ -28,6 +28,9 @@ public class Review {
   @JoinColumn(name = "artisan_id", referencedColumnName = "artisan_id")
   private ArtisanProfile artisan;
 
+  @Column(name = "review_title")
+  private String reviewTitle;
+
   @Column(name = "rating")
   private Integer rating;
 
@@ -51,6 +54,7 @@ public class Review {
     Integer reviewId,
     Products products,
     ApplicationUser applicationUser,
+    String reviewTitle,
     Integer rating,
     String comment,
     LocalDateTime reviewDate,
@@ -60,6 +64,7 @@ public class Review {
     this.reviewId = reviewId;
     this.products = products;
     this.applicationUser = applicationUser;
+    this.reviewTitle = reviewTitle;
     this.rating = rating;
     this.comment = comment;
     this.reviewDate = reviewDate;
@@ -73,6 +78,14 @@ public class Review {
 
   public void setReviewId(Integer reviewId) {
     this.reviewId = reviewId;
+  }
+
+  public String getReviewTitle() {
+    return reviewTitle;
+  }
+
+  public void setReviewTitle(String reviewTitle) {
+    this.reviewTitle = reviewTitle;
   }
 
   public Products getProducts() {

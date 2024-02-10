@@ -24,7 +24,7 @@ const StarRating = ({ onRating }: StarRatingProps) => {
 						type="button"
 						key={index}
 						className={
-							index <= (hover || rating) ? "text-yellow-500" : "text-gray-400"
+							index <= (hover || rating) ? "text-gray-900" : "text-gray-400"
 						}
 						onClick={() => {
 							setRating(index);
@@ -66,7 +66,7 @@ export default function Testimonials() {
 						key={index}
 						className={`h-5 w-5 ${
 							index < rating
-								? "fill-current text-yellow-500"
+								? "fill-current text-gray-900"
 								: "fill-current text-gray-400"
 						}`}
 						viewBox="0 0 20 20"

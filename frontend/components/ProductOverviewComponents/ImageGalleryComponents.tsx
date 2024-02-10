@@ -63,7 +63,7 @@ export default function ImageGalleryComponents() {
 
 	return (
 		<>
-			<div className="w-full md:w-1/2 p-4">
+			<div className="w-full p-4">
 				{/* Main Image Display */}
 				<div className="mb-4">
 					<img

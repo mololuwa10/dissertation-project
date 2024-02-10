@@ -84,7 +84,7 @@ public class ReviewController {
   }
 
   @PostMapping("/product/{productId}")
-  public ResponseEntity<Object> addReview(
+  public ResponseEntity<Object> addProductReview(
     @PathVariable Integer productId,
     @RequestBody ReviewDTO reviewDTO,
     Principal principal
@@ -116,6 +116,7 @@ public class ReviewController {
     Review review = new Review();
     review.setApplicationUser(user);
     review.setProducts(product.get());
+    review.setReviewTitle(reviewDTO.getReviewTitle());
     review.setRating(reviewDTO.getRating());
     review.setComment(reviewDTO.getComment());
     review.setReviewDate(LocalDateTime.now());
@@ -161,6 +162,7 @@ public class ReviewController {
     Review review = new Review();
     review.setApplicationUser(user);
     review.setArtisan(artisanProfile.get());
+    review.setReviewTitle(reviewDTO.getReviewTitle());
     review.setRating(reviewDTO.getRating());
     review.setComment(reviewDTO.getComment());
     review.setReviewDate(LocalDateTime.now());
@@ -262,6 +264,7 @@ public class ReviewController {
   private ReviewDTO convertToDTO(Review review) {
     ReviewDTO dto = new ReviewDTO();
     dto.setReviewId(review.getReviewId());
+    dto.setReviewTitle(review.getReviewTitle());
     dto.setComment(review.getComment());
     dto.setRating(review.getRating());
     dto.setReviewDate(review.getReviewDate());

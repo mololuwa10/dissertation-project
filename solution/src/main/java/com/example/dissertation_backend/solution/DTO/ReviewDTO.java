@@ -7,6 +7,7 @@ public class ReviewDTO {
   private Integer reviewId;
   private ProductDTO products;
   private ApplicationUserDTO applicationUser;
+  private String reviewTitle;
   private Integer rating;
   private String comment;
   private LocalDateTime reviewDate;
@@ -19,6 +20,7 @@ public class ReviewDTO {
     Integer reviewId,
     ProductDTO products,
     ApplicationUserDTO applicationUser,
+    String reviewTitle,
     Integer rating,
     String comment,
     LocalDateTime reviewDate
@@ -27,6 +29,7 @@ public class ReviewDTO {
     this.reviewId = reviewId;
     this.products = products;
     this.applicationUser = applicationUser;
+    this.reviewTitle = reviewTitle;
     this.rating = rating;
     this.comment = comment;
     this.reviewDate = reviewDate;
@@ -54,6 +57,14 @@ public class ReviewDTO {
 
   public void setApplicationUser(ApplicationUserDTO applicationUser) {
     this.applicationUser = applicationUser;
+  }
+
+  public String getReviewTitle() {
+    return reviewTitle;
+  }
+
+  public void setReviewTitle(String reviewTitle) {
+    this.reviewTitle = reviewTitle;
   }
 
   public Integer getRating() {

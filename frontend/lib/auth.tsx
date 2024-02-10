@@ -319,3 +319,39 @@ export const addTestimonial = async (testimonialData: any, jwt: string) => {
 		throw error;
 	}
 };
+
+//Review Section
+export const addReview = async (
+	reviewData: any,
+	jwt: string,
+	id: number,
+	type: "product" | "artisan"
+) => {
+	// Determine the endpoint based on the review type
+	const endpoint = type === "product" ? `product/${id}` : `artisan/${id}`;
+	try {
+		const response = await fetch(
+			`http://localhost:8080/api/reviews/${endpoint}`,
+			{
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${jwt}`,
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(reviewData),
+			}
+		);
+
+		if (!response.ok) {
+			const errorData = await response.json();
+			throw new Error(errorData.message || "Could not add testimonial");
+		}
+
+		const data = await response.json();
+		alert("Review Added Successfully");
+		return data;
+	} catch (error) {
+		console.error("Error adding testimonial: ", error);
+		throw error;
+	}
+};

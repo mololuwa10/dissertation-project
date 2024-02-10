@@ -400,3 +400,22 @@ export const useGetTestimonials = () => {
 
 	return { testimonials };
 };
+
+// Get all Reviews by product
+export async function fetchReviewsByProductId(productId: number | string) {
+	try {
+		const response = await fetch(
+			`http://localhost:8080/api/reviews/product/${productId}`
+		);
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+
+		const reviews = await response.json();
+		console.log(reviews);
+		return reviews;
+	} catch (error) {
+		console.error("Failed to fetch reviews:", error);
+		throw error;
+	}
+}
