@@ -28,8 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-// import com.example.dissertation_backend.solution.Repository.ShoppingCartRepository;
-
 @Service
 public class ShoppingCartService {
 
@@ -76,9 +74,7 @@ public class ShoppingCartService {
     ShoppingCart cart = getOrCreateCart(user);
 
     // Fetch the product
-    if (productId == null) {
-      return null;
-    }
+    @SuppressWarnings("null")
     Products product = productRepository
       .findById(productId)
       .orElseThrow(() -> new RuntimeException("Product not found"));
@@ -88,7 +84,13 @@ public class ShoppingCartService {
       throw new RuntimeException("Not enough stock available");
     }
 
-    // Checking if the product is already in the cart
+    // Determine the price to use (discounted price if available and valid, otherwise the original price)
+    double pricePerItem = (
+        product.getProductDiscount() != null && product.getProductDiscount() > 0
+      )
+      ? product.getProductDiscount()
+      : product.getProductPrice();
+
     Optional<CartItem> existingCartItem = cart
       .getCartItems()
       .stream()
@@ -97,14 +99,12 @@ public class ShoppingCartService {
 
     CartItemDTO cartItemDTO;
     if (existingCartItem.isPresent()) {
-      // If the product is already in the cart, just update the quantity
       CartItem cartItem = existingCartItem.get();
       int newQuantity = cartItem.getQuantity() + quantity;
-      // Double totalProductPrice = product.getProductPrice() * newQuantity;
+
       if (product.getProductStockQuantity() >= newQuantity) {
-        // Setting the total Product Price to 2 decimal places
         BigDecimal totalProductPrice = BigDecimal
-          .valueOf(product.getProductPrice())
+          .valueOf(pricePerItem)
           .multiply(BigDecimal.valueOf(newQuantity))
           .setScale(2, RoundingMode.HALF_UP);
 
@@ -117,15 +117,13 @@ public class ShoppingCartService {
         );
       }
     } else {
-      // If the product is not in the cart, create a new CartItem
       CartItem cartItem = new CartItem();
       cartItem.setProduct(product);
       cartItem.setShoppingCart(cart);
       cartItem.setQuantity(quantity);
 
-      // Setting the total Product Price to 2 decimal places
       BigDecimal totalProductPrice = BigDecimal
-        .valueOf(product.getProductPrice())
+        .valueOf(pricePerItem)
         .multiply(BigDecimal.valueOf(quantity))
         .setScale(2, RoundingMode.HALF_UP);
 
@@ -155,9 +153,17 @@ public class ShoppingCartService {
     }
 
     cartItem.setQuantity(newQuantity);
-    // Use BigDecimal for price calculation
+
+    // Determine the price per item based on discount
+    double pricePerItem = (
+        product.getProductDiscount() != null && product.getProductDiscount() > 0
+      )
+      ? product.getProductDiscount()
+      : product.getProductPrice();
+
+    // Use BigDecimal for precise price calculation
     BigDecimal totalProductPrice = BigDecimal
-      .valueOf(product.getProductPrice())
+      .valueOf(pricePerItem)
       .multiply(BigDecimal.valueOf(newQuantity))
       .setScale(2, RoundingMode.HALF_UP);
 
@@ -234,6 +240,7 @@ public class ShoppingCartService {
     productDTO.setProductPrice(product.getProductPrice());
     productDTO.setProductStockQuantity(product.getProductStockQuantity());
     productDTO.setProductDescription(product.getProductDescription());
+    productDTO.setProductDiscount(product.getProductDiscount());
     productDTO.setImageUrls(imageUrls);
     productDTO.setDateTimeListed(product.getDateListed());
     productDTO.setDateTimeUpdated(product.getDateTimeUpdated());

@@ -52,17 +52,24 @@ public class ShoppingCartController {
       .findByUsername(username)
       .orElseThrow(() -> new RuntimeException("User not found"));
 
-    CartItemDTO cartItemDTO = shoppingCartService.addProductToCart(
-      user,
-      productId,
-      request.getQuantity()
-    );
+    try {
+      // The service method is responsible for calculating the total price
+      // including handling discounts and checking stock availability.
+      CartItemDTO cartItemDTO = shoppingCartService.addProductToCart(
+        user,
+        productId,
+        request.getQuantity()
+      );
 
-    AddToCartResponse response = new AddToCartResponse(
-      "Product added successfully",
-      cartItemDTO
-    );
-    return ResponseEntity.ok(response);
+      AddToCartResponse response = new AddToCartResponse(
+        "Product added successfully",
+        cartItemDTO
+      );
+      return ResponseEntity.ok(response);
+    } catch (Exception e) {
+      // Handle exceptions such as "Product not found", "Not enough stock available", etc.
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
   }
 
   // Getting the cart for the user thats logged in

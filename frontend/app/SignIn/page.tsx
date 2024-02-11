@@ -3,7 +3,8 @@
 import { useLogin } from "@/lib/auth";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import React, { useState } from "react";
-import RootLayout from "../layout";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SignIn() {
 	const [username, setUsername] = useState("");
@@ -15,10 +16,22 @@ export default function SignIn() {
 	const handleSubmit = async (event: { preventDefault: () => void }) => {
 		event.preventDefault();
 		await login(username, password);
+		toast.success("Login successful!");
 	};
 
 	return (
 		<>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
 			<div className="flex items-center min-h-screen bg-white dark:bg-gray-900">
 				<div className="container mx-auto">
 					<div className="max-w-md mx-auto my-10">

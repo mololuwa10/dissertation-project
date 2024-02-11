@@ -1,9 +1,12 @@
-import { RadioGroup } from "@headlessui/react";
-import { StarIcon } from "lucide-react";
 import { fetchProductById, fetchReviewsByProductId } from "@/lib/dbModels";
+import { addProductToCart } from "@/lib/auth";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Button } from "../ui/button";
+import { Label } from "../ui/label";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 interface Product {
 	productId: number;
 	productName: string;
@@ -39,24 +42,32 @@ interface Review {
 	};
 }
 
-// const reviews = { href: "#", average: 4, totalCount: 117 };
-
-function classNames(...classes: string[]) {
-	return classes.filter(Boolean).join(" ");
-}
+// function classNames(...classes: string[]) {
+// 	return classes.filter(Boolean).join(" ");
+// }
 
 export default function ProductInfo() {
-	// const [selectedColor, setSelectedColor] = useState(product.colors[0]);
-	// const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
-
 	const searchParams = useSearchParams();
 	const productId = searchParams.get("productId");
 	const [product, setProduct] = useState<Product | null>(null);
 	const [error, setError] = useState("");
 	const [reviews, setReviews] = useState<Review[]>([]);
+	const [selectedQuantity, setSelectedQuantity] = useState(1);
+
+	// Determining the maximum selectable quantity
+	const maxSelectableQuantity = Math.min(
+		product?.productStockQuantity || 0,
+		10
+	);
+
+	// Generating an array for the selectable quantities
+	const quantityOptions = Array.from(
+		{ length: maxSelectableQuantity },
+		(_, index) => index + 1
+	);
 
 	useEffect(() => {
-		fetchReviewsByProductId(productId)
+		fetchReviewsByProductId(productId as string)
 			.then((reviews) => {
 				setReviews(reviews);
 			})
@@ -65,6 +76,11 @@ export default function ProductInfo() {
 				setError("Failed to load reviews");
 			});
 	}, [productId]);
+
+	const displayedPrice =
+		typeof product?.productDiscount === "number" && product.productDiscount >= 0
+			? product.productDiscount
+			: product?.productPrice;
 
 	const averageRating =
 		reviews.length > 0
@@ -105,15 +121,60 @@ export default function ProductInfo() {
 		}
 	}, [productId]);
 
+	const handleAddToCart = async () => {
+		const jwtToken = localStorage.getItem("jwt");
+		if (!jwtToken) {
+			alert("You must be logged in to add products to the cart.");
+			return;
+		}
+
+		if (!productId) {
+			console.error("Product ID is not available.");
+			return;
+		}
+
+		// Check if the selected quantity exceeds available stock
+		if (selectedQuantity > (product?.productStockQuantity || 0)) {
+			alert("Selected quantity exceeds available stock.");
+			return;
+		}
+
+		try {
+			await addProductToCart(productId, selectedQuantity, jwtToken);
+			toast.success("Product added to cart successfully!");
+		} catch (error) {
+			console.error("Error adding product to cart:", error);
+			toast.error("Failed to add product to cart. Please try again.");
+		}
+	};
+
+	const handleQuantityChange = (event: any) => {
+		setSelectedQuantity(Number(event.target.value));
+	};
+
 	return (
 		<>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
 			<div className="w-full md:w-1/2 p-4">
 				<h1 className="text-2xl font-bold">{product?.productName}</h1>
 				<div className="text-xl font-semibold text-red-600">
-					<span className="line-through text-gray-500">
-						£{product?.productPrice}
-					</span>{" "}
-					£{product?.productDiscount}
+					{typeof product?.productDiscount === "number" &&
+						product.productDiscount > 0 && (
+							<span className="line-through text-gray-500">
+								£{product?.productPrice}
+							</span>
+						)}
+					£{displayedPrice}
 				</div>
 				{/* Reviews */}
 				<div className="mt-6">
@@ -129,16 +190,30 @@ export default function ProductInfo() {
 						</a>
 					</div>
 				</div>
-				<div className="mt-4 text-xl font-semibold">
+				<div className="mt-4 text-xl font-medium">
 					{product?.productDescription}
 				</div>
 				{/* Style Selector */}
 				{/* ... */}
 				{/* Quantity Selector */}
-				{/* ... */}
+				<Label htmlFor="quantity" className="font-normal text-xl my-4">
+					Quantity
+				</Label>
+
+				<select
+					className="border-gray-900 border-2 p-4 rounded-2xl w-full my-3"
+					value={selectedQuantity}
+					onChange={handleQuantityChange}>
+					{quantityOptions.map((quantity) => (
+						<option key={quantity} value={quantity}>
+							{quantity}
+						</option>
+					))}
+				</select>
 				<Button
 					size="lg"
-					className="w-full text-white py-3 rounded-3xl hover:bg-blue-600 mt-4">
+					className="w-full text-white py-3 rounded-3xl hover:bg-blue-600 mt-4"
+					onClick={handleAddToCart}>
 					Add to cart
 				</Button>
 				<Button

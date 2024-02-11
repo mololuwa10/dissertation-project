@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { format } from "path";
 
 export const useLogin = () => {
 	const router = useRouter();
@@ -21,7 +20,6 @@ export const useLogin = () => {
 					const data = await response.json();
 					localStorage.setItem("jwt", data.jwt);
 					console.log(data);
-					alert("Successful Login");
 					router.push("/");
 				} else if (response.status === 401) {
 					// Handle invalid credentials
@@ -119,8 +117,7 @@ export const registerUser = async (userData: any) => {
 
 		if (response.ok) {
 			const data = await response.json();
-			localStorage.setItem("jwt", data.jwt); // Handle JWT securely
-			alert("User Registered Successfully");
+			localStorage.setItem("jwt", data.jwt);
 			return data;
 		} else {
 			// Handle non-OK responses
@@ -198,7 +195,7 @@ export const createArtisanProfile = async (userId: number, jwt: string) => {
 	}
 };
 
-// Product Function---------------------------------------------------------------------------------------------------------
+// Product Function----------------------------------------------------------------------------------------
 // Add Product
 export const addProduct = async (
 	productData: any,
@@ -293,8 +290,9 @@ export const updateProduct = async (
 		throw error;
 	}
 };
+// -------------------------------------------------------------------------------------------------------
 
-// Testimonial Section
+// Testimonial --------------------------------------------------------------
 export const addTestimonial = async (testimonialData: any, jwt: string) => {
 	try {
 		const response = await fetch("http://localhost:8080/api/testimonials", {
@@ -312,15 +310,15 @@ export const addTestimonial = async (testimonialData: any, jwt: string) => {
 		}
 
 		const data = await response.json();
-		alert("Testimonial Added Successfully");
 		return data;
 	} catch (error) {
 		console.error("Error adding testimonial: ", error);
 		throw error;
 	}
 };
+// -------------------------------------------------------------------------
 
-//Review Section
+//Review Section ------------------------------------------------------------
 export const addReview = async (
 	reviewData: any,
 	jwt: string,
@@ -348,10 +346,88 @@ export const addReview = async (
 		}
 
 		const data = await response.json();
-		alert("Review Added Successfully");
 		return data;
 	} catch (error) {
 		console.error("Error adding testimonial: ", error);
 		throw error;
 	}
 };
+//---------------------------------------------------------------------------
+
+// Cart Function -------------------------------------------------------------
+// Updating the quantity of a product in the cart
+export const updateCartItemQuantity = async (
+	cartItemId: any,
+	quantity: any,
+	jwt: any
+) => {
+	const response = await fetch(
+		`http://localhost:8080/api/shoppingCart/cartItem/${cartItemId}`,
+		{
+			method: "PUT",
+			headers: {
+				Authorization: `Bearer ${jwt}`,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ quantity }),
+		}
+	);
+
+	if (!response.ok) {
+		throw new Error("Failed to update cart item quantity");
+	}
+	return response.json();
+};
+
+// Remove a product from the cart
+export const removeCartItem = async (cartItemId: any, jwt: any) => {
+	const response = await fetch(
+		`http://localhost:8080/api/shoppingCart/cartItem/${cartItemId}`,
+		{
+			method: "DELETE",
+			headers: {
+				Authorization: `Bearer ${jwt}`,
+			},
+		}
+	);
+
+	if (!response.ok) {
+		throw new Error("Failed to remove cart item");
+	}
+
+	return true;
+};
+
+// Adding Product to cart ---------------------------------------
+export const addProductToCart = async (
+	productId: any,
+	quantity: any,
+	jwt: any
+) => {
+	try {
+		const response = await fetch(
+			`http://localhost:8080/api/shoppingCart/addToCart/${productId}`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${jwt}`,
+				},
+				body: JSON.stringify({ quantity }),
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error("Failed to add product to cart");
+		}
+
+		const data = await response.json();
+		console.log("Product added to cart:", data);
+		return data;
+	} catch (error) {
+		console.error("Error adding product to cart:", error);
+		throw error;
+	}
+};
+
+// --------------------------------------------------------------

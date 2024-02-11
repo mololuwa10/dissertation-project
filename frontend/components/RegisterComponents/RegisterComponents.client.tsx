@@ -1,5 +1,8 @@
 import { registerUser } from "@/lib/auth";
 import { useRouter } from "next/navigation";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export default function RegisterComponents() {
 	const router = useRouter();
 
@@ -16,12 +19,24 @@ export default function RegisterComponents() {
 			contactAddress: formData.get("address"),
 		};
 		const result = await registerUser(userData);
+		toast.success("Registration successful!");
 		router.push("/");
 		console.log(result);
 	};
 
 	return (
 		<>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
 			<section className="bg-white">
 				<div className="lg:grid lg:min-h-screen lg:grid-cols-12">
 					<aside className="relative block h-16 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">

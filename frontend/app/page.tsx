@@ -31,8 +31,6 @@ export default function Home() {
 				<TestimonialsComponents />
 
 				<Blog />
-
-				<hr className=" mx-20 border-t-2 border-gray-600" />
 			</main>
 
 			<Footer />

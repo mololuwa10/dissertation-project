@@ -10,9 +10,16 @@ import { NavigationMenuDemo } from "./NavigationMenuDemo";
 import ProfileButton from "./ProfileButton";
 import Container from "../ui/container";
 import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+	const router = useRouter();
+
+	const handleShoppingCartClick = () => {
+		router.push("/ShoppingCart");
+	};
+
 	return (
 		<div>
 			<header className="sm:flex sm:justify-end py-3 px-4 border-b">
@@ -56,7 +63,8 @@ export default function Header() {
 								variant={"ghost"}
 								size={"icon"}
 								className="mr-6"
-								aria-label="Shopping Cart">
+								aria-label="Shopping Cart"
+								onClick={handleShoppingCartClick}>
 								<ShoppingCart className="h-6 w-6" />
 								<span className="sr-only">Shopping Cart</span>
 							</Button>

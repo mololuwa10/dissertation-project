@@ -15,6 +15,8 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { addReview } from "@/lib/auth";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Product {
 	productId: number;
@@ -138,7 +140,7 @@ export default function ProductReviews() {
 	const handleSubmit = async (event: { preventDefault: () => void }) => {
 		event.preventDefault();
 		if (jwt === null) {
-			alert("You must be logged in to submit a review");
+			toast.error("You must be logged in to submit a review");
 			return;
 		}
 		// Convert productId from string to number
@@ -146,7 +148,7 @@ export default function ProductReviews() {
 
 		// Check if productId conversion is successful and is a valid number
 		if (isNaN(numericProductId)) {
-			alert("Invalid product ID");
+			toast.error("Invalid product ID");
 			return;
 		}
 		try {
@@ -160,6 +162,7 @@ export default function ProductReviews() {
 				numericProductId,
 				"product"
 			);
+			toast.success("Review submitted successfully!");
 			// Reset form fields
 			setReviewTitle("");
 			setReviewComment("");
@@ -173,6 +176,17 @@ export default function ProductReviews() {
 
 	return (
 		<>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
 			<div className=" lg:border-gray-200 mx-auto my-6 max-w-2xl sm:px-6 lg:max-w-7xl lg:px-8">
 				{/* No of reviews */}
 				<div className="mb-6 flex items-center gap-2">

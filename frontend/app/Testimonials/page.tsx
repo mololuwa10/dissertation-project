@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { addTestimonial } from "@/lib/auth";
 import { useGetTestimonials } from "@/lib/dbModels";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 type StarRatingProps = {
 	onRating: (rating: number) => void;
@@ -97,12 +99,12 @@ export default function Testimonials() {
 				},
 				jwt
 			);
-			alert("Thank you for your submission!");
+			toast.success("Thank you for your submission!");
 			setTestimonialTitle("");
 			setTestimonialComment("");
 			setTestimonialRating(0);
 		} catch (error) {
-			alert(
+			toast.error(
 				"An error occurred while submitting your testimonial!! Check if you are signed in"
 			);
 		}
@@ -110,6 +112,18 @@ export default function Testimonials() {
 	return (
 		<>
 			<Header />
+
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
 
 			<div className="container mx-auto p-8">
 				<header className="text-center mb-10">

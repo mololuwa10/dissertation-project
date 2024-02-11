@@ -419,3 +419,25 @@ export async function fetchReviewsByProductId(productId: number | string) {
 		throw error;
 	}
 }
+
+// Get Shopping Cart
+export async function fetchShoppingCart(jwt: any) {
+	const response = await fetch(
+		"http://localhost:8080/api/shoppingCart/getCart",
+		{
+			method: "GET",
+			headers: {
+				Authorization: `Bearer ${jwt}`,
+				"Content-Type": "application/json",
+			},
+		}
+	);
+
+	console.log(response);
+
+	if (!response.ok) {
+		throw new Error("Failed to fetch shopping cart");
+	}
+
+	return response.json();
+}
