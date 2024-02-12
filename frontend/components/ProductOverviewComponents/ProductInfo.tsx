@@ -124,18 +124,18 @@ export default function ProductInfo() {
 	const handleAddToCart = async () => {
 		const jwtToken = localStorage.getItem("jwt");
 		if (!jwtToken) {
-			alert("You must be logged in to add products to the cart.");
+			toast.error("You must be logged in to add products to the cart.");
 			return;
 		}
 
 		if (!productId) {
-			console.error("Product ID is not available.");
+			toast.error("Product ID is not available.");
 			return;
 		}
 
 		// Check if the selected quantity exceeds available stock
 		if (selectedQuantity > (product?.productStockQuantity || 0)) {
-			alert("Selected quantity exceeds available stock.");
+			toast.error("Selected quantity exceeds available stock.");
 			return;
 		}
 

@@ -4,6 +4,7 @@ import { useFetchProducts } from "@/lib/dbModels";
 import { Button } from "../ui/button";
 import { Heart, Star } from "lucide-react";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function NewProduct() {
 	// Convert fetching logic into a standalone async function
@@ -163,10 +164,14 @@ export default function NewProduct() {
 								<div className="mt-4 flex justify-between">
 									<div>
 										<h3 className="text-sm text-gray-700">
-											<a href="#">
+											<Link
+												href={{
+													pathname: "/ProductOverview",
+													query: { productId: product.value },
+												}}>
 												<span aria-hidden="true" className="absolute inset-0" />
 												{product.label}
-											</a>
+											</Link>
 										</h3>
 									</div>
 									<p className="text-sm font-medium text-gray-900">

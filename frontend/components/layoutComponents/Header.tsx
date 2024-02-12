@@ -1,7 +1,7 @@
 "use client";
 
 import { Menu, Link, ShoppingCart, Sun, Moon } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { Fragment, useState } from "react";
 import { LanguageComboBox } from "./LanguageComboBox";
 import { LocationComboBox } from "./LocationComboBox";
@@ -11,14 +11,35 @@ import ProfileButton from "./ProfileButton";
 import Container from "../ui/container";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import { fetchShoppingCart } from "@/lib/dbModels";
 
 export default function Header() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+	const [cartItemCount, setCartItemCount] = useState(0);
 	const router = useRouter();
 
 	const handleShoppingCartClick = () => {
 		router.push("/ShoppingCart");
 	};
+
+	useEffect(() => {
+		const jwt = localStorage.getItem("jwt");
+		if (jwt) {
+			fetchShoppingCart(jwt)
+				.then((cart) => {
+					// Assuming cart data has an array 'cartItems' and each item has 'quantity'
+					const itemCount = cart.cartItems.reduce(
+						(total: any, item: any) => total + item.quantity,
+						0
+					);
+					setCartItemCount(itemCount);
+				})
+				.catch((error) => {
+					console.error("Error fetching shopping cart:", error);
+					// Optionally handle the error, e.g., by setting cartItemCount to 0
+				});
+		}
+	}, []);
 
 	return (
 		<div>
@@ -59,26 +80,22 @@ export default function Header() {
 							<NavigationMenuDemo />
 						</nav>
 						<div className="flex items-center">
-							<Button
-								variant={"ghost"}
-								size={"icon"}
-								className="mr-6"
-								aria-label="Shopping Cart"
-								onClick={handleShoppingCartClick}>
-								<ShoppingCart className="h-6 w-6" />
-								<span className="sr-only">Shopping Cart</span>
-							</Button>
+							<div className="relative mr-6">
+								<Button
+									variant="ghost"
+									size="icon"
+									aria-label="Shopping Cart"
+									onClick={handleShoppingCartClick}
+									className="relative">
+									<ShoppingCart className="h-6 w-6" />
+									{cartItemCount > 0 && (
+										<span className="absolute -top-[0.6rem] -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-600 text-white text-xs">
+											{cartItemCount}
+										</span>
+									)}
+								</Button>
+							</div>
 
-							{/* <Button
-								variant={"ghost"}
-								size={"icon"}
-								aria-label="Toggle Theme"
-								className="mr-6"
-								onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
-								<Sun className="h-6 w-6 rotate-0 scale-100 tranisition-all dark:-rotate-90 dark:scale-0" />
-								<Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:-rotate-0 dark:scale-100" />
-								<span className="sr-only">Toggle Theme</span>
-							</Button> */}
 							<ProfileButton />
 						</div>
 					</div>

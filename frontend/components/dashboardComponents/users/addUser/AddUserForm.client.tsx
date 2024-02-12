@@ -1,5 +1,7 @@
 import { registerUser } from "@/lib/auth";
 import styles from "@/components/dashboardComponents/users/addUser/addUser.module.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function AddUserForm() {
 	const handleSubmit = async (event: any) => {
@@ -14,11 +16,24 @@ export default function AddUserForm() {
 			password: formData.get("password"),
 			contactAddress: formData.get("address"),
 		};
+
 		const result = await registerUser(userData);
+		toast.success("User created successfully");
 		console.log(result);
 	};
 	return (
 		<>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
 			<div className={styles.container}>
 				<form className={styles.form} onSubmit={handleSubmit}>
 					<input

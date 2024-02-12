@@ -130,7 +130,7 @@ export const registerUser = async (userData: any) => {
 		}
 	} catch (error) {
 		console.error("There was an error registering the user:", error);
-		throw error; // Rethrow the error to be handled by the caller
+		throw error;
 	}
 };
 

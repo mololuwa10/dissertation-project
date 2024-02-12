@@ -67,7 +67,7 @@ const CartItem = ({
 		try {
 			await removeCartItem(item.cartItemId, jwt);
 			toast.success("Item removed");
-			onItemChange(); // Call this function to refresh the cart items from the parent component
+			onItemChange();
 		} catch (error) {
 			console.error("Failed to remove item", error);
 			toast.error("Failed to remove item. Please try again.");
@@ -94,10 +94,6 @@ const CartItem = ({
 			<div className="flex-grow px-3">
 				<div className="text-lg font-semibold">{item.product.productName}</div>
 				{/* <div>{`${item.color} | ${item.size}`}</div> */}
-				{/* <div className="text-lg font-semibold">{`£${item.product.productPrice.toFixed(
-					2
-				)}`}</div> */}
-
 				<div className="text-lg font-semibold text-red-600">
 					{typeof item.product.productDiscount === "number" &&
 						item.product.productDiscount > 0 && (
