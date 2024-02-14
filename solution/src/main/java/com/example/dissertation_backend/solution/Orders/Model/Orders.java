@@ -3,6 +3,8 @@ package com.example.dissertation_backend.solution.Orders.Model;
 import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "orders")
@@ -28,7 +30,7 @@ public class Orders {
   private Long quantity;
 
   @Column(name = "total_price")
-  private Long totalPrice;
+  private Double totalPrice;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
@@ -37,12 +39,19 @@ public class Orders {
   @Column(name = "order_date")
   private LocalDateTime orderDateTime;
 
+  @OneToMany(
+    mappedBy = "order",
+    cascade = CascadeType.ALL,
+    fetch = FetchType.LAZY
+  )
+  private Set<OrderDetails> items = new HashSet<>();
+
   public Orders() {}
 
   public Orders(
     ApplicationUser userId,
     Long quantity,
-    Long totalPrice,
+    Double totalPrice,
     Status status,
     LocalDateTime orderDateTime
   ) {
@@ -65,7 +74,7 @@ public class Orders {
     return quantity;
   }
 
-  public Long getTotalPrice() {
+  public Double getTotalPrice() {
     return totalPrice;
   }
 
@@ -85,7 +94,7 @@ public class Orders {
     this.quantity = quantity;
   }
 
-  public void setTotalPrice(Long totalPrice) {
+  public void setTotalPrice(Double totalPrice) {
     this.totalPrice = totalPrice;
   }
 
@@ -99,5 +108,18 @@ public class Orders {
 
   public void setOrderDateTime(LocalDateTime orderDateTime) {
     this.orderDateTime = orderDateTime;
+  }
+
+  public Set<OrderDetails> getItems() {
+    return items;
+  }
+
+  public void setItems(Set<OrderDetails> items) {
+    this.items = items;
+  }
+
+  public void addItem(OrderDetails item) {
+    items.add(item);
+    item.setOrder(this);
   }
 }
