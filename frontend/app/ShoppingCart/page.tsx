@@ -2,7 +2,7 @@
 
 import Footer from "@/components/layoutComponents/Footer";
 import Header from "@/components/layoutComponents/Header";
-import { removeCartItem, updateCartItemQuantity } from "@/lib/auth";
+import { checkout, removeCartItem, updateCartItemQuantity } from "@/lib/auth";
 import { fetchShoppingCart } from "@/lib/dbModels";
 import { X } from "lucide-react";
 import React, { useState, useEffect } from "react";
@@ -144,9 +144,44 @@ const OrderSummary = ({ cartItems }: { cartItems: Item[] }) => {
 	const shippingFee = subtotal > 50 ? 0 : 5.0;
 
 	// Calculate tax and total
-	const tax = subtotal * taxRate;
-	const total = subtotal + tax + shippingFee;
+	// const tax = subtotal * taxRate;
+	const total = subtotal + shippingFee;
 
+	const handelCheckoutClick = async () => {
+		const jwt = localStorage.getItem("jwt");
+		if (!jwt) {
+			console.error("JWT not found");
+			toast.error("You must be logged in to checkout");
+			return;
+		}
+
+		try {
+			const checkoutData = {
+				items: cartItems.map((item) => ({
+					productId: item.product.productId,
+					quantity: item.quantity,
+				})),
+				currency: "gbp",
+				successUrl: "http://localhost:3000/ShoppingCart/Success",
+				cancelUrl: "http://example.com/cancel",
+			};
+
+			const checkoutResponse = await checkout(checkoutData, jwt);
+			// Verify checkoutResponse contains a URL before redirecting
+			if (checkoutResponse && checkoutResponse.url) {
+				toast.success("Redirecting to payment...");
+				setTimeout(() => {
+					window.location.href = checkoutResponse.url;
+				}, 1500);
+			} else {
+				toast.error("Unexpected response. Please try again.");
+				console.error("Unexpected response structure:", checkoutResponse);
+			}
+		} catch (error) {
+			console.error("Checkout error:", error);
+			toast.error("Checkout failed. Please try again.");
+		}
+	};
 	return (
 		<div className="p-4 bg-white rounded-md shadow">
 			<h2 className="text-lg font-semibold mb-3">Order summary</h2>
@@ -154,10 +189,10 @@ const OrderSummary = ({ cartItems }: { cartItems: Item[] }) => {
 				<span>Subtotal</span>
 				<span>{`£${subtotal.toFixed(2)}`}</span>
 			</div>
-			<div className="flex justify-between mb-1">
+			{/* <div className="flex justify-between mb-1">
 				<span>Tax</span>
 				<span>{`£${tax.toFixed(2)}`}</span>
-			</div>
+			</div> */}
 			<div className="flex justify-between mb-1">
 				<span>Shipping</span>
 				<span>{`£${shippingFee.toFixed(2)}`}</span>
@@ -166,7 +201,9 @@ const OrderSummary = ({ cartItems }: { cartItems: Item[] }) => {
 				<span>Total</span>
 				<span>{`£${total.toFixed(2)}`}</span>
 			</div>
-			<button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 mt-3">
+			<button
+				className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 mt-3"
+				onClick={handelCheckoutClick}>
 				Checkout
 			</button>
 		</div>

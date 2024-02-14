@@ -431,3 +431,27 @@ export const addProductToCart = async (
 };
 
 // --------------------------------------------------------------
+
+// Checkout Function
+export const checkout = async (checkoutData: any, jwt: any) => {
+	const response = await fetch(
+		"http://localhost:8080/api/stripe/create-checkout-session",
+		{
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${jwt}`,
+			},
+			body: JSON.stringify(checkoutData),
+		}
+	);
+
+	if (!response.ok) {
+		const errorText = await response.text();
+		console.error("Checkout session creation failed:", errorText);
+		throw new Error(`Failed to create checkout session: ${errorText}`);
+	}
+
+	const data = await response.json();
+	return data;
+};

@@ -9,8 +9,12 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 import jakarta.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -33,123 +37,8 @@ public class StripeController {
   @Autowired
   private ProductRepository productRepository;
 
-  // @PostMapping("/create-checkout-session")
-  // public String createCheckoutSession(
-  //   @Valid @RequestBody CheckoutPayment checkoutPayment
-  // ) {
-  //   try {
-  //     // Directly use checkoutItems from CheckoutPayment
-  //     List<CheckoutItem> checkoutItems = checkoutPayment.getItems();
-
-  //     // Perform checkout validations and updates
-  //     checkoutService.checkout(checkoutItems);
-
-  //     // Perform checkout validations and updates
-  //     checkoutService.checkout(checkoutItems);
-
-  //     SessionCreateParams params = SessionCreateParams
-  //       .builder()
-  //       .addLineItem(
-  //         SessionCreateParams.LineItem
-  //           .builder()
-  //           .setPriceData(
-  //             SessionCreateParams.LineItem.PriceData
-  //               .builder()
-  //               .setCurrency(checkoutPayment.getCurrency())
-  //               .setUnitAmount(checkoutPayment.getAmount())
-  //               .setProductData(
-  //                 SessionCreateParams.LineItem.PriceData.ProductData
-  //                   .builder()
-  //                   .setName(checkoutPayment.getProductName())
-  //                   .build()
-  //               )
-  //               .build()
-  //           )
-  //           .setQuantity(checkoutPayment.getQuantity())
-  //           .build()
-  //       )
-  //       .setMode(SessionCreateParams.Mode.PAYMENT)
-  //       .setSuccessUrl(checkoutPayment.getSuccessUrl())
-  //       .setCancelUrl(checkoutPayment.getCancelUrl())
-  //       .build();
-
-  //     Session session = Session.create(params);
-
-  //     return session.getUrl();
-  //   } catch (StripeException e) {
-  //     e.printStackTrace();
-  //     return "Failed to create checkout session";
-  //   }
-  // }
-
-  // @PostMapping("/create-checkout-session")
-  // public String createCheckoutSession(
-  //   @Valid @RequestBody CheckoutPayment checkoutPayment
-  // ) {
-  //   try {
-  //     // Use checkoutItems from CheckoutPayment for validations and updates
-  //     List<CheckoutItem> checkoutItems = checkoutPayment.getItems();
-
-  //     // Perform checkout validations and updates
-  //     checkoutService.checkout(checkoutItems);
-
-  //     // Create Stripe session parameters dynamically based on the checkoutItems list
-  //     SessionCreateParams.Builder paramsBuilder = SessionCreateParams
-  //       .builder()
-  //       .setMode(SessionCreateParams.Mode.PAYMENT)
-  //       .setSuccessUrl(checkoutPayment.getSuccessUrl())
-  //       .setCancelUrl(checkoutPayment.getCancelUrl());
-
-  //     long totalPriceInCents = 0;
-
-  //     // Dynamically add line items based on checkoutItems
-  //     checkoutItems.forEach(item -> {
-  //       Products product = productRepository
-  //         .findById(item.getProductId())
-  //         .orElseThrow();
-  //       // Determine the price to use: discounted price if available, otherwise the original price
-  //       double priceToUse = (
-  //           product.getProductDiscount() != null &&
-  //           product.getProductDiscount() > 0
-  //         )
-  //         ? product.getProductDiscount()
-  //         : product.getProductPrice();
-
-  //       long priceInCents = Math.round(priceToUse * 100);
-  //       totalPriceInCents += priceInCents * item.getQuantity();
-
-  //       paramsBuilder.addLineItem(
-  //         SessionCreateParams.LineItem
-  //           .builder()
-  //           .setPriceData(
-  //             SessionCreateParams.LineItem.PriceData
-  //               .builder()
-  //               .setCurrency(checkoutPayment.getCurrency())
-  //               .setUnitAmount(Math.round(priceToUse * 100))
-  //               .setProductData(
-  //                 SessionCreateParams.LineItem.PriceData.ProductData
-  //                   .builder()
-  //                   .setName(product.getProductName())
-  //                   .build()
-  //               )
-  //               .build()
-  //           )
-  //           .setQuantity(Long.valueOf(item.getQuantity()))
-  //           .build()
-  //       );
-  //     });
-
-  //     Session session = Session.create(paramsBuilder.build());
-
-  //     return session.getUrl();
-  //   } catch (StripeException e) {
-  //     e.printStackTrace();
-  //     return "Failed to create checkout session";
-  //   }
-  // }
-
   @PostMapping("/create-checkout-session")
-  public String createCheckoutSession(
+  public ResponseEntity<?> createCheckoutSession(
     @Valid @RequestBody CheckoutPayment checkoutPayment
   ) {
     try {
@@ -169,6 +58,7 @@ public class StripeController {
 
       // Dynamically add line items based on checkoutItems
       for (CheckoutItem item : checkoutItems) {
+        @SuppressWarnings("null")
         Products product = productRepository
           .findById(item.getProductId())
           .orElseThrow(() -> new RuntimeException("Product not found"));
@@ -205,15 +95,20 @@ public class StripeController {
       }
 
       Session session = Session.create(paramsBuilder.build());
+      // Wrap the URL in a JSON object and return it
+      Map<String, String> response = new HashMap<>();
+      response.put("url", session.getUrl());
 
       // If you need to display the total price in a standard currency format, convert it here
       double displayTotalPrice = totalPriceInCents / 100.0;
       System.out.println("Total Price for Display: £" + displayTotalPrice); // Example of how to log/display
 
-      return session.getUrl();
+      return ResponseEntity.ok(response);
     } catch (StripeException e) {
       e.printStackTrace();
-      return "Failed to create checkout session";
+      return ResponseEntity
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body("Failed to create checkout session");
     }
   }
 }

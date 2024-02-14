@@ -7,6 +7,7 @@ import com.example.dissertation_backend.solution.Orders.Model.Orders;
 import com.example.dissertation_backend.solution.Orders.Repository.OrdersRepository;
 import com.example.dissertation_backend.solution.Products.Model.Products;
 import com.example.dissertation_backend.solution.Products.Repository.ProductRepository;
+import com.example.dissertation_backend.solution.ShoppingCart.Repository.CartItemRepository;
 import com.example.dissertation_backend.solution.Stripe.Model.CheckoutItem;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -31,6 +32,9 @@ public class CheckoutService {
   @Autowired
   private UserRepository userRepository;
 
+  @Autowired
+  private CartItemRepository cartItemRepository;
+
   @Transactional
   public String checkout(List<CheckoutItem> checkoutItems) {
     Authentication authentication = SecurityContextHolder
@@ -53,6 +57,7 @@ public class CheckoutService {
 
     double totalPrice = 0.0;
     for (CheckoutItem item : checkoutItems) {
+      @SuppressWarnings("null")
       Products product = productRepository
         .findById(item.getProductId())
         .orElseThrow(() -> new RuntimeException("Product not found"));
@@ -70,7 +75,7 @@ public class CheckoutService {
         : product.getProductPrice();
 
       OrderDetails orderDetails = new OrderDetails();
-      orderDetails.setOrder(order); // Link the order item to the order
+      orderDetails.setOrder(order);
       orderDetails.setProduct(product);
       orderDetails.setQuantity(item.getQuantity());
       orderDetails.setPriceAtOrder(priceToUse);
@@ -79,7 +84,7 @@ public class CheckoutService {
       product.setProductStockQuantity(
         product.getProductStockQuantity() - item.getQuantity()
       );
-      productRepository.save(product); // Update the product's stock quantity
+      productRepository.save(product);
 
       totalPrice += priceToUse * item.getQuantity();
     }
@@ -91,6 +96,8 @@ public class CheckoutService {
     order.setTotalPrice(roundedTotalPrice); // Set the total price of the order
     order.setQuantity(calculateTotalQuantity(checkoutItems)); // Set the total quantity of the order
     ordersRepository.save(order); // Save the order and its items due to cascade
+
+    cartItemRepository.deleteByShoppingCart_User_UserId(user.getUserId());
 
     return "Checkout successful. Order ID: " + order.getId();
   }
