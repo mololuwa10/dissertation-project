@@ -1,19 +1,20 @@
 "use client";
 
-import AccountCard from "@/components/ProfilePageComponents/AccountCard";
 import Footer from "@/components/layoutComponents/Footer";
-import Header from "@/components/layoutComponents/Header";
-import { useFetchUserInfo } from "@/lib/data";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import Header from "@/components/layoutComponents/Header";
 import { Button } from "@/components/ui/button";
+import { useFetchUserInfo } from "@/lib/data";
+import React from "react";
+import PersonalInformationComponents from "@/components/ProfilePageComponents/PersonalInformationComponents";
+import AccountSettingsComponents from "@/components/ProfilePageComponents/AccountSettingsComponents";
+import StoriesGallerySkillsComponents from "@/components/ProfilePageComponents/StoriesGallerySkillsComponents";
 import Link from "next/link";
 
-export default function Profile() {
+const ProfileInformation = () => {
 	const router = useRouter();
 	const { isLoggedIn, userRole, userDetails } = useFetchUserInfo();
-	if (!isLoggedIn || (userRole !== "ADMIN" && userRole !== "ARTISAN")) {
-		return null;
-	}
 
 	if (!isLoggedIn) {
 		return (
@@ -58,63 +59,44 @@ export default function Profile() {
 			</>
 		);
 	}
-	const accountOptions = [
-		{
-			title: "Your Orders",
-			description:
-				"Track, return, cancel an order, download invoice or buy again",
-			url: "/Profile/Orders",
-		},
-		{
-			title: "Your Addresses",
-			description: "Edit, remove or set default address",
-			url: "/Profile/Addresses",
-		},
-		{
-			title: "Login & Security",
-			description:
-				"Manage Personal information including email, password and mobile number",
-			url: "/Profile/ProfileInformation",
-		},
-		{
-			title: "Your Payments",
-			description: "Manage or add payment methods and view your transactions",
-		},
-		{
-			title: "Artisan Profile",
-			description: "Manage your artisan profile",
-		},
-		{
-			title: "Your Messages",
-			description:
-				"View or respond to messages from Craft Collaborations and sellers",
-		},
-		{
-			title: "Your Reviews",
-			description: "View and update your reviews for products and sellers",
-		},
-		{
-			title: "Customer Service",
-			description: "Contact customer service or get support",
-		},
-		{
-			title: "Your Testimonials",
-			description: "View and update your testimonials",
-		},
-	];
 
 	return (
 		<>
 			<Header />
-			<div className="container mx-auto p-4">
-				<h1 className="text-2xl font-bold mb-4">Your Account</h1>
-				<div className="my-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
-					{accountOptions.map((option, index) => (
-						<AccountCard key={index} {...option} url={option.url} />
-					))}
+			<div className="bg-gray-100 min-h-screen">
+				<div className="container mx-auto p-8">
+					<div className="mb-10">
+						<h1 className="text-3xl font-bold text-gray-800 mb-4">
+							My Profile
+						</h1>
+						<p className="text-gray-600">
+							Manage your personal information, account settings, and more.
+						</p>
+					</div>
+
+					<PersonalInformationComponents />
+
+					{/* <div className="bg-white shadow rounded-lg p-6 mb-6">
+						<h2 className="text-2xl text-gray-800 font-semibold mb-4">
+							Profile Picture
+						</h2>
+						<form>
+						
+							<Button className="mt-4 bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
+								Upload
+							</Button>
+						</form>
+					</div> */}
+
+					<AccountSettingsComponents />
+
+					<StoriesGallerySkillsComponents />
 				</div>
 			</div>
+
 			<Footer />
 		</>
 	);
-}
+};
+
+export default ProfileInformation;
