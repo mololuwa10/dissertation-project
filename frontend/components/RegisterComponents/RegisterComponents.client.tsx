@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { registerUser } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";

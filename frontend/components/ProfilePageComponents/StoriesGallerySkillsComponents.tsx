@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { Button } from "../ui/button";
 import { useFetchUserInfo } from "@/lib/data";
 import Link from "next/link";

@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "order_details")
 public class OrderDetails {
-
+  
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "order_detail_id")

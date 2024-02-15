@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { fetchReviewsByProductId } from "@/lib/dbModels";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -94,7 +95,7 @@ export default function ProductReviews() {
 					<svg
 						key={index}
 						className={`h-5 w-5 ${
-							index < rating
+							index < Number(rating)
 								? "fill-current text-gray-900 flex-shrink-0"
 								: "fill-current text-gray-400"
 						}`}
