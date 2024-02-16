@@ -58,6 +58,7 @@ export default function Profile() {
 			</>
 		);
 	}
+
 	const accountOptions = [
 		{
 			title: "Your Orders",

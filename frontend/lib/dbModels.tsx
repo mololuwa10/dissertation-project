@@ -441,3 +441,26 @@ export async function fetchShoppingCart(jwt: any) {
 
 	return response.json();
 }
+
+// Orders
+// Get Orders
+export async function fetchCurrentUserOrders() {
+	const jwt = localStorage.getItem("jwt");
+	const response = await fetch("http://localhost:8080/api/orders/users/my-orders", {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${jwt}`,
+		},
+	});
+
+	if (!response.ok) {
+		// Handle the error case
+		const message = await response.text();
+		throw new Error(
+			`HTTP error! status: ${response.status}, message: ${message}`
+		);
+	}
+
+	return response.json();
+}
