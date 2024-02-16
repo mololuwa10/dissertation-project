@@ -11,9 +11,6 @@ import Link from "next/link";
 export default function Profile() {
 	const router = useRouter();
 	const { isLoggedIn, userRole, userDetails } = useFetchUserInfo();
-	if (!isLoggedIn || (userRole !== "ADMIN" && userRole !== "ARTISAN")) {
-		return null;
-	}
 
 	if (!isLoggedIn) {
 		return (

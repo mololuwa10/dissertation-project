@@ -9,6 +9,7 @@ import {
 	NavigationMenuTrigger,
 	NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
+import Link from "next/link";
 
 interface Order {
 	id: string;
@@ -26,7 +27,9 @@ interface Order {
 	};
 
 	items: Array<{
+		id: number | string;
 		productDTO: {
+			productId: string | number;
 			productName: string;
 			imageUrls: string[];
 		};
@@ -56,9 +59,9 @@ function formatDate(dateString: any) {
 	return formattedDate;
 }
 
-const OrderCard = ({ order }: { order: Order }) => {
+const OrderCard = ({ orderInfo, item }: { orderInfo: Order; item: any }) => {
 	// Call the formatDate function before rendering
-	const formattedDate = formatDate(order.orderDateTime);
+	const formattedDate = formatDate(orderInfo.orderDateTime);
 	return (
 		<>
 			<div className="border rounded-lg shadow-sm mb-5 p-4 bg-white">
@@ -67,13 +70,19 @@ const OrderCard = ({ order }: { order: Order }) => {
 						<div className="flex justify-between">
 							<div>
 								<p className="text-sm text-gray-600">
-									ORDER PLACED # {order.id}
+									ORDER PLACED # {item.id}
 								</p>
 								<p className="text-lg">{formattedDate}</p>
 							</div>
 							<div>
+								<p className="text-sm text-gray-600">Quantity</p>
+								<p className="text-lg">{item.quantity}</p>
+							</div>
+							<div>
 								<p className="text-sm text-gray-600">TOTAL</p>
-								<p className="text-lg">£{order.totalPrice.toFixed(2)}</p>
+								<p className="text-lg">
+									£{item.priceAtOrder.toFixed(2) * item.quantity}
+								</p>
 							</div>
 							<div>
 								<p className="text-sm text-gray-600">DISPATCH TO</p>
@@ -83,10 +92,11 @@ const OrderCard = ({ order }: { order: Order }) => {
 											<NavigationMenuList>
 												<NavigationMenuItem>
 													<NavigationMenuTrigger>
-														{order.user.firstname} {order.user.lastname}
+														{orderInfo.user.firstname} {orderInfo.user.lastname}
 													</NavigationMenuTrigger>
-													<NavigationMenuContent>
-														{order.user.firstname} {order.user.contactAddress}
+													<NavigationMenuContent className="w-42">
+														{orderInfo.user.firstname}{" "}
+														{orderInfo.user.contactAddress}
 													</NavigationMenuContent>
 												</NavigationMenuItem>
 											</NavigationMenuList>
@@ -96,12 +106,13 @@ const OrderCard = ({ order }: { order: Order }) => {
 							</div>
 						</div>
 						<div className="mt-4">
-							<p className="text-green-600">{order.status}</p>
-							{/* <p className="text-lg">{order.deliveryRange}</p> */}
-							<p className="text-lg font-bold">
-								{order.items[0].productDTO.productName}
-							</p>
+							<p className="text-green-600">{orderInfo.status}</p>
+							{/* <p className="text-lg">{orderInfo.deliveryRange}</p> */}
+
+							<p className="text-lg font-bold">{item.productDTO.productName}</p>
+
 							<div className="flex gap-3 mt-2">
+								{/* <Link></Link> */}
 								<button className="mt-2 text-blue-600 hover:text-blue-800 text-sm">
 									Buy again
 								</button>
@@ -123,9 +134,9 @@ const OrderCard = ({ order }: { order: Order }) => {
 					</div>
 					<div className="flex-none ml-4">
 						<img
-							src={`http://localhost:8080${order.items[0].productDTO.imageUrls[0]}`}
-							alt={order.items[0].productDTO.productName}
-							className="w-32 h-44 object-cover rounded-md"
+							src={`http://localhost:8080${item.productDTO.imageUrls[0]}`}
+							alt={item.productDTO.productName}
+							className="w-32 h-44 object-cover rounded-md mb-2"
 						/>
 					</div>
 				</div>

@@ -11,6 +11,7 @@ const Orders = () => {
 	// State for the search query
 	const [searchQuery, setSearchQuery] = useState("");
 	interface Order {
+		[x: string]: any;
 		id: string;
 		totalPrice: number;
 		status: string;
@@ -27,6 +28,7 @@ const Orders = () => {
 
 		items: Array<{
 			productDTO: {
+				productId: string | number;
 				productName: string;
 				imageUrls: string[];
 			};
@@ -43,8 +45,23 @@ const Orders = () => {
 	useEffect(() => {
 		fetchCurrentUserOrders()
 			.then((data) => {
-				setAllOrders(data);
-				setFilteredOrders(data);
+				// Flatten the items arrays from all orders into a single array
+				const allItems = data.reduce((acc: any, order: any) => {
+					const itemsWithOrderInfo = order.items.map((item: any) => ({
+						...item,
+						orderInfo: {
+							id: order.id,
+							totalPrice: order.totalPrice,
+							status: order.status,
+							orderDateTime: order.orderDateTime,
+							user: order.user,
+						},
+					}));
+					return [...acc, ...itemsWithOrderInfo];
+				}, []);
+
+				setAllOrders(allItems); // Now we have a flat array of items with order info
+				setFilteredOrders(allItems);
 				setLoading(false);
 			})
 			.catch((error) => {
@@ -121,11 +138,20 @@ const Orders = () => {
 					</div>
 					<HeaderTabs />
 					<div className="mt-8">
-						{filteredOrders.map((order) => (
-							<OrderCard key={order.id} order={order} />
-						))}
+						{filteredOrders.length > 0 ? (
+							filteredOrders.map((item) => (
+								<OrderCard
+									key={`${item.orderInfo.id}-${item.productDTO.productId}`}
+									orderInfo={item.orderInfo}
+									item={item}
+								/>
+							))
+						) : (
+							<p className="text-center text-gray-600">You have no orders.</p>
+						)}
 					</div>
 				</div>
+				{/* <CategoriesComponents /> */}
 			</div>
 			<Footer />
 		</>

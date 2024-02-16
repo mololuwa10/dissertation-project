@@ -99,6 +99,7 @@ public class OrderDetailsDTO {
     dto.setProductName(product.getProductName());
     dto.setProductDescription(product.getProductDescription());
     dto.setProductPrice(product.getProductPrice());
+    dto.setProductDiscount(product.getProductDiscount());
     dto.setProductStockQuantity(product.getProductStockQuantity());
     // dto.setArtisanProfile(convertArtisanProfileToDTO(product.getArtisan()));
     // dto.setCategory(convertCategoryToDTO(product.getCategory()));
