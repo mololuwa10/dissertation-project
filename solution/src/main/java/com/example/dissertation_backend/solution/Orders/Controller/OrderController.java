@@ -39,7 +39,7 @@ public class OrderController {
   private UserRepository userRepository;
 
   @GetMapping("/all-orders")
-  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+  @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<?> getAllOrders() {
     Authentication authentication = SecurityContextHolder
       .getContext()

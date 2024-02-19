@@ -420,6 +420,25 @@ export async function fetchReviewsByProductId(productId: number | string) {
 	}
 }
 
+// Get all review by users
+export async function fetchReviewsByUserId(userId: number | string) {
+	try {
+		const response = await fetch(
+			`http://localhost:8080/api/reviews/user/${userId}`
+		);
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+
+		const userReviewData = await response.json();
+		console.log(userReviewData);
+		return userReviewData;
+	} catch (error) {
+		console.error("Failed to fetch reviews:", error);
+		throw error;
+	}
+}
+
 // Get Shopping Cart
 export async function fetchShoppingCart(jwt: any) {
 	const response = await fetch(
@@ -446,14 +465,38 @@ export async function fetchShoppingCart(jwt: any) {
 // Get Orders
 export async function fetchCurrentUserOrders() {
 	const jwt = localStorage.getItem("jwt");
-	const response = await fetch("http://localhost:8080/api/orders/users/my-orders", {
+	const response = await fetch(
+		"http://localhost:8080/api/orders/users/my-orders",
+		{
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${jwt}`,
+			},
+		}
+	);
+
+	if (!response.ok) {
+		// Handle the error case
+		const message = await response.text();
+		throw new Error(
+			`HTTP error! status: ${response.status}, message: ${message}`
+		);
+	}
+
+	return response.json();
+}
+
+// Get all orders
+export async function fetchAllOrders() {
+	const jwt = localStorage.getItem("jwt");
+	const response = await fetch("http://localhost:8080/api/orders/all-orders", {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
 			Authorization: `Bearer ${jwt}`,
 		},
 	});
-
 	if (!response.ok) {
 		// Handle the error case
 		const message = await response.text();

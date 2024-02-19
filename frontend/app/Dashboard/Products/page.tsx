@@ -74,8 +74,6 @@ export default function Products() {
 		}
 	};
 
-	// Handling Edit Product
-
 	return (
 		<>
 			<Link href="/Dashboard/Products/Add">

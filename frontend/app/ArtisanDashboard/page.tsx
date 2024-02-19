@@ -2,7 +2,7 @@ import Card from "@/components/dashboardComponents/card/card";
 // import { cards } from "@/lib/data";
 import styles from "@/components/dashboardComponents/dashboard.module.css";
 import Chart from "@/components/dashboardComponents/chart/chart";
-import Transactions from "@/components/dashboardComponents/transactions/transactions";
+import ArtisanOrders from "@/components/dashboardComponents/artisanOrder/orders";
 
 const cards = [
 	{
@@ -15,13 +15,13 @@ const cards = [
 		id: 2,
 		title: "Messages",
 		number: 8,
-		change: "",
+		change: 2,
 	},
 	{
 		id: 3,
 		title: "Notifications",
 		number: 6,
-		change: "",
+		change: 3,
 	},
 ];
 
@@ -34,7 +34,7 @@ const Dashboard = () => {
 						<Card item={item} key={item.id} />
 					))}
 				</div>
-				<Transactions />
+				<ArtisanOrders />
 				<Chart />
 			</div>
 		</div>

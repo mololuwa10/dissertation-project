@@ -118,7 +118,9 @@ public class ReviewService {
     dto.setComment(review.getComment());
     dto.setRating(review.getRating());
     dto.setReviewDate(review.getReviewDate());
-    dto.setProducts(convertProductToDTO(review.getProducts()));
+    if (review.getProducts() != null) {
+      dto.setProducts(convertProductToDTO(review.getProducts()));
+    }
     dto.setApplicationUser(
       convertApplicationUserDTO(review.getApplicationUser())
     );
@@ -148,23 +150,24 @@ public class ReviewService {
 
   private ProductDTO convertProductToDTO(Products product) {
     ProductDTO dto = new ProductDTO();
+    if (product != null) {
+      Set<String> imageUrls = product
+        .getImages()
+        .stream()
+        .map(ProductImages::getImageUrl)
+        .collect(Collectors.toSet());
 
-    Set<String> imageUrls = product
-      .getImages()
-      .stream()
-      .map(ProductImages::getImageUrl)
-      .collect(Collectors.toSet());
-
-    dto.setProductId(product.getProductId());
-    dto.setProductName(product.getProductName());
-    dto.setProductDescription(product.getProductDescription());
-    dto.setProductPrice(product.getProductPrice());
-    dto.setProductStockQuantity(product.getProductStockQuantity());
-    dto.setArtisanProfile(convertArtisanProfileToDTO(product.getArtisan()));
-    dto.setCategory(convertCategoryToDTO(product.getCategory()));
-    dto.setImageUrls(imageUrls);
-    dto.setDateTimeListed(product.getDateListed());
-    dto.setDateTimeUpdated(product.getDateTimeUpdated());
+      dto.setProductId(product.getProductId());
+      dto.setProductName(product.getProductName());
+      dto.setProductDescription(product.getProductDescription());
+      dto.setProductPrice(product.getProductPrice());
+      dto.setProductStockQuantity(product.getProductStockQuantity());
+      dto.setArtisanProfile(convertArtisanProfileToDTO(product.getArtisan()));
+      dto.setCategory(convertCategoryToDTO(product.getCategory()));
+      dto.setImageUrls(imageUrls);
+      dto.setDateTimeListed(product.getDateListed());
+      dto.setDateTimeUpdated(product.getDateTimeUpdated());
+    }
 
     return dto;
   }

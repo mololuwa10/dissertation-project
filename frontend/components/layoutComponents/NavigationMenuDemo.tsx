@@ -91,7 +91,7 @@ export function NavigationMenuDemo() {
 				</NavigationMenuItem>
 
 				<NavigationMenuItem>
-					<Link href="#" legacyBehavior passHref>
+					<Link href="/ContactUs" legacyBehavior passHref>
 						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
 							Contacts
 						</NavigationMenuLink>

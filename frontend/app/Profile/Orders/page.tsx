@@ -60,8 +60,15 @@ const Orders = () => {
 					return [...acc, ...itemsWithOrderInfo];
 				}, []);
 
-				setAllOrders(allItems); // Now we have a flat array of items with order info
-				setFilteredOrders(allItems);
+				// Sort the orders based on the orderDateTime in descending order
+				const sortedOrders = allItems.sort(
+					(a: any, b: any) =>
+						new Date(b.orderInfo.orderDateTime).getTime() -
+						new Date(a.orderInfo.orderDateTime).getTime()
+				);
+
+				setAllOrders(sortedOrders);
+				setFilteredOrders(sortedOrders);
 				setLoading(false);
 			})
 			.catch((error) => {
@@ -76,13 +83,20 @@ const Orders = () => {
 			if (!query) {
 				// If the search query is empty, show all orders
 				setFilteredOrders(allOrders);
+				console.log(allOrders);
 			} else {
 				// Filter orders that match the search query
 				const lowercasedQuery = query.toLowerCase();
 				const filtered = allOrders.filter((order) => {
-					return order.items.some((item) =>
-						item.productDTO.productName.toLowerCase().includes(lowercasedQuery)
-					);
+					// Check if order.items exists and is not empty
+					if (order.items && order.items.length > 0) {
+						return order.items.some((item) =>
+							item.productDTO.productName
+								.toLowerCase()
+								.includes(lowercasedQuery)
+						);
+					}
+					return false;
 				});
 				setFilteredOrders(filtered);
 			}

@@ -2,7 +2,7 @@ import Card from "@/components/dashboardComponents/card/card";
 // import { cards } from "@/lib/data";
 import styles from "@/components/dashboardComponents/dashboard.module.css";
 import Chart from "@/components/dashboardComponents/chart/chart";
-import Transactions from "@/components/dashboardComponents/transactions/transactions";
+import Orders from "@/components/dashboardComponents/orders/orders";
 
 const cards = [
 	{
@@ -34,7 +34,7 @@ const Dashboard = () => {
 						<Card item={item} key={item.id} />
 					))}
 				</div>
-				<Transactions />
+				<Orders />
 				<Chart />
 			</div>
 		</div>

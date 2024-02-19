@@ -90,6 +90,7 @@ export default function Profile() {
 		{
 			title: "Your Reviews",
 			description: "View and update your reviews for products and sellers",
+			url: "/Profile/Reviews",
 		},
 		{
 			title: "Customer Service",
