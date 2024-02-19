@@ -10,6 +10,7 @@ public class TestimonialDTO {
   private Integer rating;
   private String comment;
   private LocalDateTime testimonialDate;
+  private Boolean isApproved;
 
   // constructor
   public TestimonialDTO(
@@ -18,7 +19,8 @@ public class TestimonialDTO {
     Integer rating,
     String testimonialTitle,
     String comment,
-    LocalDateTime testimonialDate
+    LocalDateTime testimonialDate,
+    Boolean isApproved
   ) {
     super();
     this.testimonialId = testimonialId;
@@ -27,6 +29,7 @@ public class TestimonialDTO {
     this.rating = rating;
     this.comment = comment;
     this.testimonialDate = testimonialDate;
+    this.isApproved = isApproved;
   }
 
   // Getters and setters
@@ -72,6 +75,14 @@ public class TestimonialDTO {
 
   public LocalDateTime getTestimonialDate() {
     return testimonialDate;
+  }
+
+  public Boolean getIsApproved() {
+    return isApproved;
+  }
+
+  public void setIsApproved(Boolean isApproved) {
+    this.isApproved = isApproved;
   }
 
   public void setTestimonialDate(LocalDateTime testimonialDate) {

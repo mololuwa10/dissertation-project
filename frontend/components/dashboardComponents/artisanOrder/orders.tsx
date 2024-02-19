@@ -3,69 +3,142 @@
 import Image from "next/image";
 import styles from "./transactions.module.css";
 import { Button } from "@/components/ui/button";
-import { fetchAllOrders } from "@/lib/dbModels";
+import { fetchOrdersByArtisan } from "@/lib/dbModels";
 import { useEffect, useCallback, useState } from "react";
 import Link from "next/link";
+import { useFetchUserInfo } from "@/lib/data";
 
 const ArtisanOrders = () => {
 	interface Order {
 		[x: string]: any;
-		id: string;
+		id: number;
 		totalPrice: number;
 		status: string;
 		orderDateTime: string;
-		quantity: string;
+		quantity: number;
 		user: {
+			userId: number;
 			firstname: string;
 			lastname: string;
 			user_email: string;
-			phone: string;
-			contactAddress: string;
 			contactTelephone: string;
+			contactAddress: string;
 		};
-
 		items: Array<{
-			productDTO: {
-				productId: string | number;
-				productName: string;
-				imageUrls: string[];
-			};
+			id: number;
+			productName: string;
 			quantity: number;
 			priceAtOrder: number;
+			productDTO: {
+				productId: number;
+				productDescription: string;
+				productPrice: number;
+				productStockQuantity: number;
+				imageUrls: string[];
+				dateTimeListed: string | null;
+				dateTimeUpdated: string;
+				productDiscount: number;
+				category: any;
+				artisanProfile: any;
+			};
 		}>;
 	}
+
+	// const { userDetails, isLoggedIn } = useFetchUserInfo();
 
 	const [allOrders, setAllOrders] = useState<Order[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
 
+	// useEffect(() => {
+	// 	const fetchArtisanOrders = async () => {
+	// 		try {
+	// 			const orders = await fetchOrdersByArtisan();
+	// 			setAllOrders(orders);
+	// 			setLoading(false);
+	// 		} catch (error) {
+	// 			setError("Failed to fetch orders: " + error.message);
+	// 			setLoading(false);
+	// 		}
+	// 	};
+
+	// 	fetchArtisanOrders();
+	// }, []);
+
+	// useEffect(() => {
+	// 	fetchOrdersByArtisan()
+	// 		.then((data) => {
+	// 			// Ensure data is an array
+	// 			if (!Array.isArray(data)) {
+	// 				throw new Error("Data is not an array");
+	// 			}
+	// 			// Flatten the items arrays from all orders into a single array
+	// 			const allItems = data.reduce((acc, order) => {
+	// 				if (!order.items || !Array.isArray(order.items)) {
+	// 					// Skip this order or handle the lack of items appropriately
+	// 					return acc;
+	// 				}
+	// 				const itemsWithOrderInfo = order.items.map((item: any) => ({
+	// 					...item,
+	// 					orderInfo: {
+	// 						id: order.id,
+	// 						totalPrice: order.totalPrice,
+	// 						status: order.status,
+	// 						orderDateTime: order.orderDateTime,
+	// 						user: order.user,
+	// 					},
+	// 				}));
+	// 				return [...acc, ...itemsWithOrderInfo];
+	// 			}, []);
+
+	// 			// Sort the orders based on the orderDateTime in descending order
+	// 			const sortedOrders = allItems.sort(
+	// 				(a: any, b: any) =>
+	// 					new Date(b.orderInfo.orderDateTime).getTime() -
+	// 					new Date(a.orderInfo.orderDateTime).getTime()
+	// 			);
+
+	// 			setAllOrders(sortedOrders);
+	// 			setLoading(false);
+	// 		})
+	// 		.catch((error) => {
+	// 			setError(error.message);
+	// 			setLoading(false);
+	// 		});
+	// }, []);
+
 	useEffect(() => {
-		fetchAllOrders()
+		fetchOrdersByArtisan()
 			.then((data) => {
-				// Flatten the items arrays from all orders into a single array
-				const allItems = data.reduce((acc: any, order: any) => {
-					const itemsWithOrderInfo = order.items.map((item: any) => ({
-						...item,
-						orderInfo: {
-							id: order.id,
-							totalPrice: order.totalPrice,
-							status: order.status,
-							orderDateTime: order.orderDateTime,
-							user: order.user,
-						},
-					}));
-					return [...acc, ...itemsWithOrderInfo];
-				}, []);
+				// Ensure data is an array
+				if (!Array.isArray(data)) {
+					throw new Error("Data is not an array");
+				}
+				// Process each order and its items
+				const processedOrders = data
+					.map(({ order, orderDetails }) => {
+						// Combine the order info with each item in the orderDetails
+						return orderDetails.map((item: any) => ({
+							...item.productDTO, // Assuming you want to display details from the productDTO
+							quantity: item.quantity, // Item's quantity
+							priceAtOrder: item.priceAtOrder, // Item's price at order
+							orderInfo: {
+								id: order.id,
+								totalPrice: order.totalPrice,
+								status: order.status,
+								orderDateTime: order.orderDateTime,
+								user: order.user,
+							},
+						}));
+					})
+					.flat()
+					.sort(
+						(a, b) =>
+							new Date(b.orderInfo.orderDateTime).getTime() -
+							new Date(a.orderInfo.orderDateTime).getTime()
+					);
 
-				// Sort the orders based on the orderDateTime in descending order
-				const sortedOrders = allItems.sort(
-					(a: any, b: any) =>
-						new Date(b.orderInfo.orderDateTime).getTime() -
-						new Date(a.orderInfo.orderDateTime).getTime()
-				);
-
-				setAllOrders(sortedOrders);
-				// setFilteredOrders(sortedOrders);
+				setAllOrders(processedOrders);
 				setLoading(false);
 			})
 			.catch((error) => {
@@ -91,8 +164,8 @@ const ArtisanOrders = () => {
 					</tr>
 				</thead>
 				<tbody>
-					{allOrders.slice(0, 4).map((item) => (
-						<tr key={item.productDTO.productId + item.orderInfo.id}>
+					{allOrders.slice(0, 4).map((item, index) => (
+						<tr key={index}>
 							<td>
 								<div className={styles.user}>
 									<Image
@@ -106,9 +179,12 @@ const ArtisanOrders = () => {
 									{item.orderInfo.user?.lastname}
 								</div>
 							</td>
-							<td>{item.productDTO.productName}</td>
+							<td>{item.productName}</td>
 							<td>
-								<span className={`${styles.status} ${styles.pending}`}>
+								<span
+									className={`${styles.status} ${
+										styles[item.orderInfo.status.toLowerCase()]
+									}`}>
 									{item.orderInfo.status}
 								</span>
 							</td>

@@ -5,18 +5,79 @@ import { useRouter } from "next/navigation";
 
 // Fetch user info thats logged in
 
+// export const useFetchUserInfo = () => {
+// 	const [userDetails, setUserDetails] = useState(null);
+// 	const [userRole, setUserRole] = useState<string | null>(null);
+// 	const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+// 	useEffect(() => {
+// 		const fetchUserInfo = async () => {
+// 			try {
+// 				const jwt = localStorage.getItem("jwt");
+
+// 				if (!jwt) {
+// 					setIsLoggedIn(false);
+// 					return;
+// 				}
+
+// 				const response = await fetch("http://localhost:8080/api/user/info", {
+// 					headers: { Authorization: "Bearer " + jwt },
+// 				});
+
+// 				if (!response.ok) {
+// 					setIsLoggedIn(false);
+// 					throw new Error("Failed to fetch user details");
+// 				}
+
+// 				const data = await response.json();
+
+// 				// Set the user details including the artisan profile
+// 				setUserDetails(data);
+
+// 				// Set the user role based on authorities
+// 				const isAdmin = data.user.authorities.some(
+// 					(authority: { roleId: number; authority: string }) =>
+// 						authority.authority === "ADMIN"
+// 				);
+
+// 				const isArtisan = data.user.authorities.some(
+// 					(authority: { roleId: number; authority: string }) =>
+// 						authority.authority === "ARTISAN"
+// 				);
+
+// 				if (isAdmin) {
+// 					setUserRole("ADMIN");
+// 				} else if (isArtisan) {
+// 					setUserRole("ARTISAN");
+// 				} else {
+// 					setUserRole("USER");
+// 				}
+
+// 				setIsLoggedIn(true);
+// 			} catch (error) {
+// 				console.error("Error:", error);
+// 			}
+// 		};
+
+// 		fetchUserInfo();
+// 	}, []);
+
+// 	return { userDetails, userRole, isLoggedIn };
+// };
+
 export const useFetchUserInfo = () => {
 	const [userDetails, setUserDetails] = useState(null);
 	const [userRole, setUserRole] = useState<string | null>(null);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [error, setError] = useState<string | null>(null); // Add an error state
 
 	useEffect(() => {
 		const fetchUserInfo = async () => {
 			try {
 				const jwt = localStorage.getItem("jwt");
-
 				if (!jwt) {
 					setIsLoggedIn(false);
+					setError("JWT not found");
 					return;
 				}
 
@@ -26,14 +87,12 @@ export const useFetchUserInfo = () => {
 
 				if (!response.ok) {
 					setIsLoggedIn(false);
+					setError("Failed to fetch user details");
 					throw new Error("Failed to fetch user details");
 				}
 
 				const data = await response.json();
-
-				// Set the user details including the artisan profile
 				setUserDetails(data);
-
 				// Set the user role based on authorities
 				const isAdmin = data.user.authorities.some(
 					(authority: { roleId: number; authority: string }) =>
@@ -45,24 +104,18 @@ export const useFetchUserInfo = () => {
 						authority.authority === "ARTISAN"
 				);
 
-				if (isAdmin) {
-					setUserRole("ADMIN");
-				} else if (isArtisan) {
-					setUserRole("ARTISAN");
-				} else {
-					setUserRole("USER");
-				}
-
+				setUserRole(isAdmin ? "ADMIN" : isArtisan ? "ARTISAN" : "USER");
 				setIsLoggedIn(true);
 			} catch (error) {
-				console.error("Error:", error);
+				console.error("Error fetching user info:", error);
+				// setError(error.message);
 			}
 		};
 
 		fetchUserInfo();
 	}, []);
 
-	return { userDetails, userRole, isLoggedIn };
+	return { userDetails, userRole, isLoggedIn, error };
 };
 
 export const words = [

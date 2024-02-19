@@ -507,3 +507,32 @@ export async function fetchAllOrders() {
 
 	return response.json();
 }
+
+// Get all orders by artisan
+export async function fetchOrdersByArtisan() {
+	const jwt = localStorage.getItem("jwt");
+
+	try {
+		const response = await fetch(
+			`http://localhost:8080/api/orders/artisan/orders`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${jwt}`,
+				},
+			}
+		);
+
+		if (!response.ok) {
+			const message = await response.text();
+			throw new Error(`Error: ${response.status}, Message: ${message}`);
+		}
+
+		const orders = await response.json();
+		return orders;
+	} catch (error) {
+		console.error("Failed to fetch orders:", error);
+		throw error;
+	}
+}

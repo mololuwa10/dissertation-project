@@ -63,6 +63,9 @@ public class ApplicationUser implements UserDetails {
   @JsonBackReference
   private ArtisanProfile artisanProfile;
 
+  // @Column(name = "enabled")
+  // private boolean enabled;
+
   public ApplicationUser() {
     super();
     authorities = new HashSet<Roles>();
@@ -86,6 +89,7 @@ public class ApplicationUser implements UserDetails {
     String contactAddress,
     Set<Roles> authorities,
     LocalDateTime dateJoined
+    // boolean enabled
   ) {
     this.userId = userId;
     this.firstname = firstname;
@@ -99,6 +103,7 @@ public class ApplicationUser implements UserDetails {
     this.contactAddress = contactAddress;
     this.authorities = authorities;
     this.dateJoined = dateJoined;
+    // this.enabled = enabled;
   }
 
   // Getters and Setters
@@ -206,6 +211,14 @@ public class ApplicationUser implements UserDetails {
   public void setArtisanProfile(ArtisanProfile artisanProfile) {
     this.artisanProfile = artisanProfile;
   }
+
+  // public boolean getEnabled() {
+  //   return enabled;
+  // }
+
+  // public void setEnabled(boolean enabled) {
+  //   this.enabled = enabled;
+  // }
 
   @Override
   public boolean isAccountNonExpired() {

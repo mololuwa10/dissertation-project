@@ -29,6 +29,12 @@ public class Testimonial {
   @Column(name = "testimonial_date")
   private LocalDateTime testimonialDate;
 
+  @Column(name = "is_approved")
+  private Boolean isApproved;
+
+  @Column(name = "is_engaged")
+  private Boolean isEngaged;
+
   // Constructors
   public Testimonial() {
     super();
@@ -98,5 +104,21 @@ public class Testimonial {
 
   public void setTestimonialDate(LocalDateTime testimonialDate) {
     this.testimonialDate = testimonialDate;
+  }
+
+  public Boolean getIsApproved() {
+    return isApproved;
+  }
+
+  public void setIsApproved(Boolean isApproved) {
+    this.isApproved = isApproved;
+  }
+
+  public Boolean getIsEngaged() {
+    return isEngaged;
+  }
+
+  public void setIsEngaged(Boolean isEngaged) {
+    this.isEngaged = isEngaged;
   }
 }

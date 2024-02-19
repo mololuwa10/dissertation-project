@@ -8,13 +8,18 @@ import com.example.dissertation_backend.solution.Customers.Repository.RoleReposi
 import com.example.dissertation_backend.solution.Customers.Repository.UserRepository;
 import com.example.dissertation_backend.solution.DTO.ArtisanProfileDTO;
 import com.example.dissertation_backend.solution.DTO.LoginResponseDTO;
+// import com.example.dissertation_backend.solution.EmailVerification.VerificationToken;
+// import com.example.dissertation_backend.solution.EmailVerification.VerificationTokenRepository;
 import com.example.dissertation_backend.solution.Exception.InvalidCredentialsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+// import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.mail.SimpleMailMessage;
+// import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,6 +50,12 @@ public class AuthenticationService {
   @Autowired
   private TokenService tokenService;
 
+  // @Autowired
+  // private VerificationTokenRepository verificationTokenRepository;
+
+  // @Autowired
+  // private JavaMailSender mailSender;
+
   public ApplicationUser registerUser(
     String firstname,
     String lastname,
@@ -65,22 +76,32 @@ public class AuthenticationService {
     Set<Roles> authorities = new HashSet<>();
     authorities.add(userRole);
 
-    return userRepository.save(
-      new ApplicationUser(
-        0,
-        firstname,
-        lastname,
-        user_email,
-        username,
-        encodedPassword,
-        bankAccountNo,
-        bankSortCode,
-        contactTelephone,
-        contactAddress,
-        authorities,
-        dateJoined
-      )
+    ApplicationUser newUser = new ApplicationUser(
+      0,
+      firstname,
+      lastname,
+      user_email,
+      username,
+      encodedPassword,
+      bankAccountNo,
+      bankSortCode,
+      contactTelephone,
+      contactAddress,
+      authorities,
+      dateJoined
+      // false
     );
+
+    newUser = userRepository.save(newUser);
+
+    // // Generate verification token
+    // String token = UUID.randomUUID().toString();
+    // createVerificationToken(newUser, token);
+
+    // // // Send verification email
+    // sendVerificationEmail(newUser, token);
+
+    return newUser;
   }
 
   public LoginResponseDTO loginUser(String username, String password) {
@@ -164,4 +185,24 @@ public class AuthenticationService {
       .stream()
       .anyMatch(role -> "ARTISAN".equals(role.getAuthority()));
   }
+  // public void sendVerificationEmail(ApplicationUser user, String token) {
+  //   String recipientAddress = user.getUser_email();
+  //   String subject = "Registration Confirmation";
+  //   String confirmationUrl = "/api/auth/verify?token=" + token;
+  //   String message = "Please click the link to verify your account: ";
+
+  //   SimpleMailMessage email = new SimpleMailMessage();
+  //   email.setTo(recipientAddress);
+  //   email.setSubject(subject);
+  //   email.setText(message + "http://localhost:8080" + confirmationUrl);
+  //   mailSender.send(email);
+  // }
+
+  // public void createVerificationToken(ApplicationUser user, String token) {
+  //   VerificationToken verificationToken = new VerificationToken();
+  //   verificationToken.setUser(user);
+  //   verificationToken.setToken(token);
+  //   verificationToken.setExpiryDate(LocalDateTime.now().plusHours(24));
+  //   verificationTokenRepository.save(verificationToken);
+  // }
 }

@@ -1,10 +1,11 @@
 package com.example.dissertation_backend.solution.Orders.Controller;
 
 import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
-import com.example.dissertation_backend.solution.Customers.Model.Roles;
+// import com.example.dissertation_backend.solution.Customers.Model.Roles;
 import com.example.dissertation_backend.solution.Customers.Repository.UserRepository;
+import com.example.dissertation_backend.solution.DTO.FullOrderDTO;
 import com.example.dissertation_backend.solution.DTO.OrderDTO;
-import com.example.dissertation_backend.solution.DTO.OrderDetailsDTO;
+// import com.example.dissertation_backend.solution.DTO.OrderDetailsDTO;
 import com.example.dissertation_backend.solution.Orders.Service.OrderService;
 import java.security.Principal;
 import java.util.List;
@@ -82,49 +83,23 @@ public class OrderController {
     return ResponseEntity.ok(orders);
   }
 
-  @GetMapping("/artisan/{artisanId}")
-  public ResponseEntity<?> getOrdersByArtisan(
-    @PathVariable Integer artisanId,
-    Principal principal
-  ) {
-    // Retrieve the username from the Principal object
-    String username = principal.getName();
-
-    // Find the user by username
-    ApplicationUser user = userRepository
-      .findByUsername(username)
-      .orElseThrow(() ->
-        new UsernameNotFoundException(
-          "User not found with username: " + username
-        )
+  @GetMapping("/artisan/orders")
+  public ResponseEntity<?> getOrdersByLoggedInArtisan(Principal principal) {
+    try {
+      List<FullOrderDTO> orders = orderService.findFullOrdersByArtisanId(
+        principal
       );
-
-    // Verify that the requesting user matches the artisanId or has permission
-    boolean isUserArtisan =
-      user.getArtisanProfile() != null &&
-      user.getArtisanProfile().getArtisanId().equals(artisanId);
-    boolean isAdmin = hasRole(user, "ADMIN");
-
-    if (!isUserArtisan && !isAdmin) {
-      // User is neither the artisan nor an admin
-      return ResponseEntity
-        .status(HttpStatus.FORBIDDEN)
-        .body("You do not have permission to view these orders.");
+      return ResponseEntity.ok(orders);
+    } catch (RuntimeException e) {
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
-
-    // If verification passes, proceed to fetch and return the orders
-    List<OrderDetailsDTO> orders = orderService.findOrdersByArtisanId(
-      artisanId
-    );
-    return ResponseEntity.ok(orders);
   }
-
-  private boolean hasRole(ApplicationUser user, String roleName) {
-    for (Roles role : user.getAuthorities()) {
-      if (roleName.equals(role.getAuthority())) {
-        return true;
-      }
-    }
-    return false;
-  }
+  // private boolean hasRole(ApplicationUser user, String roleName) {
+  //   for (Roles role : user.getAuthorities()) {
+  //     if (roleName.equals(role.getAuthority())) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
 }

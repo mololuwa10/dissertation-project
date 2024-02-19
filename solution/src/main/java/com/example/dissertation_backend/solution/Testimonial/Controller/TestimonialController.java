@@ -41,7 +41,7 @@ public class TestimonialController {
 
   @GetMapping
   public List<TestimonialDTO> getAllTestimonials() {
-    return testimonialService.getAllTestimonialDTOs();
+    return testimonialService.getAllApprovedTestimonialDTOs();
   }
 
   @GetMapping("/{id}")
@@ -86,6 +86,7 @@ public class TestimonialController {
     testimonial.setRating(testimonialDTO.getRating());
     testimonial.setTestimonial(testimonialDTO.getComment());
     testimonial.setTestimonialDate(LocalDateTime.now());
+    testimonial.setIsApproved(false);
 
     // Add the review to the database
     Testimonial newTestimonial = testimonialService.saveOrUpdateTestimonial(
@@ -138,7 +139,7 @@ public class TestimonialController {
     // Update the testimonial with new details
     existingTestimonial.setRating(testimonialDTO.getRating());
     existingTestimonial.setTestimonial(testimonialDTO.getComment());
-    existingTestimonial.setTestimonialDate(LocalDateTime.now()); // Update the date if necessary
+    existingTestimonial.setTestimonialDate(LocalDateTime.now());
 
     // Save the updated testimonial
     Testimonial updatedTestimonial = testimonialService.saveOrUpdateTestimonial(
@@ -193,6 +194,8 @@ public class TestimonialController {
     dto.setApplicationUser(
       convertApplicationUserDTO(testimonial.getApplicationUser())
     );
+    dto.setTestimonialTitle(testimonial.getTestimonialTitle());
+    dto.setIsApproved(testimonial.getIsApproved());
 
     return dto;
   }

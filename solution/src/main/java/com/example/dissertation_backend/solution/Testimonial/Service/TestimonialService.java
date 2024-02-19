@@ -16,8 +16,12 @@ public class TestimonialService {
   @Autowired
   private TestimonialRepo testimonialRepo;
 
-  public List<TestimonialDTO> getAllTestimonialDTOs() {
-    List<Testimonial> testimonials = testimonialRepo.findAll();
+  public List<TestimonialDTO> getAllApprovedTestimonialDTOs() {
+    List<Testimonial> testimonials = testimonialRepo
+      .findAll()
+      .stream()
+      .filter(Testimonial::getIsApproved)
+      .collect(Collectors.toList());
     return testimonials
       .stream()
       .map(this::convertToDTO)
@@ -30,6 +34,20 @@ public class TestimonialService {
     }
     Optional<Testimonial> testimonial = testimonialRepo.findById(id);
     return testimonial.map(this::convertToDTO);
+  }
+
+  public Optional<TestimonialDTO> approveTestimonial(Integer id) {
+    if (id == null) {
+      return null;
+    }
+    Optional<Testimonial> testimonialOpt = testimonialRepo.findById(id);
+    if (testimonialOpt.isPresent()) {
+      Testimonial testimonial = testimonialOpt.get();
+      testimonial.setIsApproved(true);
+      testimonialRepo.save(testimonial);
+      return Optional.of(convertToDTO(testimonial));
+    }
+    return Optional.empty();
   }
 
   public List<TestimonialDTO> getTestimonialsByUserId(Integer userId) {
@@ -45,8 +63,6 @@ public class TestimonialService {
       .collect(Collectors.toList());
   }
 
-  // Add a new review to the database, returns the newly created object on success and an
-  // empty object on failure
   public Testimonial saveOrUpdateTestimonial(Testimonial testimonial) {
     if (testimonial == null) {
       return null;

@@ -11,7 +11,11 @@ import com.example.dissertation_backend.solution.Customers.Service.UserService;
 // import com.example.dissertation_backend.solution.DTO.ArtisanProfileDTO;
 import com.example.dissertation_backend.solution.DTO.ProductDTO;
 import com.example.dissertation_backend.solution.Products.Service.ProductServices;
+import com.example.dissertation_backend.solution.Testimonial.Model.Testimonial;
+import com.example.dissertation_backend.solution.Testimonial.Repository.TestimonialRepo;
+import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +44,9 @@ public class AdminController {
 
   @Autowired
   private ProductServices productServices;
+
+  @Autowired
+  private TestimonialRepo testimonialRepo;
 
   // @Autowired
   // private ArtisanProfileService artisanProfileService;
@@ -106,5 +113,27 @@ public class AdminController {
   public ResponseEntity<?> approveArtisanRequest(@PathVariable Integer userId) {
     userService.approveArtisanRequest(userId);
     return ResponseEntity.ok("User approved as an artisan.");
+  }
+
+  @PatchMapping("/approveTestimonial/{id}")
+  @PreAuthorize("hasAuthority('ADMIN')")
+  public ResponseEntity<?> approveTestimonial(
+    @PathVariable Integer id,
+    Principal principal
+  ) {
+    if (id == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    Optional<Testimonial> testimonialOpt = testimonialRepo.findById(id);
+    if (!testimonialOpt.isPresent()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    Testimonial testimonial = testimonialOpt.get();
+    testimonial.setIsApproved(true);
+    testimonialRepo.save(testimonial);
+
+    return ResponseEntity.ok().build();
   }
 }
