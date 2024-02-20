@@ -7,9 +7,11 @@ import {
 	useFetchAllCategories,
 	fetchAllArtisans,
 } from "@/lib/dbModels";
-import { updateProduct } from "@/lib/auth";
+import { updateProduct, uploadProductImages } from "@/lib/auth";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function EditProduct() {
 	interface Product {
@@ -139,13 +141,9 @@ export default function EditProduct() {
 
 		const formData = new FormData();
 		formData.append("product", JSON.stringify(productData));
-		// // Append product images if any
-		productImages.forEach((file) => {
-			formData.append("images", file);
-		});
-
 		try {
-			await updateProduct(product?.productId, productData, productImages, jwt);
+			await updateProduct(product?.productId, productData, jwt);
+			toast.success("Product Updated Successfully");
 		} catch (error) {
 			if (error instanceof Error) {
 				console.error("Failed to update the product:", error.message);
@@ -154,6 +152,34 @@ export default function EditProduct() {
 				console.error("Failed to update the product:", error);
 				alert("Failed to update the product.");
 			}
+		}
+	};
+
+	const handleImageUpload = async (event: any) => {
+		event.preventDefault();
+		const jwt = localStorage.getItem("jwt");
+		if (!jwt) {
+			toast.error("Authentication token not found.");
+			return;
+		}
+
+		// Make sure there are images to upload
+		if (productImages.length === 0) {
+			toast.error("No images selected for upload.");
+			return;
+		}
+
+		const formData = new FormData();
+		productImages.forEach((file) => {
+			formData.append("images", file);
+		});
+
+		try {
+			await uploadProductImages(product?.productId, formData, jwt);
+			toast.success("Product Image Uploaded Successfully");
+		} catch (error) {
+			console.error("Error uploading product images:", error);
+			toast.error("Error uploading product images.");
 		}
 	};
 
@@ -175,78 +201,100 @@ export default function EditProduct() {
 	};
 
 	return (
-		<div className={styles.container}>
-			<div className={styles.infoContainer}>
-				<div className={styles.imgContainer}>
-					{product?.imageUrls.map((imageUrl, index) => (
-						<Image
-							key={index}
-							src={`http://localhost:8080${imageUrl}` || "/noavatar.png"}
-							alt={`Product Image ${index + 1}`}
-							fill
-						/>
-					))}
-				</div>
-				{/* {user.username} */}
-			</div>
-			<div className={styles.formContainer}>
-				<form className={styles.form} onSubmit={handleSubmit}>
-					<input type="hidden" name="id" />
-					<label>Product Name</label>
-					<input
-						type="text"
-						name="productName"
-						placeholder={product.productName}
-						value={product.productName}
-						onChange={handleInputChange}
-					/>
-					<label>Product Price</label>
-					<input
-						type="text"
-						name="productPrice"
-						placeholder={String(product.productPrice)}
-						value={product.productPrice}
-						onChange={handleInputChange}
-					/>
-					<label>Product Stock Quantity</label>
-					<input
-						type="text"
-						name="stockQuanitiy"
-						placeholder={String(product.productStockQuantity)}
-						value={product.productStockQuantity}
-						onChange={handleInputChange}
-					/>
-					<label>Product Discount</label>
-					<input
-						type="text"
-						name="productDiscount"
-						placeholder={String(product.productDiscount)}
-						value={product.productDiscount}
-						onChange={handleInputChange}
-					/>
-					<label>Product Description</label>
-					<textarea
-						name="productDescription"
-						placeholder={product.productDescription}
-						value={product.productDescription}
-						onChange={handleInputChange}
-					/>
-					<label>Category</label>
-					<select
-						name="category"
-						id="category"
-						value={selectedCategoryId}
-						onChange={(e) => setSelectedCategoryId(e.target.value)}>
-						{categories.map((category) => (
-							<option key={category.value} value={category.value}>
-								{category.label}
-							</option>
+		<>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
+			<div className={styles.container}>
+				<div className={styles.infoContainer}>
+					<div className={styles.imgContainer}>
+						{product?.imageUrls.map((imageUrl, index) => (
+							<Image
+								key={index}
+								src={`http://localhost:8080${imageUrl}` || "/noavatar.png"}
+								alt={`Product Image ${index + 1}`}
+								fill
+							/>
 						))}
-					</select>
-					<input type="file" multiple onChange={handleFileChange} />
-					<button>Update</button>
-				</form>
+					</div>
+					{/* {user.username} */}
+				</div>
+				<div className={styles.formContainer}>
+					<form className={styles.form} onSubmit={handleSubmit}>
+						<input type="hidden" name="id" />
+						<label>Product Name</label>
+						<input
+							type="text"
+							name="productName"
+							placeholder={product.productName}
+							value={product.productName}
+							onChange={handleInputChange}
+						/>
+						<label>Product Price</label>
+						<input
+							type="text"
+							name="productPrice"
+							placeholder={String(product.productPrice)}
+							value={product.productPrice}
+							onChange={handleInputChange}
+						/>
+						<label>Product Stock Quantity</label>
+						<input
+							type="text"
+							name="stockQuanitiy"
+							placeholder={String(product.productStockQuantity)}
+							value={product.productStockQuantity}
+							onChange={handleInputChange}
+						/>
+						<label>Product Discount</label>
+						<input
+							type="text"
+							name="productDiscount"
+							placeholder={String(product.productDiscount)}
+							value={product.productDiscount}
+							onChange={handleInputChange}
+						/>
+						<label>Product Description</label>
+						<textarea
+							name="productDescription"
+							placeholder={product.productDescription}
+							value={product.productDescription}
+							onChange={handleInputChange}
+						/>
+						<label>Category</label>
+						<select
+							name="category"
+							id="category"
+							value={selectedCategoryId}
+							onChange={(e) => setSelectedCategoryId(e.target.value)}>
+							{categories.map((category) => (
+								<option key={category.value} value={category.value}>
+									{category.label}
+								</option>
+							))}
+						</select>
+
+						<button>Update</button>
+					</form>
+					<form className={styles.form} onSubmit={handleImageUpload}>
+						<input
+							type="file"
+							name="images"
+							multiple
+							onChange={handleFileChange}
+						/>
+						<button type="submit">Upload Product Images</button>
+					</form>
+				</div>
 			</div>
-		</div>
+		</>
 	);
 }

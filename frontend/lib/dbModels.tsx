@@ -409,6 +409,7 @@ export const useGetTestimonials = () => {
 		testimonialTitle: string;
 		rating: number;
 		comment: string;
+		reviewDate: string;
 		testimonialDate: string;
 		isApproved: boolean;
 		applicationUser: {

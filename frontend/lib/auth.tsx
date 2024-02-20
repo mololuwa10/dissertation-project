@@ -221,7 +221,6 @@ export const addProduct = async (
 
 		if (response.ok) {
 			const data = await response.json();
-			alert("Product Added Successfully");
 			window.location.reload();
 			return data;
 		} else {
@@ -232,6 +231,35 @@ export const addProduct = async (
 		console.error("Error adding product: ", error);
 		throw error;
 	}
+};
+
+// Adding Product images
+export const uploadProductImages = async (
+	productId: any,
+	images: any,
+	jwt: any
+) => {
+	const formData = new FormData();
+	for (const image of images) {
+		formData.append("images", image);
+	}
+
+	const response = await fetch(
+		`http://localhost:8080/api/products/${productId}/images`,
+		{
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${jwt}`,
+			},
+			body: formData,
+		}
+	);
+
+	if (!response.ok) {
+		throw new Error(`HTTP error! status: ${response.status}`);
+	}
+
+	return await response.json();
 };
 
 // Delete Product
@@ -279,7 +307,6 @@ export const updateProduct = async (
 
 		if (response.ok) {
 			const data = await response.json();
-			alert("Product Updated Successfully");
 			return data;
 		} else {
 			const errorText = await response.text();

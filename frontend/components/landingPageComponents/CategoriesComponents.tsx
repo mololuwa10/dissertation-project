@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useFetchCategories } from "@/lib/dbModels";
@@ -48,7 +49,7 @@ export default function CategoriesComponents() {
 										key={index}
 										className="md:basis-1/2 lg:basis-1/3">
 										<div className="group relative">
-											<div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+											<div className="aspect-h-1 aspect-w-1  overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
 												<img
 													src={
 														category.image

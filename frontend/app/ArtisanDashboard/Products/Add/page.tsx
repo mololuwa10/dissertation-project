@@ -4,6 +4,8 @@ import styles from "@/components/dashboardComponents/users/addUser/addUser.modul
 import { useRef, useState } from "react";
 import { addProduct } from "@/lib/auth";
 import { useFetchAllCategories } from "@/lib/dbModels";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddProductPage = () => {
 	const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -79,6 +81,7 @@ const AddProductPage = () => {
 				selectedImage ? [selectedImage] : [],
 				jwt
 			);
+			toast.success("Product Added Successfully");
 			console.log(response);
 			setProductName("");
 			setProductDescription("");
@@ -109,82 +112,114 @@ const AddProductPage = () => {
 	};
 
 	return (
-		<div className={styles.container}>
-			<form className={styles.form} onSubmit={handleSubmit}>
-				<input
-					type="text"
-					placeholder="Product Name"
-					name="productName"
-					value={productName}
-					onChange={(event) => setProductName(event.target.value)}
-					required
-				/>
-				<input
-					type="number"
-					placeholder="Product Price"
-					name="productPrice"
-					value={productPrice}
-					onChange={(event) => setProductPrice(event.target.value)}
-					required
-				/>
-				<input
-					type="number"
-					placeholder="Product Stock Quantity"
-					name="productStockQuantity"
-					value={productStockQuantity}
-					onChange={(event) => setProductStockQuantity(event.target.value)}
-					required
-				/>
-				<input
-					type="number"
-					placeholder="Product Discount"
-					name="productDiscount"
-					value={productDiscount}
-					onChange={(event) => setProductDiscount(event.target.value)}
-				/>
+		<>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
+			<div className={styles.container}>
+				<form className={styles.form} onSubmit={handleSubmit}>
+					<input
+						type="text"
+						placeholder="Product Name"
+						name="productName"
+						value={productName}
+						onChange={(event) => setProductName(event.target.value)}
+						required
+					/>
+					<input
+						type="text"
+						placeholder="Product Price"
+						name="productPrice"
+						value={productPrice}
+						onChange={(event) => {
+							const validNumber = /^(\d+\.?\d{0,2}|\.\d{1,2})$/;
+							if (validNumber.test(event.target.value)) {
+								setProductPrice(event.target.value);
+							}
+						}}
+						onBlur={(event) => {
+							const value = parseFloat(event.target.value).toFixed(2);
+							setProductPrice(value);
+						}}
+						required
+					/>
 
-				<select
-					name="categoryId"
-					id="categoryId"
-					value={categoryId || ""}
-					onChange={(event) => setCategoryId(event.target.value)}>
-					<option value="" disabled selected>
-						Select Category
-					</option>
-					{categories.map((category) => (
-						<>
-							<option key={category.value} value={category.value}>
-								{category.label}
-							</option>
-						</>
-					))}
-				</select>
+					<input
+						type="number"
+						placeholder="Product Stock Quantity"
+						name="productStockQuantity"
+						value={productStockQuantity}
+						onChange={(event) => setProductStockQuantity(event.target.value)}
+						required
+					/>
+					<input
+						type="number"
+						placeholder="Product Discount"
+						name="productDiscount"
+						value={productDiscount}
+						onChange={(event) => {
+							const validNumber = /^(\d+\.?\d{0,2}|\.\d{1,2})$/;
+							if (validNumber.test(event.target.value)) {
+								setProductDiscount(event.target.value);
+							}
+						}}
+						onBlur={(event) => {
+							const value = parseFloat(event.target.value).toFixed(2);
+							setProductDiscount(value);
+						}}
+					/>
 
-				<textarea
-					name="description"
-					id="productDescription"
-					value={productDescription}
-					onChange={(event) => setProductDescription(event.target.value)}
-					placeholder="Product Description"></textarea>
-				<input
-					type="file"
-					ref={fileInputRef}
-					onChange={handleFileChange}
-					style={{ display: "none" }}
-				/>
-				<button
-					className="my-8"
-					type="button"
-					onClick={() => fileInputRef.current?.click()}>
-					Select Image
-				</button>
+					<select
+						name="categoryId"
+						id="categoryId"
+						value={categoryId || ""}
+						onChange={(event) => setCategoryId(event.target.value)}>
+						<option value="" disabled selected>
+							Select Category
+						</option>
+						{categories.map((category) => (
+							<>
+								<option key={category.value} value={category.value}>
+									{category.label}
+								</option>
+							</>
+						))}
+					</select>
 
-				<button type="submit" disabled={loading}>
-					{loading ? "Submitting..." : "Submit"}
-				</button>
-			</form>
-			{error && <p className="error">{error}</p>}
-		</div>
+					<textarea
+						name="description"
+						id="productDescription"
+						value={productDescription}
+						onChange={(event) => setProductDescription(event.target.value)}
+						placeholder="Product Description"></textarea>
+					<input
+						type="file"
+						ref={fileInputRef}
+						onChange={handleFileChange}
+						style={{ display: "none" }}
+					/>
+					<button
+						className="my-8"
+						type="button"
+						onClick={() => fileInputRef.current?.click()}>
+						Select Image
+					</button>
+
+					<button type="submit" disabled={loading}>
+						{loading ? "Submitting..." : "Submit"}
+					</button>
+				</form>
+				{error && <p className="error">{error}</p>}
+			</div>
+		</>
 	);
 };
 

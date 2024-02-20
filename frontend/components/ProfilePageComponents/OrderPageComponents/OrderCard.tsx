@@ -120,7 +120,9 @@ const OrderCard = ({ orderInfo, item }: { orderInfo: Order; item: any }) => {
 									View Order Details
 								</button>
 								<button className="mt-2 text-blue-600 hover:text-blue-800 text-sm">
-									Return or replace items
+									{orderInfo.status === "DELIVERED"
+										? "Return or replace items"
+										: "Cancel Order"}
 								</button>
 								<button className="mt-2 text-blue-600 hover:text-blue-800 text-sm">
 									Write a product review

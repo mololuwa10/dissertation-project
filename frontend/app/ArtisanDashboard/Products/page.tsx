@@ -143,7 +143,9 @@ export default function Products() {
 								<TableCell>{product.productPrice}</TableCell>
 								<TableCell>{product.productStockQuantity}</TableCell>
 								<TableCell>{product.productDiscount}</TableCell>
-								<TableCell>{product.dateTimeUpdated}</TableCell>
+								<TableCell>
+									{new Date(product.dateTimeUpdated).toLocaleDateString()}
+								</TableCell>
 								<TableCell>{product.category.categoryName}</TableCell>
 								<TableCell>{product.artisanProfile.firstname}</TableCell>
 

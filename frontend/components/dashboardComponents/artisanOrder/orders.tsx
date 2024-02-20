@@ -4,9 +4,8 @@ import Image from "next/image";
 import styles from "./transactions.module.css";
 import { Button } from "@/components/ui/button";
 import { fetchOrdersByArtisan } from "@/lib/dbModels";
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useFetchUserInfo } from "@/lib/data";
 
 const ArtisanOrders = () => {
 	interface Order {
