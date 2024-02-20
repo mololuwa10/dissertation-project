@@ -163,14 +163,20 @@ export default function ProductReviews() {
 				numericProductId,
 				"product"
 			);
+			if (!reviewTitle || !reviewComment || reviewRating <= 0) {
+				toast.error(
+					"Please fill in all fields and make sure the rating is above 0."
+				);
+				return;
+			}
 			toast.success("Review submitted successfully!");
 			// Reset form fields
 			setReviewTitle("");
 			setReviewComment("");
 			setReviewRating(0);
 		} catch (error) {
-			alert(
-				"An error occurred while submitting your review! Please check if you are signed in."
+			toast.error(
+				"An error occurred while submitting your review! Its either you have not signed in or you are not able to add a review because you have not ordered or recived the product if ordered"
 			);
 		}
 	};

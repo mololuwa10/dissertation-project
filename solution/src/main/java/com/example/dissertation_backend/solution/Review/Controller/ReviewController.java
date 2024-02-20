@@ -10,6 +10,7 @@ import com.example.dissertation_backend.solution.DTO.ArtisanProfileDTO;
 import com.example.dissertation_backend.solution.DTO.CategoryDTO;
 import com.example.dissertation_backend.solution.DTO.ProductDTO;
 import com.example.dissertation_backend.solution.DTO.ReviewDTO;
+import com.example.dissertation_backend.solution.Orders.Service.OrderService;
 import com.example.dissertation_backend.solution.Products.Model.ProductImages;
 import com.example.dissertation_backend.solution.Products.Model.Products;
 import com.example.dissertation_backend.solution.Products.Service.ProductServices;
@@ -52,6 +53,9 @@ public class ReviewController {
 
   @Autowired
   private ArtisanProfileService artisanProfileService;
+
+  @Autowired
+  private OrderService orderService;
 
   @GetMapping
   public List<ReviewDTO> getAllReviews() {
@@ -105,17 +109,32 @@ public class ReviewController {
     }
 
     // Verify that the product exists
-    Optional<Products> product = productServices.getProductById(productId);
-    if (!product.isPresent()) {
+    Optional<Products> productOpt = productServices.getProductById(productId);
+    if (!productOpt.isPresent()) {
       return ResponseEntity
         .status(HttpStatus.NOT_FOUND)
         .body("Product not found.");
     }
 
+    Products product = productOpt.get();
+
+    // Check if the user has ordered and received the product
+    boolean canAddReview = orderService.hasUserOrderedAndReceivedProduct(
+      user,
+      product
+    );
+    if (!canAddReview) {
+      return ResponseEntity
+        .status(HttpStatus.FORBIDDEN)
+        .body(
+          "You can only add a review for products that you have ordered and received."
+        );
+    }
+
     // Create a new Review object and set its fields
     Review review = new Review();
     review.setApplicationUser(user);
-    review.setProducts(product.get());
+    review.setProducts(product);
     review.setReviewTitle(reviewDTO.getReviewTitle());
     review.setRating(reviewDTO.getRating());
     review.setComment(reviewDTO.getComment());

@@ -9,6 +9,7 @@ import com.example.dissertation_backend.solution.Orders.Model.OrderDetails;
 import com.example.dissertation_backend.solution.Orders.Model.Orders;
 import com.example.dissertation_backend.solution.Orders.Repository.OrderDetailsRepository;
 import com.example.dissertation_backend.solution.Orders.Repository.OrdersRepository;
+import com.example.dissertation_backend.solution.Products.Model.Products;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -108,5 +109,18 @@ public class OrderService {
       return;
     }
     ordersRepository.deleteById(id);
+  }
+
+  public boolean hasUserOrderedAndReceivedProduct(
+    ApplicationUser user,
+    Products product
+  ) {
+    List<OrderDetails> orderDetailsList = orderDetailsRepository.findByOrder_UserIdAndProductAndOrder_Status(
+      user,
+      product,
+      Orders.Status.DELIVERED
+    );
+
+    return !orderDetailsList.isEmpty();
   }
 }
