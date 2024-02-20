@@ -357,14 +357,16 @@ export const useFetchSubcategories = (categoryId: any) => {
 	return { subcategories };
 };
 
-// Get all testimonials
-export const useGetTestimonials = () => {
+// get all testimonials
+
+export const useGetAllTestimonials = () => {
 	interface Testimonials {
 		testimonialId: number;
 		testimonialTitle: string;
 		rating: number;
 		comment: string;
-		reviewDate: string;
+		testimonialDate: string;
+		isApproved: boolean;
 		applicationUser: {
 			userId: number;
 			firstname: string;
@@ -397,6 +399,99 @@ export const useGetTestimonials = () => {
 
 		fetchTestimonials();
 	}, []);
+
+	return { testimonials };
+};
+// Get all approved testimonials
+export const useGetTestimonials = () => {
+	interface Testimonials {
+		testimonialId: number;
+		testimonialTitle: string;
+		rating: number;
+		comment: string;
+		testimonialDate: string;
+		isApproved: boolean;
+		applicationUser: {
+			userId: number;
+			firstname: string;
+			lastname: string;
+			username: string;
+		};
+	}
+	const [testimonials, setTestimonials] = useState<Testimonials[]>([]);
+	useEffect(() => {
+		const fetchTestimonials = async () => {
+			try {
+				const response = await fetch(
+					"http://localhost:8080/api/testimonials/approvedTestimonials",
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+						},
+					}
+				);
+
+				if (!response.ok) {
+					throw new Error("Failed to fetch testimonials");
+				}
+
+				const data = await response.json();
+				setTestimonials(data);
+				console.log(data);
+			} catch (error) {
+				console.error("Error fetching testimonials: ", error);
+			}
+		};
+
+		fetchTestimonials();
+	}, []);
+
+	return { testimonials };
+};
+
+// Get all testimonials by Id
+export const useGetTestimonialsById = (testimonialId: any) => {
+	interface Testimonials {
+		testimonialId: number;
+		testimonialTitle: string;
+		rating: number;
+		comment: string;
+		testimonialDate: string;
+		isApproved: boolean;
+		applicationUser: {
+			userId: number;
+			firstname: string;
+			lastname: string;
+			username: string;
+		};
+	}
+	const [testimonials, setTestimonials] = useState<Testimonials[]>([]);
+	useEffect(() => {
+		const fetchTestimonials = async () => {
+			try {
+				const response = await fetch(
+					`http://localhost:8080/api/testimonials/${testimonialId}`,
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+						},
+					}
+				);
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				} else {
+					const data = await response.json();
+					setTestimonials(data);
+					console.log(data);
+				}
+			} catch (error) {
+				console.error("Error fetching testimonials: ", error);
+			}
+		};
+		fetchTestimonials();
+	}, [testimonialId]);
 
 	return { testimonials };
 };

@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
   origins = { "*" },
   methods = {
     RequestMethod.OPTIONS,
+    RequestMethod.PATCH,
     RequestMethod.GET,
     RequestMethod.PUT,
     RequestMethod.DELETE,

@@ -41,12 +41,30 @@ public class TestimonialController {
 
   @GetMapping
   public List<TestimonialDTO> getAllTestimonials() {
+    return testimonialService.getAllTestimonialDTOs();
+  }
+
+  @GetMapping("/approvedTestimonials")
+  public List<TestimonialDTO> getAllApprovedTestimonials() {
     return testimonialService.getAllApprovedTestimonialDTOs();
   }
 
   @GetMapping("/{id}")
-  public Optional<TestimonialDTO> getTestimonialById(@PathVariable Integer id) {
-    return testimonialService.getTestimonialByIdDTOs(id);
+  public ResponseEntity<TestimonialDTO> getTestimonialById(
+    @PathVariable Integer id
+  ) {
+    Optional<TestimonialDTO> testimonialDtoOpt = testimonialService.getTestimonialByIdDTOs(
+      id
+    );
+
+    // Check if the Optional contains a value
+    if (testimonialDtoOpt.isPresent()) {
+      // Return 200 OK with the testimonial DTO
+      return ResponseEntity.ok(testimonialDtoOpt.get());
+    } else {
+      // Return 404 Not Found if the testimonial doesn't exist
+      return ResponseEntity.notFound().build();
+    }
   }
 
   @GetMapping("/user/{userId}")

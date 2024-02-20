@@ -16,6 +16,14 @@ public class TestimonialService {
   @Autowired
   private TestimonialRepo testimonialRepo;
 
+  public List<TestimonialDTO> getAllTestimonialDTOs() {
+    List<Testimonial> testimonials = testimonialRepo.findAll();
+    return testimonials
+      .stream()
+      .map(this::convertToDTO)
+      .collect(Collectors.toList());
+  }
+
   public List<TestimonialDTO> getAllApprovedTestimonialDTOs() {
     List<Testimonial> testimonials = testimonialRepo
       .findAll()
@@ -88,6 +96,7 @@ public class TestimonialService {
     dto.setApplicationUser(
       convertApplicationUserDTO(testimonial.getApplicationUser())
     );
+    dto.setIsApproved(testimonial.getIsApproved());
 
     return dto;
   }
