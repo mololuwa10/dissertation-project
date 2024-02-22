@@ -1,6 +1,7 @@
 package com.example.dissertation_backend.solution.Products.Service;
 
 import com.example.dissertation_backend.solution.Category.Model.Category;
+import com.example.dissertation_backend.solution.Category.Repository.CategoryRepository;
 // import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
 import com.example.dissertation_backend.solution.Customers.Model.ArtisanProfile;
 import com.example.dissertation_backend.solution.DTO.ArtisanProfileDTO;
@@ -9,6 +10,8 @@ import com.example.dissertation_backend.solution.DTO.ProductDTO;
 import com.example.dissertation_backend.solution.Products.Model.ProductImages;
 import com.example.dissertation_backend.solution.Products.Model.Products;
 import com.example.dissertation_backend.solution.Products.Repository.ProductRepository;
+import java.util.ArrayList;
+import java.util.HashSet;
 // import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +25,9 @@ public class ProductServices {
 
   @Autowired
   private ProductRepository productRepository;
+
+  @Autowired
+  private CategoryRepository categoryRepository;
 
   public List<ProductDTO> getAllProductDTOs() {
     List<Products> products = productRepository.findAll();
@@ -45,6 +51,51 @@ public class ProductServices {
     }
     Optional<Products> products = productRepository.findById(id);
     return products.map(this::convertToDTO);
+  }
+
+  public List<ProductDTO> getProductsByParentCategory(Integer categoryId) {
+    // This method assumes that products directly under a parent category do not belong to any subcategory
+    List<Products> products = productRepository.findByCategory_CategoryId(
+      categoryId
+    );
+    return products
+      .stream()
+      .map(this::convertToDTO)
+      .collect(Collectors.toList());
+  }
+
+  public List<ProductDTO> getProductsBySubCategory(Integer subCategoryId) {
+    List<Products> products = productRepository.findByCategory_CategoryId(
+      subCategoryId
+    );
+    return products
+      .stream()
+      .map(this::convertToDTO)
+      .collect(Collectors.toList());
+  }
+
+  public List<ProductDTO> getProductsByCategoryAndSubcategories(
+    Integer categoryId
+  ) {
+    if (categoryId == null) {
+      return new ArrayList<>();
+    }
+
+    Optional<Category> categoryOpt = categoryRepository.findById(categoryId);
+    if (!categoryOpt.isPresent()) {
+      return new ArrayList<>();
+    }
+
+    Set<Integer> categoryIds = collectCategoryIdsIncludingSubcategories(
+      categoryOpt.get()
+    );
+    List<Products> products = productRepository.findAllByCategory_CategoryIdIn(
+      categoryIds
+    );
+    return products
+      .stream()
+      .map(this::convertToDTO)
+      .collect(Collectors.toList());
   }
 
   // public List<ProductDTO> getProductsByUser(ApplicationUser user) {
@@ -145,5 +196,23 @@ public class ProductServices {
     dto.setDateTimeUpdated(product.getDateTimeUpdated());
 
     return dto;
+  }
+
+  private Set<Integer> collectCategoryIdsIncludingSubcategories(
+    Category category
+  ) {
+    Set<Integer> categoryIds = new HashSet<>();
+    collectCategoryIdsHelper(category, categoryIds);
+    return categoryIds;
+  }
+
+  private void collectCategoryIdsHelper(
+    Category category,
+    Set<Integer> categoryIds
+  ) {
+    categoryIds.add(category.getCategoryId());
+    for (Category subCategory : category.getSubCategories()) {
+      collectCategoryIdsHelper(subCategory, categoryIds);
+    }
   }
 }

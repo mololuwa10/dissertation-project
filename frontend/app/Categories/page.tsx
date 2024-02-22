@@ -1,10 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import Footer from "@/components/layoutComponents/Footer";
 import Header from "@/components/layoutComponents/Header";
 import { useFetchSubcategories, useFetchCategoryById } from "@/lib/dbModels";
 import { useSearchParams } from "next/navigation";
-import RootLayout from "../layout";
 
 export default function Categories() {
 	interface Category {

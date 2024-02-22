@@ -43,84 +43,23 @@ const ArtisanOrders = () => {
 		}>;
 	}
 
-	// const { userDetails, isLoggedIn } = useFetchUserInfo();
-
 	const [allOrders, setAllOrders] = useState<Order[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
 
-	// useEffect(() => {
-	// 	const fetchArtisanOrders = async () => {
-	// 		try {
-	// 			const orders = await fetchOrdersByArtisan();
-	// 			setAllOrders(orders);
-	// 			setLoading(false);
-	// 		} catch (error) {
-	// 			setError("Failed to fetch orders: " + error.message);
-	// 			setLoading(false);
-	// 		}
-	// 	};
-
-	// 	fetchArtisanOrders();
-	// }, []);
-
-	// useEffect(() => {
-	// 	fetchOrdersByArtisan()
-	// 		.then((data) => {
-	// 			// Ensure data is an array
-	// 			if (!Array.isArray(data)) {
-	// 				throw new Error("Data is not an array");
-	// 			}
-	// 			// Flatten the items arrays from all orders into a single array
-	// 			const allItems = data.reduce((acc, order) => {
-	// 				if (!order.items || !Array.isArray(order.items)) {
-	// 					// Skip this order or handle the lack of items appropriately
-	// 					return acc;
-	// 				}
-	// 				const itemsWithOrderInfo = order.items.map((item: any) => ({
-	// 					...item,
-	// 					orderInfo: {
-	// 						id: order.id,
-	// 						totalPrice: order.totalPrice,
-	// 						status: order.status,
-	// 						orderDateTime: order.orderDateTime,
-	// 						user: order.user,
-	// 					},
-	// 				}));
-	// 				return [...acc, ...itemsWithOrderInfo];
-	// 			}, []);
-
-	// 			// Sort the orders based on the orderDateTime in descending order
-	// 			const sortedOrders = allItems.sort(
-	// 				(a: any, b: any) =>
-	// 					new Date(b.orderInfo.orderDateTime).getTime() -
-	// 					new Date(a.orderInfo.orderDateTime).getTime()
-	// 			);
-
-	// 			setAllOrders(sortedOrders);
-	// 			setLoading(false);
-	// 		})
-	// 		.catch((error) => {
-	// 			setError(error.message);
-	// 			setLoading(false);
-	// 		});
-	// }, []);
-
 	useEffect(() => {
 		fetchOrdersByArtisan()
 			.then((data) => {
-				// Ensure data is an array
 				if (!Array.isArray(data)) {
 					throw new Error("Data is not an array");
 				}
 				// Process each order and its items
 				const processedOrders = data
 					.map(({ order, orderDetails }) => {
-						// Combine the order info with each item in the orderDetails
 						return orderDetails.map((item: any) => ({
-							...item.productDTO, // Assuming you want to display details from the productDTO
-							quantity: item.quantity, // Item's quantity
-							priceAtOrder: item.priceAtOrder, // Item's price at order
+							...item.productDTO,
+							quantity: item.quantity,
+							priceAtOrder: item.priceAtOrder,
 							orderInfo: {
 								id: order.id,
 								totalPrice: order.totalPrice,

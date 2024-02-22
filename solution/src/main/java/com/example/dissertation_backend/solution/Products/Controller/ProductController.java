@@ -71,6 +71,44 @@ public class ProductController {
       .orElse(ResponseEntity.notFound().build());
   }
 
+  @GetMapping("/category/{categoryId}")
+  public ResponseEntity<List<ProductDTO>> getProductsByParentCategory(
+    @PathVariable Integer categoryId
+  ) {
+    List<ProductDTO> products = productService.getProductsByParentCategory(
+      categoryId
+    );
+    return ResponseEntity.ok(products);
+  }
+
+  @GetMapping("/subcategory/{subCategoryId}")
+  public ResponseEntity<List<ProductDTO>> getProductsBySubCategory(
+    @PathVariable Integer subCategoryId
+  ) {
+    List<ProductDTO> products = productService.getProductsBySubCategory(
+      subCategoryId
+    );
+    return ResponseEntity.ok(products);
+  }
+
+  @SuppressWarnings("null")
+  @GetMapping("/parentWithSubCategory/{categoryId}")
+  public ResponseEntity<List<ProductDTO>> getProductsByCategoryIncludingSubcategories(
+    @PathVariable Integer categoryId
+  ) {
+    try {
+      List<ProductDTO> products = productService.getProductsByCategoryAndSubcategories(
+        categoryId
+      );
+      if (products.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      }
+      return new ResponseEntity<>(products, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   @GetMapping("/artisan/{artisanId}")
   public List<ProductDTO> getProductsByArtisanId(
     @PathVariable Integer artisanId

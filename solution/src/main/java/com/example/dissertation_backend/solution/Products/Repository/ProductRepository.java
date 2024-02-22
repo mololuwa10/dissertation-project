@@ -9,4 +9,8 @@ import org.springframework.stereotype.Repository;
 public interface ProductRepository extends JpaRepository<Products, Integer> {
   // Add any custom query methods if needed
   List<Products> findByArtisan_ArtisanId(Integer artisanId);
+
+  List<Products> findByCategory_CategoryId(Integer categoryId);
+
+  List<Products> findAllByCategory_CategoryIdIn(Set<Integer> categoryIds);
 }
