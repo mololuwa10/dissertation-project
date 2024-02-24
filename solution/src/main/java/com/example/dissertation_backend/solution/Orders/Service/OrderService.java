@@ -11,10 +11,12 @@ import com.example.dissertation_backend.solution.Orders.Repository.OrderDetailsR
 import com.example.dissertation_backend.solution.Orders.Repository.OrdersRepository;
 import com.example.dissertation_backend.solution.Products.Model.Products;
 import java.security.Principal;
+import java.time.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -109,6 +111,39 @@ public class OrderService {
       return;
     }
     ordersRepository.deleteById(id);
+  }
+
+  @Scheduled(fixedDelayString = "PT1H")
+  public void updateOrderStatuses() {
+    List<Orders> allOrders = ordersRepository.findAll();
+    LocalDateTime now = LocalDateTime.now();
+
+    for (Orders order : allOrders) {
+      LocalDateTime orderTime = order.getOrderDateTime();
+      Duration duration = Duration.between(orderTime, now);
+
+      if (
+        duration.toHours() <= 6 && order.getStatus() == Orders.Status.PENDING
+      ) {
+        continue;
+      } else if (
+        duration.toHours() <= 12 &&
+        order.getStatus() != Orders.Status.DISPATCHED
+      ) {
+        order.setStatus(Orders.Status.DISPATCHED);
+      } else if (
+        duration.toHours() <= 18 &&
+        order.getStatus() != Orders.Status.OUT_FOR_DELIVERY
+      ) {
+        order.setStatus(Orders.Status.OUT_FOR_DELIVERY);
+      } else if (
+        duration.toHours() >= 20 && order.getStatus() != Orders.Status.DELIVERED
+      ) {
+        order.setStatus(Orders.Status.DELIVERED);
+      }
+
+      ordersRepository.save(order);
+    }
   }
 
   public boolean hasUserOrderedAndReceivedProduct(

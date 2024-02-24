@@ -14,6 +14,7 @@ public class Orders {
     PENDING,
     DISPATCHED,
     DELIVERED,
+    OUT_FOR_DELIVERY,
     CANCELLED,
   }
 
