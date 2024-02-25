@@ -24,6 +24,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,6 +60,24 @@ public class ProductController {
 
   @Autowired
   private CategoryService categoryService;
+
+  @GetMapping("/search")
+  public ResponseEntity<Page<ProductDTO>> searchProducts(
+    @RequestParam(required = false) String searchTerm,
+    @RequestParam(required = false) Double minPrice,
+    @RequestParam(required = false) Double maxPrice,
+    @RequestParam(required = false) Integer minRating,
+    @PageableDefault(size = 10) Pageable pageable
+  ) {
+    Page<ProductDTO> productPage = productService.searchProducts(
+      searchTerm,
+      minPrice,
+      maxPrice,
+      minRating,
+      pageable
+    );
+    return ResponseEntity.ok(productPage);
+  }
 
   @GetMapping
   public List<ProductDTO> getAllProducts() {

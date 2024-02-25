@@ -140,7 +140,7 @@ export default function NewProduct() {
 							/>
 							{/* </div> */}
 						</div>
-						{products.slice(0, 8).map((product) => (
+						{products.slice(0, 7).map((product) => (
 							<div key={product.value} className="group relative">
 								<div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
 									<img

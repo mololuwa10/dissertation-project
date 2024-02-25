@@ -2,41 +2,40 @@
 import { Search } from "lucide-react";
 import React, { useState } from "react";
 import { words } from "@/lib/data";
+import { FaSearch } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
-const SearchBar = () => {
-	const [activeSearch, setActiveSearch] = useState<string[]>([]);
+const SearchBar = ({ placeholder }: { placeholder: string }) => {
+	const [searchTerm, setSearchTerm] = useState("");
+	const router = useRouter();
 
-	const handleSeacrh = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (e.target.value == "") {
-			setActiveSearch([]);
-			return false;
-		}
-		setActiveSearch(
-			words.filter((w) => w.includes(e.target.value)).slice(0, 8)
-		);
+	const handleInputChange = (event: any) => {
+		setSearchTerm(event.target.value);
 	};
-	return (
-		<form className="w-[500px] relative">
-			<div className="relative">
-				<input
-					type="search"
-					placeholder="Search for anything"
-					className="w-full p-4 rounded-full text-black bg-gray-200"
-					onChange={(e) => handleSeacrh(e)}
-				/>
-				<button className="absolute right-1 top-1/2 -translate-y-1/2 p-3 rounded-full">
-					<Search />
-				</button>
-			</div>
 
-			{activeSearch.length > 0 && (
-				<div className="absolute top-20 p-4 bg-slate-800 text-white w-full rounded-xl left-1/32 left-1/2 -translate-x-1/2 flex flex-col gap-2">
-					{activeSearch.map((s) => (
-						// eslint-disable-next-line react/jsx-key
-						<span>{s}</span>
-					))}
+	const handleSubmit = (event: any) => {
+		event.preventDefault();
+		router.push(`/SearchResults?query=${encodeURIComponent(searchTerm)}`);
+	};
+
+	return (
+		<form className="flex items-center justify-center" onSubmit={handleSubmit}>
+			<div className="flex items-center justify-center">
+				<div className="relative md:w-full max-w-xl shadow-md rounded-lg">
+					<input
+						type="search"
+						className="w-full border border-gray-300 rounded-md py-2 px-4"
+						placeholder={placeholder}
+						value={searchTerm}
+						onChange={handleInputChange}
+					/>
+					<button
+						type="submit"
+						className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
+						<FaSearch />
+					</button>
 				</div>
-			)}
+			</div>
 		</form>
 	);
 };

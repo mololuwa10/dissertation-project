@@ -10,15 +10,18 @@ import com.example.dissertation_backend.solution.DTO.ProductDTO;
 import com.example.dissertation_backend.solution.Products.Model.ProductImages;
 import com.example.dissertation_backend.solution.Products.Model.Products;
 import com.example.dissertation_backend.solution.Products.Repository.ProductRepository;
-import java.util.ArrayList;
-import java.util.HashSet;
-// import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import com.example.dissertation_backend.solution.Review.Model.Review;
+import jakarta.persistence.criteria.*;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+// Spring Data imports
 import org.springframework.stereotype.Service;
+// Utility imports
+import org.springframework.util.StringUtils;
 
 @Service
 public class ProductServices {
@@ -28,6 +31,113 @@ public class ProductServices {
 
   @Autowired
   private CategoryRepository categoryRepository;
+
+  public Page<ProductDTO> searchProducts(
+    String searchTerm,
+    Double minPrice,
+    Double maxPrice,
+    Integer minRating,
+    Pageable pageable
+  ) {
+    Specification<Products> spec = (root, query, criteriaBuilder) -> {
+      List<Predicate> predicates = new ArrayList<>();
+
+      String normalizedSearchTerm = searchTerm
+        .replaceAll("[!.,]", "")
+        .toLowerCase();
+
+      // Search term related predicates
+      if (StringUtils.hasText(searchTerm)) {
+        List<Predicate> searchPredicates = new ArrayList<>();
+
+        // Product name
+        searchPredicates.add(
+          criteriaBuilder.like(
+            criteriaBuilder.lower(root.get("productName")),
+            "%" + normalizedSearchTerm + "%"
+          )
+        );
+
+        // Category name
+        Join<Products, Category> categoryJoin = root.join(
+          "category",
+          JoinType.LEFT
+        );
+        searchPredicates.add(
+          criteriaBuilder.like(
+            criteriaBuilder.lower(categoryJoin.get("categoryName")),
+            "%" + normalizedSearchTerm + "%"
+          )
+        );
+
+        // Store name
+        Join<Products, ArtisanProfile> artisanJoin = root.join(
+          "artisan",
+          JoinType.LEFT
+        );
+        searchPredicates.add(
+          criteriaBuilder.like(
+            criteriaBuilder.lower(artisanJoin.get("storeName")),
+            "%" + normalizedSearchTerm + "%"
+          )
+        );
+
+        // Location filter
+        Join<Products, ArtisanProfile> artisanLocationJoin = root.join(
+          "artisan",
+          JoinType.LEFT
+        );
+        searchPredicates.add(
+          criteriaBuilder.like(
+            criteriaBuilder.lower(artisanLocationJoin.get("location")),
+            "%" + normalizedSearchTerm + "%"
+          )
+        );
+
+        // Combine search-related predicates with OR
+        predicates.add(
+          criteriaBuilder.or(searchPredicates.toArray(new Predicate[0]))
+        );
+      }
+
+      // Price range filter
+      if (minPrice != null && maxPrice != null) {
+        predicates.add(
+          criteriaBuilder.between(root.get("productPrice"), minPrice, maxPrice)
+        );
+      }
+
+      // Minimum rating filter
+      if (minRating != null) {
+        Subquery<Double> ratingSubquery = query.subquery(Double.class);
+        Root<Review> reviewRoot = ratingSubquery.from(Review.class);
+        ratingSubquery
+          .select(criteriaBuilder.avg(reviewRoot.get("rating")))
+          .where(
+            criteriaBuilder.equal(
+              reviewRoot.get("product"),
+              root.get("productId")
+            )
+          );
+
+        predicates.add(
+          criteriaBuilder.greaterThanOrEqualTo(
+            ratingSubquery,
+            minRating.doubleValue()
+          )
+        );
+      }
+
+      query.distinct(true);
+      return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+    };
+
+    // Execute the query with the provided specification and pagination
+    Page<Products> productsPage = productRepository.findAll(spec, pageable);
+
+    // Convert the product entities to DTOs
+    return productsPage.map(this::convertToDTO);
+  }
 
   public List<ProductDTO> getAllProductDTOs() {
     List<Products> products = productRepository.findAll();

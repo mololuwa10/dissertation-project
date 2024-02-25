@@ -12,6 +12,7 @@ import Container from "../ui/container";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { fetchShoppingCart } from "@/lib/dbModels";
+import SearchBar from "./SearchBar";
 
 export default function Header() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -41,13 +42,18 @@ export default function Header() {
 		}
 	}, []);
 
+	const handleSearch = (query: any) => {
+		console.log("Searching for:", query);
+		// Perform the search action, such as querying an API
+	};
+
 	return (
 		<div>
 			<header className="sm:flex sm:justify-end py-3 px-4 border-b">
 				<div
 					className="relative px-4 sm:px-6 lg:px-8 flex items-center
 				justify-end w-full">
-					{/* <SearchBar /> */}
+					<SearchBar placeholder="Search..." />
 					<LanguageComboBox />
 					<LocationComboBox />
 				</div>

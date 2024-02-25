@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, SetStateAction } from "react";
 export const useFetchCategoryById = (categoryId: any) => {
 	interface Category {
 		categoryId: number;
@@ -170,9 +170,72 @@ export async function fetchAllArtisans() {
 
 	return response.json();
 }
+export const useFetchSearchedProducts = (
+	searchTerm: string,
+	filters: Record<string, any>
+) => {
+	const [products, setProducts] = useState([]);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(null);
+
+	useEffect(() => {
+		const params = new URLSearchParams();
+		if (searchTerm) params.append("searchTerm", searchTerm);
+
+		if (filters.categoryName)
+			params.append("categoryName", filters.categoryName.toString());
+		if (filters.storeName)
+			params.append("storeName", filters.storeName.toString());
+		if (filters.productPrice)
+			params.append("productPrice", filters.productPrice.toString());
+		if (filters.minPrice)
+			params.append("minPrice", filters.minPrice.toString());
+		if (filters.maxPrice)
+			params.append("maxPrice", filters.maxPrice.toString());
+		if (filters.location)
+			params.append("location", filters.location.toString());
+
+		const fetchProducts = async () => {
+			setLoading(true);
+			try {
+				const response = await fetch(
+					`http://localhost:8080/api/products/search?${params}`
+				);
+				if (!response.ok) {
+					throw new Error("Network response was not ok");
+				}
+				const data = await response.json();
+				setProducts(data.content);
+			} catch (error) {
+				console.error("Error fetching products:", error);
+				setError(error as SetStateAction<null>);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchProducts();
+
+		// Use a cleanup function to avoid setting state on unmounted component
+		return () => {
+			setLoading(false);
+			setError(null);
+		};
+	}, [
+		filters.categoryName,
+		filters.storeName,
+		filters.location,
+		filters.productPrice,
+		filters.maxPrice,
+		filters.minPrice,
+		searchTerm,
+	]);
+
+	return { products, loading, error };
+};
 
 // Product function
-export const useFetchProducts = () => {
+export const useFetchProducts = (searchTerm: any) => {
 	// Product function
 	interface Product {
 		productId: number;
@@ -193,7 +256,13 @@ export const useFetchProducts = () => {
 	const [products, setProducts] = useState([]);
 	// Fetch products with selected category filter
 	useEffect(() => {
-		fetch("http://localhost:8080/api/products")
+		const url = searchTerm
+			? `http://localhost:8080/api/products?search=${encodeURIComponent(
+					searchTerm
+			  )}`
+			: "http://localhost:8080/api/products";
+
+		fetch(url)
 			.then((response) => response.json())
 			.then((data) => {
 				const formattedData = data.map((product: Product) => ({
@@ -212,7 +281,7 @@ export const useFetchProducts = () => {
 				console.log(formattedData);
 				setProducts(formattedData);
 			});
-	}, []);
+	}, [searchTerm]);
 
 	return { products };
 };
@@ -447,6 +516,54 @@ export const useGetTestimonials = () => {
 
 		fetchTestimonials();
 	}, []);
+
+	return { testimonials };
+};
+
+export const useGetMoreTestimonials = (page: any, pageSize: any) => {
+	interface Testimonials {
+		testimonialId: number;
+		testimonialTitle: string;
+		rating: number;
+		comment: string;
+		reviewDate: string;
+		testimonialDate: string;
+		isApproved: boolean;
+		applicationUser: {
+			userId: number;
+			firstname: string;
+			lastname: string;
+			username: string;
+		};
+	}
+	const [testimonials, setTestimonials] = useState<Testimonials[]>([]);
+	useEffect(() => {
+		const fetchTestimonials = async () => {
+			try {
+				const response = await fetch(
+					`http://localhost:8080/api/testimonials/approvedTestimonials?page=${page}&pageSize=${pageSize}`,
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+						},
+					}
+				);
+
+				if (!response.ok) {
+					throw new Error("Failed to fetch testimonials");
+				}
+
+				const data = await response.json();
+				setTestimonials(data);
+				console.log(data);
+			} catch (error) {
+				console.error("Error fetching testimonials: ", error);
+			}
+		};
+
+		fetchTestimonials();
+	}, [page, pageSize]);
 
 	return { testimonials };
 };

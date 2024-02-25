@@ -3,9 +3,9 @@
 import Footer from "@/components/layoutComponents/Footer";
 import Header from "@/components/layoutComponents/Header";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { addTestimonial } from "@/lib/auth";
-import { useGetTestimonials } from "@/lib/dbModels";
+import { useGetMoreTestimonials, useGetTestimonials } from "@/lib/dbModels";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -56,8 +56,16 @@ export default function Testimonials() {
 			username: string;
 		};
 	}
-	const { testimonials } = useGetTestimonials() as {
+
+	const pageSize = 3;
+	const [page, setPage] = useState(1);
+
+	const { testimonials } = useGetMoreTestimonials(page, pageSize) as {
 		testimonials: Testimonials[];
+	};
+
+	const handleViewMore = () => {
+		setPage((prevPage) => prevPage + 1);
 	};
 
 	const renderStars = (rating: number) => {
@@ -84,6 +92,7 @@ export default function Testimonials() {
 	const [testimonialTitle, setTestimonialTitle] = useState("");
 	const [testimonialComment, setTestimonialComment] = useState("");
 	const jwt = localStorage.getItem("jwt");
+
 	const handleSubmit = async (event: any) => {
 		event.preventDefault();
 		if (jwt === null) {
@@ -141,7 +150,7 @@ export default function Testimonials() {
 						{testimonials.slice(0, 3).map((testimonial) => (
 							<blockquote
 								key={testimonial.testimonialId}
-								className="flex h-full flex-col justify-between bg-white p-6 shadow-sm sm:p-8">
+								className="flex h-full flex-col justify-between bg-white p-6 shadow-sm sm:p-8 border-2 rounded-lg">
 								<div>
 									{renderStars(testimonial.rating)}
 
@@ -166,7 +175,8 @@ export default function Testimonials() {
 					<div className="text-center mt-4">
 						<Button
 							size={"lg"}
-							className="bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
+							className="bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300"
+							onClick={handleViewMore}>
 							View More Testimonials
 						</Button>
 					</div>
