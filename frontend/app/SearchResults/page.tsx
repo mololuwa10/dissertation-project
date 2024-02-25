@@ -6,7 +6,7 @@ import ProductList from "@/components/SearchResultComponents/ProductList";
 import Footer from "@/components/layoutComponents/Footer";
 import Header from "@/components/layoutComponents/Header";
 import { useFetchSearchedProducts } from "@/lib/dbModels";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const SearchResults = () => {
