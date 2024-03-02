@@ -67,12 +67,16 @@ public class ProductController {
     @RequestParam(required = false) Double minPrice,
     @RequestParam(required = false) Double maxPrice,
     @RequestParam(required = false) Integer minRating,
+    @RequestParam(required = false) List<Integer> categoryIds,
+    @RequestParam(required = false) List<Integer> artisanIds,
     @PageableDefault(size = 10) Pageable pageable
   ) {
     Page<ProductDTO> productPage = productService.searchProducts(
       searchTerm,
       minPrice,
       maxPrice,
+      categoryIds,
+      artisanIds,
       minRating,
       pageable
     );

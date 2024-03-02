@@ -208,6 +208,12 @@ public class ReviewService {
     categoryDTO.setCategoryId(category.getCategoryId());
     categoryDTO.setCategoryName(category.getCategoryName());
     categoryDTO.setCategoryDescription(category.getCategoryDescription());
+    categoryDTO.setCategoryImageUrl(category.getCategoryImageUrl());
+    categoryDTO.setParentCategoryId(
+      category.getParentCategory() != null
+        ? category.getParentCategory().getCategoryId()
+        : null
+    );
 
     return categoryDTO;
   }

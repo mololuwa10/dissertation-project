@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ChatBox } from "./ChatBox";
 
 interface Product {
 	productId: number;
@@ -41,10 +42,6 @@ interface Review {
 		lastname: string;
 	};
 }
-
-// function classNames(...classes: string[]) {
-// 	return classes.filter(Boolean).join(" ");
-// }
 
 export default function ProductInfo() {
 	const searchParams = useSearchParams();
@@ -95,7 +92,7 @@ export default function ProductInfo() {
 					<svg
 						key={index}
 						className={`h-5 w-5 ${
-							index < rating
+							index < Number(rating)
 								? "fill-current text-gray-900 flex-shrink-0"
 								: "fill-current text-gray-400"
 						}`}
@@ -152,6 +149,15 @@ export default function ProductInfo() {
 		setSelectedQuantity(Number(event.target.value));
 	};
 
+	// Check if the product is out of stock
+	const isOutOfStock = product?.productStockQuantity === 0;
+
+	const [isChatOpen, setChatOpen] = useState(false);
+
+	const toggleChat = () => {
+		setChatOpen(!isChatOpen);
+	};
+
 	return (
 		<>
 			<ToastContainer
@@ -193,39 +199,50 @@ export default function ProductInfo() {
 				<div className="mt-4 text-xl font-medium">
 					{product?.productDescription}
 				</div>
-				{/* Style Selector */}
-				{/* ... */}
-				{/* Quantity Selector */}
-				<Label htmlFor="quantity" className="font-normal text-xl my-4">
-					Quantity
-				</Label>
 
-				<select
-					className="border-gray-900 border-2 p-4 rounded-2xl w-full my-3"
-					value={selectedQuantity}
-					onChange={handleQuantityChange}>
-					{quantityOptions.map((quantity) => (
-						<option key={quantity} value={quantity}>
-							{quantity}
-						</option>
-					))}
-				</select>
-				<Button
-					size="lg"
-					className="w-full text-white py-3 rounded-3xl hover:bg-blue-600 mt-4"
-					onClick={handleAddToCart}>
-					Add to cart
-				</Button>
-				<Button
-					size="lg"
-					className="w-full text-white py-3 rounded-3xl hover:bg-blue-600 mt-4">
-					Buy Now
-				</Button>
-				<Button
-					size="lg"
-					className="w-full text-white py-3 rounded-3xl hover:bg-blue-600 mt-4">
-					Add to Collection
-				</Button>
+				{/* Quantity Selector */}
+				{/* Check and display if the product is out of stock */}
+				{isOutOfStock ? (
+					<div className="mt-6 text-red-500 text-xl">
+						Out of stock, check back later 🙂
+					</div>
+				) : (
+					// If the product is in stock, display the quantity selector and add-to-cart button
+					<>
+						{/* Quantity Selector */}
+						<Label htmlFor="quantity" className="font-normal text-xl my-6">
+							Quantity
+						</Label>
+						<select
+							className="border-gray-900 border-2 p-4 rounded-2xl w-full my-3"
+							value={selectedQuantity}
+							onChange={handleQuantityChange}>
+							{quantityOptions.map((quantity) => (
+								<option key={quantity} value={quantity}>
+									{quantity}
+								</option>
+							))}
+						</select>
+						<Button
+							size="lg"
+							className="w-full text-white py-3 rounded-3xl hover:bg-blue-600 mt-4"
+							onClick={handleAddToCart}>
+							Add to cart
+						</Button>
+
+						<Button
+							size="lg"
+							className="w-full text-white py-3 rounded-3xl hover:bg-blue-600 mt-4">
+							Buy Now
+						</Button>
+						<Button
+							size="lg"
+							className="w-full text-white py-3 rounded-3xl hover:bg-blue-600 mt-4">
+							Add to Collection
+						</Button>
+					</>
+				)}
+
 				{/* ... Other product details and policies */}
 				<div className="mt-6 space-y-6">
 					<div className="text-lg font-medium text-gray-900">Item details</div>
@@ -268,10 +285,17 @@ export default function ProductInfo() {
 					</div>
 					<Button
 						size="lg"
-						className="w-full bg-gray-200 text-gray-900 py-2 rounded-3xl mt-4">
+						className="w-full bg-gray-800 text-white py-2 rounded-3xl mt-4"
+						onClick={toggleChat}>
 						Message {product?.artisanProfile.firstname}
 					</Button>
 				</div>
+				<ChatBox
+					isOpen={isChatOpen}
+					onClose={toggleChat}
+					artisanName={product?.artisanProfile.firstname!}
+					artisanStore={product?.artisanProfile.storeName!}
+				/>
 			</div>
 		</>
 	);

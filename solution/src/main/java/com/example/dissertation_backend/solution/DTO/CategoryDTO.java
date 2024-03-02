@@ -16,13 +16,15 @@ public class CategoryDTO {
     Integer categoryId,
     String categoryName,
     String categoryDescription,
-    String categoryImageUrl
+    String categoryImageUrl,
+    Integer parentCategoryId
   ) {
     super();
     this.categoryId = categoryId;
     this.categoryName = categoryName;
     this.categoryDescription = categoryDescription;
     this.categoryImageUrl = categoryImageUrl;
+    this.parentCategoryId = parentCategoryId;
   }
 
   public Integer getCategoryId() {

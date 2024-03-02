@@ -3,6 +3,8 @@ package com.example.dissertation_backend.solution.Category.Repository;
 import com.example.dissertation_backend.solution.Category.Model.Category;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+// import org.springframework.data.jpa.repository.Query;
+// import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,4 +19,9 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
   List<Category> findByParentCategoryIsNull();
   // @Query("SELECT c FROM Category c WHERE c.parentCategory IS NOT NULL")
   // List<Category> findAllSubCategories();
+
+  // @Query("SELECT c.id FROM Category c WHERE c.parentCategory.id IN :parentIds")
+  // List<Integer> findSubcategoryIdsByParentIds(
+  //   @Param("parentIds") List<Integer> parentIds
+  // );
 }

@@ -12,10 +12,17 @@ import { useRouter, useSearchParams } from "next/navigation";
 const SearchResults = () => {
 	const searchParams = useSearchParams();
 	const searchTerm = searchParams.get("query") ?? "";
-	const filters = {
-		minPrice: searchParams.get("minPrice") ?? "",
-		maxPrice: searchParams.get("maxPrice") ?? "",
-		minRating: searchParams.get("minRating") ?? "",
+	const [filters, setFilters] = useState({
+		minPrice: "",
+		maxPrice: "",
+		minRating: "",
+		categoryIds: new Set(),
+		artisanIds: new Set(),
+	});
+
+	const updateFilters = (newFilters: any) => {
+		console.log("Updating filters with: ", newFilters);
+		setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
 	};
 
 	const { products } = useFetchSearchedProducts(searchTerm, filters);
@@ -25,7 +32,11 @@ const SearchResults = () => {
 			<Header />
 			<Breadcrumb title={`Result for "${searchTerm}"`} />
 			<div className="flex my-6">
-				<FilterSidebar />
+				<FilterSidebar
+					products={products}
+					filters={filters}
+					updateFilters={updateFilters}
+				/>
 				<ProductList products={products} />
 			</div>
 			<Footer />

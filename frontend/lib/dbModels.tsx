@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, SetStateAction } from "react";
+// import { useFilterContext } from "./UseFilterContext";
 export const useFetchCategoryById = (categoryId: any) => {
 	interface Category {
 		categoryId: number;
@@ -170,6 +171,8 @@ export async function fetchAllArtisans() {
 
 	return response.json();
 }
+
+// Get all searched products
 export const useFetchSearchedProducts = (
 	searchTerm: string,
 	filters: Record<string, any>
@@ -182,18 +185,18 @@ export const useFetchSearchedProducts = (
 		const params = new URLSearchParams();
 		if (searchTerm) params.append("searchTerm", searchTerm);
 
-		if (filters.categoryName)
-			params.append("categoryName", filters.categoryName.toString());
-		if (filters.storeName)
-			params.append("storeName", filters.storeName.toString());
-		if (filters.productPrice)
-			params.append("productPrice", filters.productPrice.toString());
-		if (filters.minPrice)
-			params.append("minPrice", filters.minPrice.toString());
-		if (filters.maxPrice)
-			params.append("maxPrice", filters.maxPrice.toString());
-		if (filters.location)
-			params.append("location", filters.location.toString());
+		Object.keys(filters).forEach((key) => {
+			const value = filters[key];
+			if (value) {
+				if (value instanceof Set || Array.isArray(value)) {
+					// For Sets or Arrays, append each value separately
+					value.forEach((item: any) => params.append(key, item.toString()));
+				} else {
+					// For other types, just append directly
+					params.append(key, value.toString());
+				}
+			}
+		});
 
 		const fetchProducts = async () => {
 			setLoading(true);
@@ -206,6 +209,7 @@ export const useFetchSearchedProducts = (
 				}
 				const data = await response.json();
 				setProducts(data.content);
+				console.log("Filtered products: ", data.content);
 			} catch (error) {
 				console.error("Error fetching products:", error);
 				setError(error as SetStateAction<null>);
@@ -216,26 +220,19 @@ export const useFetchSearchedProducts = (
 
 		fetchProducts();
 
+		console.log(`Fetching products with params: ${params.toString()}`);
 		// Use a cleanup function to avoid setting state on unmounted component
 		return () => {
 			setLoading(false);
 			setError(null);
 		};
-	}, [
-		filters.categoryName,
-		filters.storeName,
-		filters.location,
-		filters.productPrice,
-		filters.maxPrice,
-		filters.minPrice,
-		searchTerm,
-	]);
+	}, [filters, searchTerm]);
 
 	return { products, loading, error };
 };
 
 // Product function
-export const useFetchProducts = (searchTerm: any) => {
+export const useFetchProducts = () => {
 	// Product function
 	interface Product {
 		productId: number;
@@ -256,13 +253,7 @@ export const useFetchProducts = (searchTerm: any) => {
 	const [products, setProducts] = useState([]);
 	// Fetch products with selected category filter
 	useEffect(() => {
-		const url = searchTerm
-			? `http://localhost:8080/api/products?search=${encodeURIComponent(
-					searchTerm
-			  )}`
-			: "http://localhost:8080/api/products";
-
-		fetch(url)
+		fetch("http://localhost:8080/api/products")
 			.then((response) => response.json())
 			.then((data) => {
 				const formattedData = data.map((product: Product) => ({
@@ -281,7 +272,7 @@ export const useFetchProducts = (searchTerm: any) => {
 				console.log(formattedData);
 				setProducts(formattedData);
 			});
-	}, [searchTerm]);
+	}, []);
 
 	return { products };
 };
@@ -403,6 +394,7 @@ export const useFetchSubcategories = (categoryId: any) => {
 		categoryImageUrl: string;
 	}
 	const [subcategories, setSubcategories] = useState([]);
+	// const { updateFilters, filters } = useFilterContext();
 
 	useEffect(() => {
 		fetch(`http://localhost:8080/api/categories/${categoryId}/subcategories`)
@@ -421,8 +413,7 @@ export const useFetchSubcategories = (categoryId: any) => {
 			.catch((error) => {
 				console.error("Error fetching subcategories:", error);
 			});
-	}, [categoryId]); // Dependency array ensures the effect runs when categoryId changes
-
+	}, [categoryId]);
 	return { subcategories };
 };
 

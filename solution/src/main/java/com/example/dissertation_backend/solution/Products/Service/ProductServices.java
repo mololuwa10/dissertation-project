@@ -36,6 +36,8 @@ public class ProductServices {
     String searchTerm,
     Double minPrice,
     Double maxPrice,
+    List<Integer> categoryIds,
+    List<Integer> artisanIds,
     Integer minRating,
     Pageable pageable
   ) {
@@ -107,6 +109,24 @@ public class ProductServices {
         );
       }
 
+      // Category ID filter
+      if (categoryIds != null && !categoryIds.isEmpty()) {
+        Join<Products, Category> categoryFilterJoin = root.join(
+          "category",
+          JoinType.INNER
+        );
+        predicates.add(categoryFilterJoin.get("categoryId").in(categoryIds));
+      }
+
+      // store name filter
+      if (artisanIds != null && !artisanIds.isEmpty()) {
+        Join<Products, ArtisanProfile> artisanProfileJoin = root.join(
+          "artisan",
+          JoinType.INNER
+        );
+        predicates.add(artisanProfileJoin.get("artisanId").in(artisanIds));
+      }
+
       // Minimum rating filter
       if (minRating != null) {
         Subquery<Double> ratingSubquery = query.subquery(Double.class);
@@ -133,6 +153,7 @@ public class ProductServices {
     };
 
     // Execute the query with the provided specification and pagination
+    @SuppressWarnings("null")
     Page<Products> productsPage = productRepository.findAll(spec, pageable);
 
     // Convert the product entities to DTOs
@@ -280,6 +301,11 @@ public class ProductServices {
     categoryDTO.setCategoryName(category.getCategoryName());
     categoryDTO.setCategoryDescription(category.getCategoryDescription());
     categoryDTO.setCategoryImageUrl(category.getCategoryImageUrl());
+    categoryDTO.setParentCategoryId(
+      category.getParentCategory() != null
+        ? category.getParentCategory().getCategoryId()
+        : null
+    );
 
     return categoryDTO;
   }
