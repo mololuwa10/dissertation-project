@@ -296,7 +296,6 @@ export async function fetchProductById(productId: any) {
 
 		// Assuming the response is JSON
 		const product = await response.json();
-		console.log(product);
 		return product;
 	} catch (error) {
 		console.error("Fetching product failed:", error);
@@ -655,8 +654,6 @@ export async function fetchShoppingCart(jwt: any) {
 			},
 		}
 	);
-
-	console.log(response);
 
 	if (!response.ok) {
 		throw new Error("Failed to fetch shopping cart");

@@ -69,7 +69,7 @@ export const useFetchUserInfo = () => {
 	const [userDetails, setUserDetails] = useState(null);
 	const [userRole, setUserRole] = useState<string | null>(null);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
-	const [error, setError] = useState<string | null>(null); // Add an error state
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		const fetchUserInfo = async () => {

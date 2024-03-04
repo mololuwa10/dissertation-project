@@ -32,6 +32,8 @@ public class ChatMessage {
 
   public enum MessageType {
     CHAT,
+    SENT,
+    RECEIVED,
     JOIN,
     LEAVE,
   }

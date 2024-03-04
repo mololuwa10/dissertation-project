@@ -3,6 +3,7 @@ package com.example.dissertation_backend.solution.WebSocket.Chat;
 import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
 import com.example.dissertation_backend.solution.Customers.Repository.UserRepository;
 import com.example.dissertation_backend.solution.Message.Service.MessageService;
+import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -38,16 +39,20 @@ public class ChatController {
   //   return chatMessage;
   // }
 
-  @MessageMapping("/api/chat.sendMessage")
+  @MessageMapping("/chat.sendMessage")
   @SendTo("/topic/public")
   public ChatMessage sendMessage(
     @Payload ChatMessage chatMessage,
-    SimpMessageHeaderAccessor headerAccessor
+    Principal principal
   ) {
+    // Extract username from the Principal
+    String username = principal.getName();
+
     // Extract sender and receiver information from the message or security context
     ApplicationUser sender = userRepository
-      .findByUsername(chatMessage.getSender())
+      .findByUsername(username)
       .orElseThrow();
+
     @SuppressWarnings("null")
     ApplicationUser recipient = userRepository
       .findById(chatMessage.getRecipientId())

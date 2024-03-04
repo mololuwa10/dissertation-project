@@ -13,11 +13,19 @@ export const disconnect = () => {
 	}
 };
 
-const connect = (artisanId: string, onMessageReceived: (msg: any) => void) => {
-	// Create a new Client instance with the SockJS endpoint
+const connect = (
+	artisanId: string,
+	onMessageReceived: (msg: any) => void,
+	jwt: string
+) => {
+	// Included the jwt in the connect headers
+	const headers = {
+		Authorization: `Bearer ${jwt}`,
+	};
+
 	stompClient = new Client({
 		webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
-		// Configure the onConnect callback
+		connectHeaders: headers, // Add this line
 		onConnect: () => {
 			if (stompClient) {
 				stompClient.subscribe(`/topic/public`, (message) => {
@@ -27,16 +35,18 @@ const connect = (artisanId: string, onMessageReceived: (msg: any) => void) => {
 				});
 			}
 		},
+		onStompError: (error) => {
+			console.error("STOMP Error:", error);
+		},
 	});
 
-	// Activate the client to establish the connection
 	stompClient.activate();
 };
 
 const sendMessage = (msg: any) => {
 	if (stompClient && stompClient.connected) {
 		stompClient.publish({
-			destination: "/api/chat.sendMessage",
+			destination: "/app/chat.sendMessage",
 			body: JSON.stringify(msg),
 		});
 	} else {

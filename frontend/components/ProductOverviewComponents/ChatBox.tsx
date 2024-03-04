@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ChatInterface from "./ChatInterface";
+import { useFetchUserInfo } from "@/lib/data";
 
 export const ChatBox = ({
 	isOpen,
@@ -14,6 +15,15 @@ export const ChatBox = ({
 	artisanStore: any;
 	artisanId: any;
 }) => {
+	const { userDetails } = useFetchUserInfo();
+	const [userId, setUserId] = useState<string | null>(null);
+
+	useEffect(() => {
+		if (userDetails && userDetails.user) {
+			setUserId(userDetails.user.userId);
+		}
+	}, [userDetails]);
+
 	if (!isOpen) return null;
 
 	return (
@@ -30,7 +40,7 @@ export const ChatBox = ({
 				Typically responds within 48 hours
 			</p>
 
-			<ChatInterface artisanId={artisanId} />
+			<ChatInterface artisanId={artisanId!} currentUserId={userId!} />
 		</div>
 	);
 };

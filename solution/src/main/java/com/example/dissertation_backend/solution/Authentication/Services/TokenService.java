@@ -6,10 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-// import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,8 +15,8 @@ public class TokenService {
   @Autowired
   private JwtEncoder jwtEncoder;
 
-  // @Autowired
-  // private JwtDecoder jwtDecoder;
+  @Autowired
+  private JwtDecoder jwtDecoder;
 
   public String generateJwt(Authentication auth) {
     Instant now = Instant.now();
@@ -43,5 +40,16 @@ public class TokenService {
       .build();
 
     return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+  }
+
+  // New method to decode JWT and extract username
+  public String getUsernameFromToken(String token) {
+    try {
+      Jwt jwt = jwtDecoder.decode(token);
+      return jwt.getClaim("sub"); // Assuming the subject ('sub') claim contains the username
+    } catch (Exception e) {
+      // Handle decoding exceptions (e.g., token expired, signature validation failed)
+      return null;
+    }
   }
 }

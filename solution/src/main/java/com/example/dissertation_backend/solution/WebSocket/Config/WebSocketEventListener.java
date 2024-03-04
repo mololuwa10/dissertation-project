@@ -1,6 +1,8 @@
 package com.example.dissertation_backend.solution.WebSocket.Config;
 
 import com.example.dissertation_backend.solution.WebSocket.Chat.ChatMessage;
+import java.security.Principal;
+// import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -23,19 +25,25 @@ public class WebSocketEventListener {
     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(
       event.getMessage()
     );
-    String username = (String) headerAccessor
-      .getSessionAttributes()
-      .get("username");
 
-    if (username != null) {
-      log.info("User disconnected: {}" + username);
-      var chatMessage = ChatMessage
+    // Directly access the user Principal from the headerAccessor
+    Principal userPrincipal = headerAccessor.getUser();
+    String username = null;
+
+    if (userPrincipal != null) {
+      username = userPrincipal.getName();
+      log.info("User connected: " + username);
+      ChatMessage chatMessage = ChatMessage
         .builder()
-        .type(ChatMessage.MessageType.LEAVE)
+        .type(ChatMessage.MessageType.JOIN)
         .sender(username)
         .build();
 
       messagingTemplate.convertAndSend("/topic/public", chatMessage);
+      // Map<String, Object> sessionAttributes = headerAccessor.getSessionAttributes();
+      // if (sessionAttributes != null) {
+      //   String username = (String) sessionAttributes.get("username");
+      // }
     } else {
       log.warn("Username not found in session attributes");
     }

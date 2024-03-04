@@ -6,42 +6,90 @@ import {
 	disconnect,
 	isConnected,
 } from "@/lib/WebSocketService";
+// import { useFetchUserInfo } from "@/lib/data";
 
-const ChatInterface = ({ artisanId }: { artisanId: any }) => {
+const ChatInterface = ({
+	artisanId,
+	currentUserId,
+}: {
+	artisanId: any;
+	currentUserId: any;
+}) => {
 	const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>(
 		[]
 	);
 	const [inputValue, setInputValue] = useState("");
 
 	useEffect(() => {
+		const fetchMessageHistory = async () => {
+			try {
+				const response = await fetch(
+					`http://localhost:8080/api/messages/history/${currentUserId}?otherUserId=${artisanId}`
+				);
+				if (!response.ok) {
+					throw new Error("Network response was not ok");
+				}
+				const messageHistory = await response.json();
+				setMessages(
+					messageHistory.map((msg: any) => ({
+						text: msg.content,
+						isUser: msg.type === "SENT",
+					}))
+				);
+			} catch (error) {
+				console.error(
+					"There has been a problem with your fetch operation:",
+					error
+				);
+				// Handle errors here
+			}
+		};
+		if (!currentUserId) {
+			return;
+		}
+		fetchMessageHistory();
+
+		const jwt = localStorage.getItem("jwt") ?? "";
+
 		const onMessageReceived = (msg: any) => {
-			setMessages((prevMessages) => [...prevMessages, msg]);
+			setMessages((prevMessages) => [
+				...prevMessages,
+				{
+					text: msg.content,
+					isUser: msg.type === "SENT",
+				},
+			]);
 		};
 
-		connect(artisanId, onMessageReceived);
+		if (isConnected()) {
+			console.log("The WebSocket is connected.");
+		} else {
+			console.log("The WebSocket is not connected, attempting to connect....");
+			connect(artisanId, onMessageReceived, jwt);
+		}
 
 		return () => {
 			// Disconnect or clean up WebSocket connection when component unmounts
 			disconnect();
 		};
-	}, [artisanId]);
+	}, [artisanId, currentUserId]);
 
 	const handleSendMessage = (e: any) => {
 		e.preventDefault();
-		const messageContent = {
-			// Structure this based on your ChatMessage model
-			sender: "Username", // You need to replace this with actual sender info
-			content: inputValue, // Assuming inputValue is your message input state
-			recipientId: artisanId,
-		};
-		sendMessage(messageContent);
-		setMessages((prevMessages) => [
-			...prevMessages,
-			{ text: messageContent.content, isUser: true },
-		]); // Optionally, add message to local state
-		setInputValue(""); // Assuming you have an inputValue state for the input field
+		if (inputValue.trim()) {
+			const messageContent = {
+				sender: currentUserId,
+				content: inputValue,
+				recipientId: artisanId,
+			};
+			sendMessage(messageContent);
+			// setMessages((prevMessages) => [
+			// 	...prevMessages,
+			// 	{ text: messageContent.content, isUser: false },
+			// ]);
+			setInputValue(""); // Assuming you have an inputValue state for the input field
+		}
 	};
-
 	return (
 		<div className="flex flex-col h-full">
 			<div className="flex-grow overflow-auto p-4 flex flex-col space-y-4">

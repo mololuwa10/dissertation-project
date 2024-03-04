@@ -11,10 +11,12 @@ import com.example.dissertation_backend.solution.WebSocket.Chat.ChatMessage;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 // import org.springframework.http.HttpStatus;
 // import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/messages")
@@ -36,26 +38,54 @@ public class MessageController {
   @Autowired
   private UserRepository userRepository;
 
-  @GetMapping("/{receiverId}")
+  @GetMapping("/history/{userId}")
   public ResponseEntity<List<ChatMessage>> getMessageHistory(
-    @PathVariable Integer receiverId
+    @PathVariable Integer userId,
+    @RequestParam Integer otherUserId
   ) {
     @SuppressWarnings("null")
-    ApplicationUser receiver = userRepository
-      .findById(receiverId)
-      .orElseThrow();
-    List<Message> messages = messageService.getMessageHistory(receiver);
+    ApplicationUser currentUser = userRepository
+      .findById(userId)
+      .orElseThrow(() ->
+        new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+      );
 
-    // Convert messages to ChatMessage DTOs if necessary
+    @SuppressWarnings("null")
+    ApplicationUser otherUser = userRepository
+      .findById(otherUserId)
+      .orElseThrow(() ->
+        new ResponseStatusException(
+          HttpStatus.NOT_FOUND,
+          "Other user not found"
+        )
+      );
+    List<Message> messages = messageService.getMessageHistory(
+      currentUser,
+      otherUser
+    );
+    // Convert messages to ChatMessage DTOs
     List<ChatMessage> chatMessages = messages
       .stream()
-      .map(message ->
-        new ChatMessage(
-          ChatMessage.MessageType.CHAT,
+      .map(message -> {
+        boolean isCurrentUserSender = message.getSender().equals(currentUser);
+        ChatMessage.MessageType type = isCurrentUserSender
+          ? ChatMessage.MessageType.SENT
+          : ChatMessage.MessageType.RECEIVED;
+        String senderUsername = isCurrentUserSender
+          ? currentUser.getUsername()
+          : otherUser.getUsername();
+
+        Integer recipientId = isCurrentUserSender
+          ? otherUser.getUserId()
+          : currentUser.getUserId();
+
+        return new ChatMessage(
+          type,
           message.getMessageText(),
-          message.getSender().getUsername()
-        )
-      )
+          senderUsername,
+          recipientId
+        );
+      })
       .collect(Collectors.toList());
 
     return ResponseEntity.ok(chatMessages);
