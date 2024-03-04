@@ -1,5 +1,10 @@
 package com.example.dissertation_backend.solution.Configuration;
 
+import com.example.dissertation_backend.solution.utils.RSAKeyProperties;
+import com.nimbusds.jose.jwk.*;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 // import static org.springframework.security.config.Customizer.withDefaults;
 
 import org.springframework.context.annotation.*;
@@ -8,7 +13,6 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,12 +20,6 @@ import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-
-import com.example.dissertation_backend.solution.utils.RSAKeyProperties;
-import com.nimbusds.jose.jwk.*;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
 
 @Configuration
 public class SecurityConfiguration {
@@ -48,23 +46,31 @@ public class SecurityConfiguration {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
-        .csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests(auth -> {
-          auth.requestMatchers("/auth/**").permitAll();
-          auth.requestMatchers("api/admin/**").hasRole("ADMIN");
-          auth.requestMatchers("/api/**").permitAll();
-          auth.requestMatchers("/uploads/**").permitAll();
-          auth.requestMatchers("api/user/**").hasAnyRole("ADMIN", "USER", "ARTISAN");
-          auth.requestMatchers("api/artisan/**").hasAnyRole("ADMIN", "USER", "ARTISAN");
-          auth.anyRequest().authenticated();
-        });
+      .csrf(csrf -> csrf.disable())
+      .authorizeHttpRequests(auth -> {
+        auth.requestMatchers("/auth/**").permitAll();
+        auth.requestMatchers("api/admin/**").hasRole("ADMIN");
+        auth.requestMatchers("/api/**").permitAll();
+        auth.requestMatchers("/uploads/**").permitAll();
+        auth
+          .requestMatchers("api/user/**")
+          .hasAnyRole("ADMIN", "USER", "ARTISAN");
+        auth
+          .requestMatchers("api/artisan/**")
+          .hasAnyRole("ADMIN", "USER", "ARTISAN");
+        auth.requestMatchers("/ws/**").permitAll();
+        auth.anyRequest().authenticated();
+      });
 
-    http.oauth2ResourceServer(oauth2 -> oauth2
-        .jwt(jwt -> jwt
-            .jwtAuthenticationConverter(jwtAuthenticationConverter())));
+    http.oauth2ResourceServer(oauth2 ->
+      oauth2.jwt(jwt ->
+        jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())
+      )
+    );
 
-    http.sessionManagement(
-        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    http.sessionManagement(session ->
+      session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    );
 
     return http.build();
   }
@@ -76,7 +82,9 @@ public class SecurityConfiguration {
 
   @Bean
   public JwtEncoder jwtEncoder() {
-    JWK jwk = new RSAKey.Builder(keys.getPublicKey()).privateKey(keys.getPrivateKey()).build();
+    JWK jwk = new RSAKey.Builder(keys.getPublicKey())
+      .privateKey(keys.getPrivateKey())
+      .build();
     JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
     return new NimbusJwtEncoder(jwks);
   }
@@ -87,7 +95,9 @@ public class SecurityConfiguration {
     jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
     jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
     JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
-    jwtConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+    jwtConverter.setJwtGrantedAuthoritiesConverter(
+      jwtGrantedAuthoritiesConverter
+    );
     return jwtConverter;
   }
 }

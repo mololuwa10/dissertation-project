@@ -6,11 +6,13 @@ export const ChatBox = ({
 	onClose,
 	artisanName,
 	artisanStore,
+	artisanId,
 }: {
 	isOpen: any;
 	onClose: any;
 	artisanName: any;
 	artisanStore: any;
+	artisanId: any;
 }) => {
 	if (!isOpen) return null;
 
@@ -28,7 +30,7 @@ export const ChatBox = ({
 				Typically responds within 48 hours
 			</p>
 
-			<ChatInterface />
+			<ChatInterface artisanId={artisanId} />
 		</div>
 	);
 };

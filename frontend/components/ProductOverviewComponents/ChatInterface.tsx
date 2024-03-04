@@ -1,18 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ChatMessage from "./ChatMessage";
+import {
+	connect,
+	sendMessage,
+	disconnect,
+	isConnected,
+} from "@/lib/WebSocketService";
 
-const ChatInterface = () => {
+const ChatInterface = ({ artisanId }: { artisanId: any }) => {
 	const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>(
 		[]
 	);
 	const [inputValue, setInputValue] = useState("");
 
-	const sendMessage = (e: React.FormEvent) => {
+	useEffect(() => {
+		const onMessageReceived = (msg: any) => {
+			setMessages((prevMessages) => [...prevMessages, msg]);
+		};
+
+		connect(artisanId, onMessageReceived);
+
+		return () => {
+			// Disconnect or clean up WebSocket connection when component unmounts
+			disconnect();
+		};
+	}, [artisanId]);
+
+	const handleSendMessage = (e: any) => {
 		e.preventDefault();
-		if (inputValue.trim() === "") return;
-		setMessages([...messages, { text: inputValue, isUser: true }]);
-		setInputValue("");
-		// Here, you would also handle sending the message to your backend or chat service
+		const messageContent = {
+			// Structure this based on your ChatMessage model
+			sender: "Username", // You need to replace this with actual sender info
+			content: inputValue, // Assuming inputValue is your message input state
+			recipientId: artisanId,
+		};
+		sendMessage(messageContent);
+		setMessages((prevMessages) => [
+			...prevMessages,
+			{ text: messageContent.content, isUser: true },
+		]); // Optionally, add message to local state
+		setInputValue(""); // Assuming you have an inputValue state for the input field
 	};
 
 	return (
@@ -22,7 +49,9 @@ const ChatInterface = () => {
 					<ChatMessage key={index} message={msg.text} isUser={msg.isUser} />
 				))}
 			</div>
-			<form onSubmit={sendMessage} className="flex-shrink-0 border-t-2 p-4">
+			<form
+				onSubmit={handleSendMessage}
+				className="flex-shrink-0 border-t-2 p-4">
 				<input
 					type="text"
 					value={inputValue}

@@ -295,6 +295,7 @@ export default function ProductInfo() {
 					onClose={toggleChat}
 					artisanName={product?.artisanProfile.firstname!}
 					artisanStore={product?.artisanProfile.storeName!}
+					artisanId={product?.artisanProfile.artisanId!}
 				/>
 			</div>
 		</>
