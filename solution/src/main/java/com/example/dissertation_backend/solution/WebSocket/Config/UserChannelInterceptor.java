@@ -6,7 +6,6 @@ import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-// import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
@@ -53,7 +52,6 @@ public class UserChannelInterceptor implements ChannelInterceptor {
       authToken = authToken.substring(7);
       String username = tokenService.getUsernameFromToken(authToken);
 
-      // Assuming you have a UserDetailsService that can load UserDetails by username
       UserDetails userDetails = userService.loadUserByUsername(username);
 
       if (userDetails != null) {

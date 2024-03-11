@@ -1,0 +1,14 @@
+{
+	"configurations": [
+		{
+			"type": "java",
+			"name": "Spring Boot-SolutionApplication<solution>",
+			"request": "launch",
+			"cwd": "${workspaceFolder}",
+			"mainClass": "com.example.dissertation_backend.solution.SolutionApplication",
+			"projectName": "solution",
+			"args": "",
+			"envFile": "${workspaceFolder}/.env"
+		}
+	]
+}

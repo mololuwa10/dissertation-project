@@ -87,7 +87,7 @@ const ChatInterface = ({
 			// 	...prevMessages,
 			// 	{ text: messageContent.content, isUser: false },
 			// ]);
-			setInputValue(""); // Assuming you have an inputValue state for the input field
+			setInputValue("");
 		}
 	};
 	return (
