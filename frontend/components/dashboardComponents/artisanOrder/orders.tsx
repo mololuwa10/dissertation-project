@@ -134,7 +134,7 @@ const ArtisanOrders = () => {
 					))}
 				</tbody>
 			</table>
-			<Link href={"/Dashboard/Orders"}>
+			<Link href={"/ArtisanDashboard/Orders"}>
 				<Button size={"lg"} className="my-4 bg-gray-700 hover:bg-gray-800">
 					View More Orders
 				</Button>
