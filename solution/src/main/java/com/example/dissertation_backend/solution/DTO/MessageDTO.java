@@ -1,44 +1,32 @@
 package com.example.dissertation_backend.solution.DTO;
 
+import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
+import com.example.dissertation_backend.solution.Message.Model.Message;
+import java.util.List;
+
 public class MessageDTO {
 
-  private Integer senderId;
-  private Integer receiverId;
-  private String messageText;
+  private ApplicationUser otherParty;
+  private List<Message> messages;
 
-  // Constructors, Getters, and Setters
-  public MessageDTO() {
-    super();
+  public MessageDTO(ApplicationUser otherParty, List<Message> messages) {
+    this.otherParty = otherParty;
+    this.messages = messages;
   }
 
-  public MessageDTO(Integer senderId, Integer receiverId, String messageText) {
-    this.senderId = senderId;
-    this.receiverId = receiverId;
-    this.messageText = messageText;
+  public ApplicationUser getOtherParty() {
+    return otherParty;
   }
 
-  // Getters and setters
-  public Integer getSenderId() {
-    return senderId;
+  public void setOtherParty(ApplicationUser otherParty) {
+    this.otherParty = otherParty;
   }
 
-  public void setSenderId(Integer senderId) {
-    this.senderId = senderId;
+  public List<Message> getMessages() {
+    return messages;
   }
 
-  public Integer getReceiverId() {
-    return receiverId;
-  }
-
-  public void setReceiverId(Integer receiverId) {
-    this.receiverId = receiverId;
-  }
-
-  public String getMessageText() {
-    return messageText;
-  }
-
-  public void setMessageText(String messageText) {
-    this.messageText = messageText;
+  public void setMessages(List<Message> messages) {
+    this.messages = messages;
   }
 }

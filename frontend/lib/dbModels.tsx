@@ -736,4 +736,30 @@ export async function fetchOrdersByArtisan() {
 		console.error("Failed to fetch orders:", error);
 		throw error;
 	}
+
 }
+
+// Messages
+export const getAllConversations = async () => {
+	const jwtToken = localStorage.getItem("jwt");
+
+	try {
+		const response = await fetch("http://localhost:8080/api/messages/conversations", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${jwtToken}`,
+			},
+		});
+
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+
+		const conversations = await response.json();
+		return conversations;
+	} catch (error) {
+		console.error("Error fetching conversations:", error);
+		throw error;
+	}
+};

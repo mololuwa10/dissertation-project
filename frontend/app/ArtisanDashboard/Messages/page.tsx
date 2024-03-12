@@ -1,64 +1,44 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { useFetchUserInfo } from "@/lib/data";
+import { getAllConversations } from "@/lib/dbModels";
 import React, { useEffect, useState } from "react";
 
-const usersMessages = {
-	"user-1": {
-		id: 1,
-		avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-		name: "John Doe",
-		time: "11:30",
-		preview:
-			"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus.",
-		messages: [
-			{
-				id: "m1",
-				content: "Hey there! How are you today?",
-				timestamp: "2024-03-10T09:00:00.000Z",
-				from: "user-2",
-			},
-			{
-				id: "m2",
-				content: "Just wanted to check in about our meeting tomorrow.",
-				timestamp: "2024-03-10T09:15:00.000Z",
-				from: "user-2",
-			},
-			{
-				id: "m3",
-				content: "Can we possibly push it to 3pm?",
-				timestamp: "2024-03-10T10:30:00.000Z",
-				from: "user-2",
-			},
-			{
-				id: "m4",
-				content: "Let me know what works for you!",
-				timestamp: "2024-03-10T11:00:00.000Z",
-				from: "user-1",
-			},
-			{
-				id: "m5",
-				content: "Sure, 3pm works for me. See you then!",
-				timestamp: "2024-03-10T11:05:00.000Z",
-				from: "user-2",
-			},
-		],
-	},
-	"user-2": {
-		id: 2,
-		avatar: "https://randomuser.me/api/portraits/women/1.jpg",
-		name: "Sandra Johnson",
-		time: "10:31",
-		preview:
-			"Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.",
-	},
-	// more messages
-};
+interface User {
+	userId: number;
+	firstname: string;
+	lastname: string;
+	user_email: string;
+	username: string;
+	contactTelephone: string;
+	contactAddress: string;
+	authorities: {
+		roleId: number;
+		authority: string;
+	};
+}
+
+interface Message {
+	messageId: number;
+	sender: User;
+	receiver: User;
+	messageText: string;
+	dateSent: string;
+}
+
+interface Conversation {
+	otherParty: User;
+	messages: Message[];
+}
 
 export default function Messages() {
 	const [users, setUsers] = useState({});
 	const [selectedUserId, setSelectedUserId] = useState(null);
 	const [messages, setMessages] = useState([]);
+
+	const [conversations, setConversations] = useState<Conversation[]>([]);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(null);
 
 	const { userDetails } = useFetchUserInfo();
 	const [userId, setUserId] = useState<string | null>(null);
@@ -69,64 +49,106 @@ export default function Messages() {
 		}
 	}, [userDetails]);
 
-	// Fetch messages for a selected user
-	const fetchMessages = async (otherUserId: any) => {
-		try {
-			const response = await fetch(
-				`http://localhost:8080/api/messages/history/${userId}?otherUserId=${otherUserId}`
-			);
-			if (!response.ok) throw new Error("Failed to fetch messages");
-			const data = await response.json();
-			setMessages(data);
-		} catch (error) {
-			console.error(error);
-		}
-	};
+	useEffect(() => {
+		const fetchConversations = async () => {
+			setLoading(true);
+			try {
+				const fetchedConversations = await getAllConversations();
+				// Sort messages in each conversation
+				fetchedConversations.forEach((conversation: any) => {
+					conversation.messages.sort(
+						(a: any, b: any) =>
+							new Date(b.dateSent).getTime() - new Date(a.dateSent).getTime()
+					);
+				});
+				// Sort conversations by the latest message
+				fetchedConversations.sort((a: any, b: any) => {
+					const lastMessageA = a.messages[0].dateSent;
+					const lastMessageB = b.messages[0].dateSent;
+					return (
+						new Date(lastMessageB).getTime() - new Date(lastMessageA).getTime()
+					);
+				});
+				setConversations(fetchedConversations);
+				setLoading(false);
+			} catch (error) {
+				setError(error.message);
+				setLoading(false);
+			}
+		};
+
+		fetchConversations();
+	}, []);
 
 	useEffect(() => {
-		// Replace with actual user ID and the corresponding otherUserId
-		if (selectedUserId) fetchMessages("otherUserId");
-	}, [selectedUserId]);
+		// Fetch messages for a selected user
+		const fetchMessages = async (otherUserId: any) => {
+			try {
+				const response = await fetch(
+					`http://localhost:8080/api/messages/history/${userId}?otherUserId=${otherUserId}`
+				);
+				if (!response.ok) throw new Error("Failed to fetch messages");
+				const data = await response.json();
+				setMessages(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		if (selectedUserId) {
+			fetchMessages(selectedUserId);
+		}
+	}, [selectedUserId, userId]);
 
 	// Function to handle when a user is clicked
 	const handleUserClick = (userId: any) => {
 		setSelectedUserId(userId);
 	};
 
-	// Get messages for the selected user
-	// const messages =
-	// 	selectedUser && usersMessages[selectedUser].messages
-	// 		? usersMessages[selectedUser].messages
-	// 		: [];
+	if (loading) return <p>Loading conversations...</p>;
+	if (error) return <p>Error fetching conversations: {error}</p>;
 
 	return (
 		<>
 			<div className="flex h-screen bg-gray-700">
 				<aside className="w-1/4 bg-gray-600 p-4 overflow-y-auto">
 					<div className="space-y-4">
-						{Object.entries(usersMessages).map(([userId, user]) => (
-							<div
-								key={userId}
-								className={`flex items-center px-2 py-1 cursor-pointer ${
-									selectedUserId === userId
-										? "bg-gray-700 rounded-lg py-4 px-2"
-										: ""
-								}`}
-								onClick={() => handleUserClick(userId)}>
-								<img
-									src={user.avatar}
-									alt=""
-									className="h-10 w-10 rounded-full"
-								/>
-								<div className="ml-3">
-									<p className="text-sm font-semibold">{user.name}</p>
-									<p className="text-xs text-white">{user.preview}</p>
+						{conversations.map((conversation) => {
+							const lastMessage = conversation.messages[0];
+							return (
+								<div
+									key={conversation.otherParty.userId}
+									className={`flex items-center px-2 py-1 cursor-pointer ${
+										selectedUserId === conversation.otherParty.userId
+											? "bg-gray-700 rounded-lg py-4 px-2"
+											: ""
+									}`}
+									onClick={() =>
+										handleUserClick(conversation.otherParty.userId)
+									}>
+									<img
+										src={
+											conversation.otherParty.avatar ||
+											"https://randomuser.me/api/portraits/men/1.jpg"
+										}
+										alt={conversation.otherParty.firstname}
+										className="h-10 w-10 rounded-full"
+									/>
+									<div className="ml-3">
+										<p className="text-sm font-semibold">{`${conversation.otherParty.firstname} ${conversation.otherParty.lastname}`}</p>
+										<p className="text-xs text-white">
+											{lastMessage.messageText}
+										</p>
+									</div>
+									<span className="ml-auto text-xs">
+										{new Date(lastMessage.dateSent).toLocaleTimeString()}
+									</span>
 								</div>
-								<span className="ml-auto text-xs">{user.time}</span>
-							</div>
-						))}
+							);
+						})}
 					</div>
 				</aside>
+
 				<main className="flex-1 p-4 bg-gray-700">
 					<div className="flex flex-col-reverse h-full">
 						<div className="mb-4">
@@ -138,19 +160,18 @@ export default function Messages() {
 						</div>
 						<div className="flex-1 overflow-y-auto">
 							{messages.map((message: any, index: any) => {
-								const isCurrentUser = message.from === "user-1";
+								const isCurrentUser = message.sender.userId === userId;
+
+								const messageAlignment =
+									message.type === "RECEIVED" ? "justify-start" : "justify-end";
+								const messageBackground =
+									message.type === "RECEIVED"
+										? "bg-white text-gray-800"
+										: "bg-blue-500 text-white";
 								return (
-									<div
-										key={index}
-										className={`flex py-2 ${
-											isCurrentUser ? "justify-end" : "justify-start"
-										}`}>
+									<div key={index} className={`flex py-2 ${messageAlignment}`}>
 										<div
-											className={`rounded-lg p-3 shadow ${
-												isCurrentUser
-													? "bg-blue-500 text-white"
-													: "bg-white text-gray-800"
-											}`}>
+											className={`rounded-lg p-3 shadow ${messageBackground}`}>
 											{message.type === "text" && <p>{message.content}</p>}
 											{message.type === "image" && (
 												<img
@@ -164,7 +185,7 @@ export default function Messages() {
 											)}
 											<p>{message.content}</p>
 											<p className="text-xs mt-1">
-												{new Date(message.timestamp).toLocaleTimeString()}
+												{new Date(message.localDateTime).toLocaleTimeString()}
 											</p>
 										</div>
 									</div>

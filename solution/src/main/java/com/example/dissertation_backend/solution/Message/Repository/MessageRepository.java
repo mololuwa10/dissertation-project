@@ -9,8 +9,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Integer> {
   List<Message> findByReceiver(ApplicationUser receiver);
+  // List<Message> findByReceiverOrderByDateSentDesc(ApplicationUser receiver);
   List<Message> findBySenderAndReceiver(
     ApplicationUser sender,
     ApplicationUser receiver
+  );
+  List<Message> findBySenderOrReceiver(
+    ApplicationUser user,
+    ApplicationUser user2
   );
 }

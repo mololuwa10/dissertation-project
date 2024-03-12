@@ -4,10 +4,12 @@ import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser
 import com.example.dissertation_backend.solution.Customers.Model.ArtisanProfile;
 import com.example.dissertation_backend.solution.Customers.Repository.ArtisanProfileRepository;
 import com.example.dissertation_backend.solution.Customers.Repository.UserRepository;
+import com.example.dissertation_backend.solution.DTO.MessageDTO;
 import com.example.dissertation_backend.solution.DTO.UserDetailsDTO;
 import com.example.dissertation_backend.solution.Message.Model.Message;
 import com.example.dissertation_backend.solution.Message.Service.MessageService;
 import com.example.dissertation_backend.solution.WebSocket.Chat.ChatMessage;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +107,7 @@ public class MessageController {
   private ArtisanProfile fetchArtisanProfile(Integer userid) {
     return artisanProfileRepository.findByArtisan_UserId(userid).orElse(null);
   }
+
   // @PostMapping("/send")
   // public ResponseEntity<?> sendMessage(
   //   @RequestBody MessageDTO messageDTO,
@@ -130,29 +133,22 @@ public class MessageController {
   //   return ResponseEntity.ok(message);
   // }
 
-  // @GetMapping("/conversation/{receiverId}")
-  // public ResponseEntity<?> getConversation(
-  //   @PathVariable Integer receiverId,
-  //   Principal principal
-  // ) {
-  //   // Check if the user is logged in
-  //   if (principal == null) {
-  //     return ResponseEntity
-  //       .status(HttpStatus.UNAUTHORIZED)
-  //       .body("You must be logged in to view messages.");
-  //   }
+  @GetMapping("/conversations")
+  public ResponseEntity<?> getAllConversations(Principal principal) {
+    if (principal == null) {
+      return ResponseEntity
+        .status(HttpStatus.UNAUTHORIZED)
+        .body("You must be logged in to view messages.");
+    }
 
-  //   // Fetch the logged-in user (sender) details
-  //   ApplicationUser sender = userRepository
-  //     .findByUsername(principal.getName())
-  //     .orElseThrow(() -> new RuntimeException("User not found"));
+    ApplicationUser currentUser = userRepository
+      .findByUsername(principal.getName())
+      .orElseThrow(() -> new RuntimeException("User not found"));
 
-  //   // Fetch the conversation between the logged-in user and the specified receiver
-  //   List<Message> conversation = messageService.getConversation(
-  //     sender.getUserId(),
-  //     receiverId
-  //   );
+    List<MessageDTO> conversations = messageService.getAllConversations(
+      currentUser.getUserId()
+    );
 
-  //   return ResponseEntity.ok(conversation);
-  // }
+    return ResponseEntity.ok(conversations);
+  }
 }
