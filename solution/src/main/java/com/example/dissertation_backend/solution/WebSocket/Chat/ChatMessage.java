@@ -15,6 +15,7 @@ public class ChatMessage {
   private LocalDateTime localDateTime;
   private Integer recipientId;
   private UserDetailsDTO userDetailsDTO;
+  private Integer productId;
 
   public ChatMessage(MessageType type, String content, String sender) {
     this.type = type;
@@ -28,7 +29,8 @@ public class ChatMessage {
     String sender,
     LocalDateTime localDateTime,
     Integer recipientId,
-    UserDetailsDTO userDetailsDTO
+    UserDetailsDTO userDetailsDTO,
+    Integer productId
   ) {
     this.type = type;
     this.content = content;
@@ -36,6 +38,7 @@ public class ChatMessage {
     this.localDateTime = localDateTime;
     this.recipientId = recipientId;
     this.userDetailsDTO = userDetailsDTO;
+    this.productId = productId;
   }
 
   public enum MessageType {
@@ -92,5 +95,13 @@ public class ChatMessage {
 
   public void setUserDetailsDTO(UserDetailsDTO userDetailsDTO) {
     this.userDetailsDTO = userDetailsDTO;
+  }
+
+  public Integer getProductId() {
+    return productId;
+  }
+
+  public void setProductId(Integer productId) {
+    this.productId = productId;
   }
 }

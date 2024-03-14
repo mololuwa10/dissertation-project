@@ -1,6 +1,9 @@
 package com.example.dissertation_backend.solution.Message.Model;
 
 import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
+import com.example.dissertation_backend.solution.Products.Model.Products;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+// import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -21,6 +24,11 @@ public class Message {
   @JoinColumn(name = "receiver_id", referencedColumnName = "user_id")
   private ApplicationUser receiver;
 
+  @ManyToOne
+  @JsonIgnore
+  @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+  private Products products;
+
   @Column(name = "message_text")
   private String messageText;
 
@@ -36,11 +44,13 @@ public class Message {
   public Message(
     ApplicationUser sender,
     ApplicationUser receiver,
+    Products products,
     String messageText,
     LocalDateTime dateSent
   ) {
     this.sender = sender;
     this.receiver = receiver;
+    this.products = products;
     this.messageText = messageText;
     this.dateSent = dateSent;
   }
@@ -69,6 +79,14 @@ public class Message {
 
   public void setReceiver(ApplicationUser receiver) {
     this.receiver = receiver;
+  }
+
+  public Products getProducts() {
+    return products;
+  }
+
+  public void setProducts(Products products) {
+    this.products = products;
   }
 
   public String getMessageText() {

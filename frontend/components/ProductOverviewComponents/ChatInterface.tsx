@@ -11,9 +11,11 @@ import {
 const ChatInterface = ({
 	artisanId,
 	currentUserId,
+	productId,
 }: {
 	artisanId: any;
 	currentUserId: any;
+	productId: any;
 }) => {
 	const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>(
 		[]
@@ -23,9 +25,11 @@ const ChatInterface = ({
 	useEffect(() => {
 		const fetchMessageHistory = async () => {
 			try {
-				const response = await fetch(
-					`http://localhost:8080/api/messages/history/${currentUserId}?otherUserId=${artisanId}`
-				);
+				let url = `http://localhost:8080/api/messages/history/${currentUserId}?otherUserId=${artisanId}`;
+				if (productId) {
+					url += `&productId=${productId}`;
+				}
+				const response = await fetch(url);
 				if (!response.ok) {
 					throw new Error("Network response was not ok");
 				}
@@ -41,7 +45,6 @@ const ChatInterface = ({
 					"There has been a problem with your fetch operation:",
 					error
 				);
-				// Handle errors here
 			}
 		};
 		if (!currentUserId) {
@@ -72,7 +75,7 @@ const ChatInterface = ({
 			// Disconnect or clean up WebSocket connection when component unmounts
 			disconnect();
 		};
-	}, [artisanId, currentUserId]);
+	}, [artisanId, currentUserId, productId]);
 
 	const handleSendMessage = (e: any) => {
 		e.preventDefault();
@@ -81,6 +84,7 @@ const ChatInterface = ({
 				sender: currentUserId,
 				content: inputValue,
 				recipientId: artisanId,
+				productId: productId,
 			};
 			sendMessage(messageContent);
 			// setMessages((prevMessages) => [

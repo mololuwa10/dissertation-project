@@ -243,7 +243,7 @@ export default function ProductInfo() {
 					</>
 				)}
 
-				{/* ... Other product details and policies */}
+				{/* Other product details and policies */}
 				<div className="mt-6 space-y-6">
 					<div className="text-lg font-medium text-gray-900">Item details</div>
 					<ul className="space-y-4 text-sm text-gray-600">
@@ -296,6 +296,7 @@ export default function ProductInfo() {
 					artisanName={product?.artisanProfile.firstname!}
 					artisanStore={product?.artisanProfile.storeName!}
 					artisanId={product?.artisanProfile.artisanId!}
+					productId={product?.productId!}
 				/>
 			</div>
 		</>

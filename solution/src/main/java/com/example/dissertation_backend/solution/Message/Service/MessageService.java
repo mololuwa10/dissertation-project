@@ -5,6 +5,7 @@ import com.example.dissertation_backend.solution.Customers.Repository.UserReposi
 import com.example.dissertation_backend.solution.DTO.MessageDTO;
 import com.example.dissertation_backend.solution.Message.Model.Message;
 import com.example.dissertation_backend.solution.Message.Repository.MessageRepository;
+import com.example.dissertation_backend.solution.Products.Model.Products;
 import com.example.dissertation_backend.solution.WebSocket.Chat.ChatMessage;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,14 +30,50 @@ public class MessageService {
   public Message saveMessage(
     ChatMessage chatMessage,
     ApplicationUser sender,
-    ApplicationUser receiver
+    ApplicationUser receiver,
+    Products products
   ) {
     Message message = new Message();
     message.setSender(sender);
     message.setReceiver(receiver);
+    message.setProducts(products);
     message.setMessageText(chatMessage.getContent());
     message.setDateSent(LocalDateTime.now());
     return messageRepository.save(message);
+  }
+
+  public List<Message> getMessageHistoryByProduct(
+    ApplicationUser user1,
+    ApplicationUser user2,
+    Integer productId
+  ) {
+    // Retrieves the conversation between two users
+    List<Message> messagesSent = messageRepository.findBySenderAndReceiver(
+      user1,
+      user2
+    );
+    List<Message> messagesReceived = messageRepository.findBySenderAndReceiver(
+      user2,
+      user1
+    );
+
+    Stream<Message> combinedStream = Stream.concat(
+      messagesSent.stream(),
+      messagesReceived.stream()
+    );
+
+    if (productId != null) {
+      combinedStream =
+        combinedStream.filter(m ->
+          m.getProducts() != null &&
+          m.getProducts().getProductId().equals(productId)
+        );
+    }
+
+    // Sort the messages by date sent and return the list
+    return combinedStream
+      .sorted(Comparator.comparing(Message::getDateSent))
+      .collect(Collectors.toList());
   }
 
   public List<Message> getMessageHistory(

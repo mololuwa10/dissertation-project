@@ -3,6 +3,12 @@
 import { useFetchUserInfo } from "@/lib/data";
 import { getAllConversations } from "@/lib/dbModels";
 import React, { useEffect, useState } from "react";
+import {
+	connect,
+	sendMessage,
+	disconnect,
+	isConnected,
+} from "@/lib/WebSocketService";
 
 interface User {
 	userId: number;
@@ -34,7 +40,9 @@ interface Conversation {
 export default function Messages() {
 	const [users, setUsers] = useState({});
 	const [selectedUserId, setSelectedUserId] = useState(null);
-	const [messages, setMessages] = useState([]);
+	const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>(
+		[]
+	);
 
 	const [conversations, setConversations] = useState<Conversation[]>([]);
 	const [loading, setLoading] = useState(false);
@@ -42,6 +50,8 @@ export default function Messages() {
 
 	const { userDetails } = useFetchUserInfo();
 	const [userId, setUserId] = useState<string | null>(null);
+
+	const [inputValue, setInputValue] = useState("");
 
 	useEffect(() => {
 		if (userDetails && userDetails.user) {
@@ -95,14 +105,56 @@ export default function Messages() {
 			}
 		};
 
-		if (selectedUserId) {
+		if (userId && selectedUserId) {
 			fetchMessages(selectedUserId);
+			const jwt = localStorage.getItem("jwt") ?? "";
+			const onMessageReceived = (msg: any) => {
+				setMessages((prevMessages) => [
+					...prevMessages,
+					{
+						text: msg.content,
+						isUser: msg.type === "SENT",
+					},
+				]);
+			};
+
+			if (!isConnected() && selectedUserId) {
+				connect(selectedUserId, onMessageReceived, jwt);
+			}
+			return () => disconnect();
 		}
 	}, [selectedUserId, userId]);
 
 	// Function to handle when a user is clicked
 	const handleUserClick = (userId: any) => {
 		setSelectedUserId(userId);
+	};
+
+	// Function to handle input changes
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setInputValue(e.target.value);
+	};
+
+	const handleSendMessage = (e: any) => {
+		e.preventDefault();
+		if (inputValue.trim()) {
+			const messageContent = {
+				sender: userId,
+				content: inputValue,
+				recipientId: selectedUserId,
+				localDateTime: new Date().toISOString(),
+			};
+			sendMessage(messageContent);
+			setMessages((prevMessages) => [
+				...prevMessages,
+				{
+					text: messageContent.content,
+					isUser: false,
+					localDateTime: messageContent.localDateTime,
+				},
+			]);
+			setInputValue("");
+		}
 	};
 
 	if (loading) return <p>Loading conversations...</p>;
@@ -151,16 +203,20 @@ export default function Messages() {
 
 				<main className="flex-1 p-4 bg-gray-700">
 					<div className="flex flex-col-reverse h-full">
-						<div className="mb-4">
-							<input
-								type="text"
-								className="w-full p-2 border rounded text-black focus:outline-none"
-								placeholder="Type a message..."
-							/>
-						</div>
+						<form onSubmit={handleSendMessage}>
+							<div className="mb-4">
+								<input
+									type="text"
+									className="w-full p-2 border rounded text-black focus:outline-none"
+									placeholder="Type a message..."
+									value={inputValue}
+									onChange={handleInputChange}
+								/>
+							</div>
+						</form>
 						<div className="flex-1 overflow-y-auto">
 							{messages.map((message: any, index: any) => {
-								const isCurrentUser = message.sender.userId === userId;
+								// const isCurrentUser = message.sender.userId === userId;
 
 								const messageAlignment =
 									message.type === "RECEIVED" ? "justify-start" : "justify-end";

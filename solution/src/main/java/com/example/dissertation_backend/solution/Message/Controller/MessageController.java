@@ -44,7 +44,8 @@ public class MessageController {
   @GetMapping("/history/{userId}")
   public ResponseEntity<List<ChatMessage>> getMessageHistory(
     @PathVariable Integer userId,
-    @RequestParam Integer otherUserId
+    @RequestParam Integer otherUserId,
+    @RequestParam(required = false) Integer productId
   ) {
     @SuppressWarnings("null")
     ApplicationUser currentUser = userRepository
@@ -65,10 +66,18 @@ public class MessageController {
 
     // Fetch additional details, like ArtisanProfile, for the other user.
     ArtisanProfile otherUserProfile = fetchArtisanProfile(otherUserId);
-    List<Message> messages = messageService.getMessageHistory(
-      currentUser,
-      otherUser
-    );
+    List<Message> messages;
+
+    if (productId != null) {
+      messages =
+        messageService.getMessageHistoryByProduct(
+          currentUser,
+          otherUser,
+          productId
+        );
+    } else {
+      messages = messageService.getMessageHistory(currentUser, otherUser);
+    }
     // Convert messages to ChatMessage DTOs
     List<ChatMessage> chatMessages = messages
       .stream()
@@ -96,7 +105,8 @@ public class MessageController {
           senderUsername,
           message.getDateSent(),
           recipientId,
-          userDetails
+          userDetails,
+          productId
         );
       })
       .collect(Collectors.toList());

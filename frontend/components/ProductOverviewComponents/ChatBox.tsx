@@ -8,12 +8,14 @@ export const ChatBox = ({
 	artisanName,
 	artisanStore,
 	artisanId,
+	productId,
 }: {
 	isOpen: any;
 	onClose: any;
 	artisanName: any;
 	artisanStore: any;
 	artisanId: any;
+	productId: any;
 }) => {
 	const { userDetails } = useFetchUserInfo();
 	const [userId, setUserId] = useState<string | null>(null);
@@ -40,7 +42,11 @@ export const ChatBox = ({
 				Typically responds within 48 hours
 			</p>
 
-			<ChatInterface artisanId={artisanId!} currentUserId={userId!} />
+			<ChatInterface
+				artisanId={artisanId!}
+				currentUserId={userId!}
+				productId={productId!}
+			/>
 		</div>
 	);
 };
