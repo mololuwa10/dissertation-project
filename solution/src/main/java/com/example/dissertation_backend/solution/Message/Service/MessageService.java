@@ -95,7 +95,6 @@ public class MessageService {
     conversation.addAll(messagesReceived);
 
     conversation.sort(Comparator.comparing(Message::getDateSent));
-    // Consider adding pagination or limiting the number of messages
     return conversation;
   }
 

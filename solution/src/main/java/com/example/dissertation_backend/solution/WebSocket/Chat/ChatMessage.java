@@ -1,5 +1,6 @@
 package com.example.dissertation_backend.solution.WebSocket.Chat;
 
+import com.example.dissertation_backend.solution.DTO.ProductDTO;
 import com.example.dissertation_backend.solution.DTO.UserDetailsDTO;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -14,8 +15,9 @@ public class ChatMessage {
   private String sender;
   private LocalDateTime localDateTime;
   private Integer recipientId;
-  private UserDetailsDTO userDetailsDTO;
   private Integer productId;
+  private UserDetailsDTO userDetailsDTO;
+  private ProductDTO productDTO;
 
   public ChatMessage(MessageType type, String content, String sender) {
     this.type = type;
@@ -29,16 +31,18 @@ public class ChatMessage {
     String sender,
     LocalDateTime localDateTime,
     Integer recipientId,
+    Integer productId,
     UserDetailsDTO userDetailsDTO,
-    Integer productId
+    ProductDTO productDTO
   ) {
     this.type = type;
     this.content = content;
     this.sender = sender;
     this.localDateTime = localDateTime;
     this.recipientId = recipientId;
-    this.userDetailsDTO = userDetailsDTO;
     this.productId = productId;
+    this.userDetailsDTO = userDetailsDTO;
+    this.productDTO = productDTO;
   }
 
   public enum MessageType {
@@ -63,6 +67,14 @@ public class ChatMessage {
 
   public void setContent(String content) {
     this.content = content;
+  }
+
+  public Integer getProductId() {
+    return productId;
+  }
+
+  public void setProductId(Integer productId) {
+    this.productId = productId;
   }
 
   public String getSender() {
@@ -97,11 +109,11 @@ public class ChatMessage {
     this.userDetailsDTO = userDetailsDTO;
   }
 
-  public Integer getProductId() {
-    return productId;
+  public ProductDTO getProductDTO() {
+    return productDTO;
   }
 
-  public void setProductId(Integer productId) {
-    this.productId = productId;
+  public void setProductDTO(ProductDTO productDTO) {
+    this.productDTO = productDTO;
   }
 }
