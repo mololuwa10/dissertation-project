@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu, Link, ShoppingCart, Sun, Moon } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import React, { useEffect } from "react";
 import { Fragment, useState } from "react";
 import { LanguageComboBox } from "./LanguageComboBox";
@@ -13,6 +13,7 @@ import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { fetchShoppingCart } from "@/lib/dbModels";
 import SearchBar from "./SearchBar";
+import { FormattedMessage } from "react-intl";
 
 export default function Header() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -79,7 +80,10 @@ export default function Header() {
 							<a
 								href="/"
 								className="ml-1 lg:ml-0 text-lg font-bold text-emerald-900">
-								Craft Collaborations
+								<FormattedMessage
+									id="companyName"
+									defaultMessage="Craft Collaborations"
+								/>
 							</a>
 						</div>
 						<nav className="mx-6 flex items-center space-x-4 lg:space-x-6 md:block white-text">

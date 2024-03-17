@@ -68,23 +68,41 @@ public class MessageController {
     );
   }
 
-  @SuppressWarnings("null")
+  // @SuppressWarnings("null")
   @GetMapping("/mark-read/{senderId}/{receiverId}")
   public ResponseEntity<?> markMessagesAsRead(
     @PathVariable Integer senderId,
     @PathVariable Integer receiverId,
     Principal principal
   ) {
-    if (
-      principal == null ||
-      !principal
-        .getName()
-        .equals(userRepository.findById(receiverId).orElseThrow().getUsername())
-    ) {
-      return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+    // if (
+    //   principal == null ||
+    //   !principal
+    //     .getName()
+    //     .equals(userRepository.findById(receiverId).orElseThrow().getUsername())
+    // ) {
+    //   return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+    // }
+    // messageService.markMessagesAsRead(senderId, receiverId);
+    // return new ResponseEntity<>("Messages marked as read", HttpStatus.OK);
+
+    if (principal == null) {
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
-    messageService.markMessagesAsRead(senderId, receiverId);
-    return new ResponseEntity<>("Messages marked as read", HttpStatus.OK);
+
+    ApplicationUser currentUser = userRepository
+      .findByUsername(principal.getName())
+      .orElseThrow(() ->
+        new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+      );
+
+    List<ChatMessage> updatedChatMessages = messageService.markMessagesAsRead(
+      senderId,
+      receiverId,
+      currentUser
+    );
+
+    return ResponseEntity.ok(updatedChatMessages);
   }
 
   @GetMapping("/history/{userId}")

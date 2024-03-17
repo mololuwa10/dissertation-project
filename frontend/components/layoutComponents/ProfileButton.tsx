@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useFetchUserInfo, useLogout } from "@/lib/data";
 import { Button } from "../ui/button";
+import { FormattedMessage } from "react-intl";
 
 const ProfileButton = () => {
 	const { isLoggedIn, userRole } = useFetchUserInfo();
@@ -22,7 +23,9 @@ const ProfileButton = () => {
 	if (!isLoggedIn) {
 		return (
 			<Link href="/SignIn">
-				<Button size={"lg"}>Sign In</Button>
+				<Button size={"lg"}>
+					<FormattedMessage id="navSignIn" defaultMessage="	Sign In" />
+				</Button>
 			</Link>
 		);
 	}

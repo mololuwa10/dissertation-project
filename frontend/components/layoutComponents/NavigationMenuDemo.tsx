@@ -15,6 +15,7 @@ import {
 	navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { useFetchCategories } from "@/lib/dbModels";
+import { FormattedMessage } from "react-intl";
 
 // import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 
@@ -55,7 +56,9 @@ export function NavigationMenuDemo() {
 		<NavigationMenu>
 			<NavigationMenuList>
 				<NavigationMenuItem>
-					<NavigationMenuTrigger>Categories</NavigationMenuTrigger>
+					<NavigationMenuTrigger>
+						<FormattedMessage id="navCategories" defaultMessage="Categories" />
+					</NavigationMenuTrigger>
 					<NavigationMenuContent>
 						<ul className="grid w-[450px] gap-2 p-4 md:w-[500px] md:grid-cols-2 lg:w-[480px] ">
 							{categories.map((category) => (
@@ -77,7 +80,7 @@ export function NavigationMenuDemo() {
 				<NavigationMenuItem>
 					<Link href="/docs" legacyBehavior passHref>
 						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
-							Deals
+							<FormattedMessage id="navDeals" defaultMessage="Deals" />
 						</NavigationMenuLink>
 					</Link>
 				</NavigationMenuItem>
@@ -85,7 +88,7 @@ export function NavigationMenuDemo() {
 				<NavigationMenuItem>
 					<Link href="#" legacyBehavior passHref>
 						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
-							Whats New
+							<FormattedMessage id="navWhatsNew" defaultMessage="What's New" />
 						</NavigationMenuLink>
 					</Link>
 				</NavigationMenuItem>
@@ -93,7 +96,7 @@ export function NavigationMenuDemo() {
 				<NavigationMenuItem>
 					<Link href="/ContactUs" legacyBehavior passHref>
 						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
-							Contacts
+							<FormattedMessage id="navWhatsNew" defaultMessage="Contacts" />
 						</NavigationMenuLink>
 					</Link>
 				</NavigationMenuItem>
@@ -101,7 +104,10 @@ export function NavigationMenuDemo() {
 				<NavigationMenuItem>
 					<Link href="/Testimonials" legacyBehavior passHref>
 						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
-							Testimonial
+							<FormattedMessage
+								id="navTestimonial"
+								defaultMessage="Testimonial"
+							/>
 						</NavigationMenuLink>
 					</Link>
 				</NavigationMenuItem>

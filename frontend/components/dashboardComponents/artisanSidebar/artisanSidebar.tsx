@@ -119,9 +119,6 @@ const ArtisanSidebar = () => {
 		};
 
 		fetchUnreadCount();
-
-		// You may also want to set up a WebSocket or other subscription
-		// to listen for new messages and update the count accordingly
 	}, []);
 
 	return (

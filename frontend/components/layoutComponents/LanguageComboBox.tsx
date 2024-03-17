@@ -1,10 +1,12 @@
 "use client";
 
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useContext } from "react";
+import { LanguageContext } from "@/app/LanguageContext";
 
 import {
 	Popover,
@@ -21,30 +23,77 @@ import {
 
 const frameworks = [
 	{
-		value: "English",
+		value: "en",
 		label: "English",
 	},
 	{
-		value: "French",
+		value: "fr",
 		label: "French",
 	},
 	{
-		value: "Italian",
+		value: "it",
 		label: "Italian",
 	},
 	{
-		value: "Spanish",
+		value: "es",
 		label: "Spanish",
 	},
 	{
-		value: "Yoruba",
-		label: "Yoruba",
+		value: "pt-PT",
+		label: "Portugese",
+	},
+	{
+		value: "de",
+		label: "German",
+	},
+	{
+		value: "ja",
+		label: "Japan",
 	},
 ];
 
 export function LanguageComboBox() {
 	const [open, setOpen] = React.useState(false);
 	const [value, setValue] = React.useState("");
+	const { currentLanguage, setCurrentLanguage } = useContext(LanguageContext);
+	const [label, setLabel] = React.useState("English");
+
+	// Call this function when a new language is selected
+	const handleLanguageChange = (languageCode: any, label: any) => {
+		setCurrentLanguage(languageCode);
+		setLabel(label);
+		// fetchLocalizedContent(languageCode);
+	};
+
+	const [localizedMessages, setLocalizedMessages] = useState({});
+
+	const fetchLocalizedContent = async (languageCode: any) => {
+		try {
+			const response = await fetch(
+				`http://localhost:8080/api/languages/messages`,
+				{
+					method: "GET",
+					headers: {
+						"Accept-Language": languageCode,
+					},
+				}
+			);
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const languages = await response.text();
+			setLocalizedMessages(languages);
+		} catch (error) {
+			console.error("Error fetching localized content:", error);
+		}
+	};
+
+	// Call fetchLocalizedContent when the language context changes
+	// useEffect(() => {
+	// 	fetchLocalizedContent(currentLanguage);
+	// }, [currentLanguage]);
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
@@ -69,8 +118,12 @@ export function LanguageComboBox() {
 							<CommandItem
 								key={framework.value}
 								value={framework.value}
-								onSelect={(currentValue: any) => {
-									setValue(currentValue === value ? "" : currentValue);
+								// onSelect={(currentValue: any) => {
+								// 	setValue(currentValue === value ? "" : currentValue);
+								// 	setOpen(false);
+								// }}
+								onSelect={() => {
+									handleLanguageChange(framework.value, framework.label);
 									setOpen(false);
 								}}>
 								<Check

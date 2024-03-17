@@ -9,31 +9,36 @@ import TrendingSections from "@/components/landingPageComponents/TrendingSection
 import Footer from "@/components/layoutComponents/Footer";
 import Header from "@/components/layoutComponents/Header";
 import Image from "next/image";
+import { LanguageProvider } from "../app/LanguageContext";
+import type { AppProps } from "next/app";
 
-export default function Home() {
+export default function Home({ Component, pageProps }: AppProps) {
 	return (
 		<>
-			<main className="flex min-h-screen flex-col justify-between">
-				<Header />
+			<LanguageProvider>
+				<main className="flex min-h-screen flex-col justify-between">
+					<Header />
 
-				<ImageCarousel />
+					<ImageCarousel />
 
-				<CategoriesDeals />
+					<CategoriesDeals />
 
-				<CategoriesComponents />
+					<CategoriesComponents />
 
-				<TrendingSections />
+					<TrendingSections />
 
-				<NewProduct />
+					<NewProduct />
 
-				<SellerStoreComponent />
+					<SellerStoreComponent />
 
-				<TestimonialsComponents />
+					<TestimonialsComponents />
 
-				<Blog />
-			</main>
+					<Blog />
+				</main>
 
-			<Footer />
+				<Footer />
+				{/* <Component {...pageProps} /> */}
+			</LanguageProvider>
 		</>
 	);
 }

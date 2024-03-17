@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/layoutComponents/Footer";
 import Header from "@/components/layoutComponents/Header";
+import { LanguageContext } from "@/app/LanguageContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,11 +14,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
 	children,
+	currentLanguage,
 }: Readonly<{
 	children: React.ReactNode;
+	currentLanguage?: string;
 }>) {
 	return (
-		<html lang="en">
+		<html lang={currentLanguage || "en"}>
 			<body className={inter.className}>
 				{/* <Header /> */}
 				{children}

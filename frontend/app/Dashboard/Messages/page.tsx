@@ -37,7 +37,7 @@ interface Conversation {
 	messages: Message[];
 }
 
-export default function Messages() {
+export default function AdminMessages() {
 	const [users, setUsers] = useState({});
 	const [selectedUserId, setSelectedUserId] = useState(null);
 	const [messages, setMessages] = useState<
@@ -96,31 +96,6 @@ export default function Messages() {
 
 		fetchConversations();
 	}, []);
-
-	// useEffect(() => {
-	// 	const jwt = localStorage.getItem("jwt") ?? "";
-	// 	if (selectedUserId) {
-	// 		const markMessagesAsRead = async () => {
-	// 			try {
-	// 				const response = await fetch(
-	// 					`http://localhost:8080/api/messages/mark-read/${userId}/${selectedUserId}`,
-	// 					{
-	// 						method: "POST",
-	// 						headers: {
-	// 							Authorization: `Bearer ${jwt}`,
-	// 						},
-	// 					}
-	// 				);
-	// 				if (!response.ok) throw new Error("Failed to mark messages as read");
-	// 				// Handle response if needed
-	// 			} catch (error) {
-	// 				console.error(error);
-	// 			}
-	// 		};
-
-	// 		markMessagesAsRead();
-	// 	}
-	// }, [selectedUserId, userId]);
 
 	const markMessagesAsRead = async (senderId: any, receiverId: any) => {
 		const jwt = localStorage.getItem("jwt") ?? "";

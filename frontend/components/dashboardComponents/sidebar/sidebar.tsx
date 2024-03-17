@@ -16,6 +16,7 @@ import {
 	MdReorder,
 	MdContacts,
 	MdEmail,
+	MdMessage,
 } from "react-icons/md";
 import MenuLink from "./menuLink/menuLink";
 import { useFetchUserInfo, useLogout } from "@/lib/data";
@@ -53,6 +54,11 @@ const menuItems = [
 				title: "Testimonials",
 				path: "/Dashboard/Testimonials",
 				icon: <MdSupervisedUserCircle />,
+			},
+			{
+				title: "Messages",
+				path: "/Dashboard/Messages",
+				icon: <MdMessage />,
 			},
 			{
 				title: "Contact Us Queries",

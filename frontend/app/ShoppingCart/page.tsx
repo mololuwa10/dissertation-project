@@ -9,6 +9,7 @@ import { X } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useFetchUserInfo } from "@/lib/data";
 
 type Product = {
 	productId: number;
@@ -34,6 +35,8 @@ const CartItem = ({
 	item: Item;
 	onItemChange: () => void;
 }) => {
+	const { userDetails } = useFetchUserInfo();
+
 	// Determine the maximum number of selectable items
 	const maxQuantity = Math.min(item.product.productStockQuantity, 20);
 
@@ -162,7 +165,9 @@ const OrderSummary = ({ cartItems }: { cartItems: Item[] }) => {
 					productId: item.product.productId,
 					quantity: item.quantity,
 				})),
-				// amount: total,
+				customerEmail: "test@email.com", // TODO: Get from JWT or form input
+				quantity: total,
+				amount: total,
 				currency: "gbp",
 				successUrl: "http://localhost:3000/ShoppingCart/Success",
 				cancelUrl: "http://example.com/cancel",

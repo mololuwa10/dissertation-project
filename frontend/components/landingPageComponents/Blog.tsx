@@ -1,4 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
+"use client";
+
 import Image from "next/image";
+import { FormattedMessage } from "react-intl";
 
 export default function Blog() {
 	const date = new Date();
@@ -19,7 +23,10 @@ export default function Blog() {
 		<>
 			<section className="mx-auto mt-10">
 				<h1 className="text-bold font-medium text-2xl ml-24">
-					More From Craft Collaborations
+					<FormattedMessage
+						id="moreFromUs"
+						defaultMessage="More From Craft Collaborations"
+					/>
 				</h1>
 				<div className="mt-5 grid gap-6 grid-cols-3 px-20">
 					<article className="overflow-hidden rounded-lg shadow transition hover:shadow-lg">
@@ -38,7 +45,10 @@ export default function Blog() {
 
 							<a href="#">
 								<h3 className="mt-0.5 text-lg text-gray-900">
-									Online Payment Process
+									<FormattedMessage
+										id="onlinePayment"
+										defaultMessage="Online Payment Processs"
+									/>
 								</h3>
 							</a>
 
@@ -69,7 +79,10 @@ export default function Blog() {
 
 							<a href="#">
 								<h3 className="mt-0.5 text-lg text-gray-900">
-									Frequently Asked Questions
+									<FormattedMessage
+										id="faq"
+										defaultMessage="Frequently Asked Questions"
+									/>
 								</h3>
 							</a>
 
@@ -100,7 +113,10 @@ export default function Blog() {
 
 							<a href="#">
 								<h3 className="mt-0.5 text-lg text-gray-900">
-									Home Delivery Options
+									<FormattedMessage
+										id="homeDelivery"
+										defaultMessage="Home Delivery Options"
+									/>
 								</h3>
 							</a>
 

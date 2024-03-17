@@ -109,35 +109,6 @@ public class UserController {
       .orElse(null);
   }
 
-  // @GetMapping("/info")
-  // public ResponseEntity<ApplicationUser> getUserDetails() {
-  //   Authentication authentication = SecurityContextHolder
-  //     .getContext()
-  //     .getAuthentication();
-  //   if (!(authentication instanceof AnonymousAuthenticationToken)) {
-  //     Jwt jwt = (Jwt) authentication.getPrincipal();
-  //     String username = jwt.getClaim("sub");
-  //     Optional<ApplicationUser> optionalUser = userRepository.findByUsername(
-  //       username
-  //     );
-  //     if (optionalUser.isPresent()) {
-  //       ApplicationUser user = optionalUser.get();
-  //       user.setPassword(null);
-  //       return ResponseEntity.ok(user);
-  //     } else {
-  //       throw new ResponseStatusException(
-  //         HttpStatus.NOT_FOUND,
-  //         "User not found"
-  //       );
-  //     }
-  //   } else {
-  //     throw new ResponseStatusException(
-  //       HttpStatus.UNAUTHORIZED,
-  //       "User not authenticated"
-  //     );
-  //   }
-  // }
-
   @PutMapping("/{userId}")
   public ResponseEntity<?> updateUser(
     @PathVariable Integer userId,
