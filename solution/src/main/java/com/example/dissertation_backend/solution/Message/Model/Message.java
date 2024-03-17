@@ -35,8 +35,10 @@ public class Message {
   @Column(name = "date_sent")
   private LocalDateTime dateSent;
 
-  // Constructors
+  @Column(name = "isRead")
+  private boolean isRead = false;
 
+  // Constructors
   public Message() {
     super();
   }
@@ -46,13 +48,15 @@ public class Message {
     ApplicationUser receiver,
     Products products,
     String messageText,
-    LocalDateTime dateSent
+    LocalDateTime dateSent,
+    boolean isRead
   ) {
     this.sender = sender;
     this.receiver = receiver;
     this.products = products;
     this.messageText = messageText;
     this.dateSent = dateSent;
+    this.isRead = isRead;
   }
 
   // Getters and setters
@@ -103,5 +107,13 @@ public class Message {
 
   public void setDateSent(LocalDateTime dateSent) {
     this.dateSent = dateSent;
+  }
+
+  public boolean isRead() {
+    return isRead;
+  }
+
+  public void setRead(boolean isRead) {
+    this.isRead = isRead;
   }
 }

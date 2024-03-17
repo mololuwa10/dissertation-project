@@ -44,17 +44,13 @@ public class StripeController {
     try {
       // Use checkoutItems from CheckoutPayment for validations and updates
       List<CheckoutItem> checkoutItems = checkoutPayment.getItems();
-
-      // Perform checkout validations and updates
-      checkoutService.checkout(checkoutItems);
-
       SessionCreateParams.Builder paramsBuilder = SessionCreateParams
         .builder()
         .setMode(SessionCreateParams.Mode.PAYMENT)
         .setSuccessUrl(checkoutPayment.getSuccessUrl())
         .setCancelUrl(checkoutPayment.getCancelUrl());
 
-      long totalPriceInCents = 0; // Total price in the smallest currency unit
+      long totalPriceInCents = 0;
 
       // Dynamically add line items based on checkoutItems
       for (CheckoutItem item : checkoutItems) {
@@ -72,6 +68,9 @@ public class StripeController {
 
         long priceInCents = Math.round(priceToUse * 100);
         totalPriceInCents += priceInCents * item.getQuantity();
+
+        // checkoutPayment.setAmount(totalPriceInCents);
+        // checkoutPayment.setQuantity(item.getQuantity());
 
         paramsBuilder.addLineItem(
           SessionCreateParams.LineItem
@@ -93,6 +92,9 @@ public class StripeController {
             .build()
         );
       }
+
+      // Perform checkout validations and updates
+      checkoutService.checkout(checkoutItems);
 
       Session session = Session.create(paramsBuilder.build());
       // Wrap the URL in a JSON object and return it

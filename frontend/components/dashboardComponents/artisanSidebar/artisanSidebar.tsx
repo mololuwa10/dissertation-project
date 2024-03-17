@@ -22,6 +22,7 @@ import {
 } from "react-icons/md";
 import MenuLink from "./menuLink/menuLink";
 import { useFetchUserInfo } from "@/lib/data";
+import { useEffect, useState } from "react";
 
 const menuItems = [
 	{
@@ -93,6 +94,35 @@ const menuItems = [
 
 const ArtisanSidebar = () => {
 	const { userDetails } = useFetchUserInfo();
+	const [notificationCount, setNotificationCount] = useState(0);
+
+	useEffect(() => {
+		// Assume you have a function to get the auth token
+		const jwt = localStorage.getItem("jwt") ?? "";
+
+		const fetchUnreadCount = async () => {
+			try {
+				const response = await fetch(
+					"http://localhost:8080/api/messages/unread-count",
+					{
+						headers: {
+							Authorization: `Bearer ${jwt}`,
+						},
+					}
+				);
+				if (!response.ok) throw new Error("Failed to fetch unread count");
+				const data = await response.json();
+				setNotificationCount(data.unreadCount);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchUnreadCount();
+
+		// You may also want to set up a WebSocket or other subscription
+		// to listen for new messages and update the count accordingly
+	}, []);
 
 	return (
 		<div className={styles.container}>

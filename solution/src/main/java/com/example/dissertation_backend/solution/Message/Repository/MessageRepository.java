@@ -18,4 +18,6 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
     ApplicationUser user,
     ApplicationUser user2
   );
+
+  Long countByReceiverAndIsRead(ApplicationUser receiver, boolean isRead);
 }

@@ -8,6 +8,7 @@ interface Item {
 	path: string;
 	title: string;
 	icon: React.ReactNode;
+	notificationCount?: number;
 }
 
 const MenuLink = ({ item }: { item: Item }) => {
@@ -21,6 +22,11 @@ const MenuLink = ({ item }: { item: Item }) => {
 			}`}>
 			{item.icon}
 			{item.title}
+			{item.notificationCount && item.notificationCount > 0 && (
+				<span className={styles.notificationIndicator}>
+					{item.notificationCount}
+				</span>
+			)}
 		</Link>
 	);
 };

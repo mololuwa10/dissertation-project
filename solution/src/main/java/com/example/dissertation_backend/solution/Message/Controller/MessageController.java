@@ -16,6 +16,7 @@ import com.example.dissertation_backend.solution.Products.Model.ProductImages;
 import com.example.dissertation_backend.solution.Products.Model.Products;
 import com.example.dissertation_backend.solution.WebSocket.Chat.ChatMessage;
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -47,6 +48,44 @@ public class MessageController {
 
   @Autowired
   private ArtisanProfileRepository artisanProfileRepository;
+
+  @GetMapping("/unread-count")
+  public ResponseEntity<?> getUnreadMessageCount(Principal principal) {
+    if (principal == null) {
+      return ResponseEntity
+        .status(HttpStatus.UNAUTHORIZED)
+        .body("You must be logged in to view messages.");
+    }
+
+    ApplicationUser currentUser = userRepository
+      .findByUsername(principal.getName())
+      .orElseThrow(() -> new RuntimeException("User not found"));
+
+    Long unreadCount = messageService.countUnreadMessages(currentUser);
+
+    return ResponseEntity.ok(
+      Collections.singletonMap("unreadCount", unreadCount)
+    );
+  }
+
+  @SuppressWarnings("null")
+  @GetMapping("/mark-read/{senderId}/{receiverId}")
+  public ResponseEntity<?> markMessagesAsRead(
+    @PathVariable Integer senderId,
+    @PathVariable Integer receiverId,
+    Principal principal
+  ) {
+    if (
+      principal == null ||
+      !principal
+        .getName()
+        .equals(userRepository.findById(receiverId).orElseThrow().getUsername())
+    ) {
+      return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+    }
+    messageService.markMessagesAsRead(senderId, receiverId);
+    return new ResponseEntity<>("Messages marked as read", HttpStatus.OK);
+  }
 
   @GetMapping("/history/{userId}")
   public ResponseEntity<List<ChatMessage>> getMessageHistory(

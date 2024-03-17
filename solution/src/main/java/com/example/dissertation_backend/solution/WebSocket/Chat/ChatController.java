@@ -66,11 +66,18 @@ public class ChatController {
       );
 
     // Retrieve the product based on the ID provided
-    Products product = productRepository
-      .findById(chatMessage.getProductId())
-      .orElseThrow(() ->
-        new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found")
-      );
+    Products product = null;
+    if (chatMessage.getProductId() != null) {
+      product =
+        productRepository
+          .findById(chatMessage.getProductId())
+          .orElseThrow(() ->
+            new ResponseStatusException(
+              HttpStatus.NOT_FOUND,
+              "Product not found"
+            )
+          );
+    }
 
     // Save the message to the database
     messageService.saveMessage(chatMessage, sender, recipient, product);

@@ -1,18 +1,18 @@
 package com.example.dissertation_backend.solution.Stripe.Model;
 
+// import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.util.List;
 
 public class CheckoutPayment {
 
-  @NotBlank
-  private String productName;
+  // private String productName;
 
   @NotBlank(message = "Customer email is required")
   @Email(message = "Invalid email format")
   private String customerEmail;
 
-  //  currency like usd, eur ...
+  //  currency like usd, eur
   @NotBlank
   private String currency;
 
@@ -30,14 +30,14 @@ public class CheckoutPayment {
 
   private List<CheckoutItem> items;
 
-  // simple getters and setters
-  public String getProductName() {
-    return productName;
-  }
+  // getters and setters
+  // public String getProductName() {
+  //   return productName;
+  // }
 
-  public void setProductName(String productName) {
-    this.productName = productName;
-  }
+  // public void setProductName(String productName) {
+  //   this.productName = productName;
+  // }
 
   public String getCurrency() {
     return currency;

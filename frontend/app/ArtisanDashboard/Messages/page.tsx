@@ -2,7 +2,7 @@
 "use client";
 import { useFetchUserInfo } from "@/lib/data";
 import { getAllConversations } from "@/lib/dbModels";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
 	connect,
 	sendMessage,
@@ -40,9 +40,16 @@ interface Conversation {
 export default function Messages() {
 	const [users, setUsers] = useState({});
 	const [selectedUserId, setSelectedUserId] = useState(null);
-	const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>(
-		[]
-	);
+	const [messages, setMessages] = useState<
+		{
+			content: string;
+			isUser: boolean;
+			productDTO: {
+				productId: number | string;
+				productName: string;
+			};
+		}[]
+	>([]);
 
 	const [conversations, setConversations] = useState<Conversation[]>([]);
 	const [loading, setLoading] = useState(false);
@@ -90,9 +97,64 @@ export default function Messages() {
 		fetchConversations();
 	}, []);
 
-	useEffect(() => {
-		// Fetch messages for a selected user
-		const fetchMessages = async (otherUserId: any) => {
+	// useEffect(() => {
+	// 	const jwt = localStorage.getItem("jwt") ?? "";
+	// 	if (selectedUserId) {
+	// 		const markMessagesAsRead = async () => {
+	// 			try {
+	// 				const response = await fetch(
+	// 					`http://localhost:8080/api/messages/mark-read/${userId}/${selectedUserId}`,
+	// 					{
+	// 						method: "POST",
+	// 						headers: {
+	// 							Authorization: `Bearer ${jwt}`,
+	// 						},
+	// 					}
+	// 				);
+	// 				if (!response.ok) throw new Error("Failed to mark messages as read");
+	// 				// Handle response if needed
+	// 			} catch (error) {
+	// 				console.error(error);
+	// 			}
+	// 		};
+
+	// 		markMessagesAsRead();
+	// 	}
+	// }, [selectedUserId, userId]);
+
+	const markMessagesAsRead = async (senderId: any, receiverId: any) => {
+		const jwt = localStorage.getItem("jwt") ?? "";
+		try {
+			const response = await fetch(
+				`http://localhost:8080/api/messages/mark-read/${senderId}/${receiverId}`,
+				{
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${jwt}`,
+						"Content-Type": "application/json",
+					},
+				}
+			);
+			if (!response.ok) {
+				const errorText = await response.text();
+				throw new Error(`Failed to mark messages as read: ${errorText}`);
+			}
+			// Here you could update the state or UI to reflect the change
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	// Function to handle when a user is clicked
+	const handleUserClick = (otherUserId: any) => {
+		setSelectedUserId(otherUserId);
+		markMessagesAsRead(otherUserId, userId);
+		fetchMessages(otherUserId);
+	};
+
+	// Fetch messages for a selected user
+	const fetchMessages = useCallback(
+		async (otherUserId: any) => {
 			try {
 				const response = await fetch(
 					`http://localhost:8080/api/messages/history/${userId}?otherUserId=${otherUserId}`
@@ -103,8 +165,11 @@ export default function Messages() {
 			} catch (error) {
 				console.error(error);
 			}
-		};
+		},
+		[userId]
+	);
 
+	useEffect(() => {
 		if (userId && selectedUserId) {
 			fetchMessages(selectedUserId);
 			const jwt = localStorage.getItem("jwt") ?? "";
@@ -112,8 +177,9 @@ export default function Messages() {
 				setMessages((prevMessages) => [
 					...prevMessages,
 					{
-						text: msg.content,
+						content: msg.content,
 						isUser: msg.type === "SENT",
+						productDTO: msg.productDTO,
 					},
 				]);
 			};
@@ -123,12 +189,7 @@ export default function Messages() {
 			}
 			return () => disconnect();
 		}
-	}, [selectedUserId, userId]);
-
-	// Function to handle when a user is clicked
-	const handleUserClick = (userId: any) => {
-		setSelectedUserId(userId);
-	};
+	}, [fetchMessages, selectedUserId, userId]);
 
 	// Function to handle input changes
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -142,17 +203,10 @@ export default function Messages() {
 				sender: userId,
 				content: inputValue,
 				recipientId: selectedUserId,
+				productId: messages.productDTO?.productId,
 				localDateTime: new Date().toISOString(),
 			};
 			sendMessage(messageContent);
-			setMessages((prevMessages) => [
-				...prevMessages,
-				{
-					text: messageContent.content,
-					isUser: false,
-					localDateTime: messageContent.localDateTime,
-				},
-			]);
 			setInputValue("");
 		}
 	};
@@ -227,7 +281,7 @@ export default function Messages() {
 								return (
 									<div key={index} className={`flex py-2 ${messageAlignment}`}>
 										<div
-											className={`rounded-lg p-3 shadow ${messageBackground}`}>
+											className={`rounded-lg p-3 mr-3 shadow ${messageBackground}`}>
 											{message.type === "text" && <p>{message.content}</p>}
 											{message.type === "image" && (
 												<img

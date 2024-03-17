@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import Footer from "@/components/layoutComponents/Footer";
@@ -161,6 +162,7 @@ const OrderSummary = ({ cartItems }: { cartItems: Item[] }) => {
 					productId: item.product.productId,
 					quantity: item.quantity,
 				})),
+				// amount: total,
 				currency: "gbp",
 				successUrl: "http://localhost:3000/ShoppingCart/Success",
 				cancelUrl: "http://example.com/cancel",

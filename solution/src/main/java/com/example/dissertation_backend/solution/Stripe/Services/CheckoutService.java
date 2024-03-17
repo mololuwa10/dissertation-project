@@ -50,10 +50,10 @@ public class CheckoutService {
       );
 
     Orders order = new Orders();
-    order.setUserId(user); // Assuming Orders has a setUser method
+    order.setUserId(user);
     order.setStatus(Orders.Status.PENDING);
     order.setOrderDateTime(LocalDateTime.now());
-    order.setItems(new HashSet<>()); // Initialize the items set
+    order.setItems(new HashSet<>());
 
     double totalPrice = 0.0;
     for (CheckoutItem item : checkoutItems) {

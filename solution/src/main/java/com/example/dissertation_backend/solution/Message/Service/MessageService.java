@@ -76,6 +76,26 @@ public class MessageService {
       .collect(Collectors.toList());
   }
 
+  @SuppressWarnings("null")
+  public void markMessagesAsRead(Integer senderId, Integer receiverId) {
+    List<Message> messages = messageRepository.findBySenderAndReceiver(
+      userRepository
+        .findById(receiverId)
+        .orElseThrow(() -> new RuntimeException("User not found")),
+      userRepository
+        .findById(senderId)
+        .orElseThrow(() -> new RuntimeException("User not found"))
+    );
+    messages.forEach(message -> {
+      message.setRead(true);
+      messageRepository.save(message);
+    });
+  }
+
+  public Long countUnreadMessages(ApplicationUser user) {
+    return messageRepository.countByReceiverAndIsRead(user, false);
+  }
+
   public List<Message> getMessageHistory(
     ApplicationUser user1,
     ApplicationUser user2
