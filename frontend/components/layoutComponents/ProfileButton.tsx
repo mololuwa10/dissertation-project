@@ -40,27 +40,38 @@ const ProfileButton = () => {
 					</Avatar>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent>
-					<DropdownMenuLabel>My Account</DropdownMenuLabel>
+					<DropdownMenuLabel>
+						<FormattedMessage id="myAccount" defaultMessage="My Account" />
+					</DropdownMenuLabel>
 					<DropdownMenuSeparator />
 					<DropdownMenuItem className="cursor-pointer">
-						<Link href={"/Profile"}>Profile</Link>
+						<Link href={"/Profile"}>
+							<FormattedMessage id="profile" defaultMessage="Profile" />
+						</Link>
 					</DropdownMenuItem>
 					{isLoggedIn && userRole === "ADMIN" && (
 						<DropdownMenuItem className="cursor-pointer">
-							<Link href="/Dashboard">Dashboard</Link>
+							<Link href="/Dashboard">
+								<FormattedMessage id="dashboard" defaultMessage="Dashboard" />
+							</Link>
 						</DropdownMenuItem>
 					)}
 					{isLoggedIn && userRole === "USER" && (
 						<DropdownMenuItem className="cursor-pointer">
-							<Link href="/">Sell on Crafts Collabrations</Link>
+							<Link href="/">
+								<FormattedMessage
+									id="sellOnCraftCollaborations"
+									defaultMessage="Sell on Craft Collaborations"
+								/>
+							</Link>
 						</DropdownMenuItem>
 					)}
 					<DropdownMenuItem className="cursor-pointer">
-						Settings
+						<FormattedMessage id="settings" defaultMessage="Settings" />
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />
 					<DropdownMenuItem className="cursor-pointer" onClick={logout}>
-						Log out
+						<FormattedMessage id="logOut" defaultMessage="Log Out" />
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>

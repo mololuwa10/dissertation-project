@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useContext } from "react";
 import { LanguageContext } from "@/app/LanguageContext";
+import { useIntl } from "react-intl";
 
 import {
 	Popover,
@@ -62,38 +63,9 @@ export function LanguageComboBox() {
 	const handleLanguageChange = (languageCode: any, label: any) => {
 		setCurrentLanguage(languageCode);
 		setLabel(label);
-		// fetchLocalizedContent(languageCode);
 	};
 
 	const [localizedMessages, setLocalizedMessages] = useState({});
-
-	const fetchLocalizedContent = async (languageCode: any) => {
-		try {
-			const response = await fetch(
-				`http://localhost:8080/api/languages/messages`,
-				{
-					method: "GET",
-					headers: {
-						"Accept-Language": languageCode,
-					},
-				}
-			);
-
-			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`);
-			}
-
-			const languages = await response.text();
-			setLocalizedMessages(languages);
-		} catch (error) {
-			console.error("Error fetching localized content:", error);
-		}
-	};
-
-	// Call fetchLocalizedContent when the language context changes
-	// useEffect(() => {
-	// 	fetchLocalizedContent(currentLanguage);
-	// }, [currentLanguage]);
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>

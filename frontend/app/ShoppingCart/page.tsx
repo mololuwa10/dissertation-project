@@ -10,6 +10,7 @@ import React, { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useFetchUserInfo } from "@/lib/data";
+import { LanguageProvider } from "../LanguageContext";
 
 type Product = {
 	productId: number;
@@ -251,42 +252,44 @@ const ShoppingCart = () => {
 
 	return (
 		<>
-			<Header />
-			<ToastContainer
-				position="top-right"
-				autoClose={5000}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-			/>
-			<div className="max-w-2xl mx-auto py-10 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-				<h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
-				<div className="lg:grid lg:grid-cols-3 lg:gap-x-12">
-					<div className="lg:col-span-2">
-						{cartData && cartData.cartItems.length > 0 ? (
-							<div className="lg:col-span-2">
-								{cartData.cartItems.map((item: any) => (
-									<CartItem
-										key={item.cartItemId}
-										item={item}
-										onItemChange={fetchCartData}
-									/>
-								))}
-							</div>
-						) : (
-							<p>Your cart is empty</p>
-						)}
-					</div>
-					<div className="lg:col-span-1">
-						<OrderSummary cartItems={cartData?.cartItems ?? []} />
+			<LanguageProvider>
+				<Header />
+				<ToastContainer
+					position="top-right"
+					autoClose={5000}
+					hideProgressBar={false}
+					newestOnTop={false}
+					closeOnClick
+					rtl={false}
+					pauseOnFocusLoss
+					draggable
+					pauseOnHover
+				/>
+				<div className="max-w-2xl mx-auto py-10 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+					<h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
+					<div className="lg:grid lg:grid-cols-3 lg:gap-x-12">
+						<div className="lg:col-span-2">
+							{cartData && cartData.cartItems.length > 0 ? (
+								<div className="lg:col-span-2">
+									{cartData.cartItems.map((item: any) => (
+										<CartItem
+											key={item.cartItemId}
+											item={item}
+											onItemChange={fetchCartData}
+										/>
+									))}
+								</div>
+							) : (
+								<p>Your cart is empty</p>
+							)}
+						</div>
+						<div className="lg:col-span-1">
+							<OrderSummary cartItems={cartData?.cartItems ?? []} />
+						</div>
 					</div>
 				</div>
-			</div>
-			<Footer />
+				<Footer />
+			</LanguageProvider>
 		</>
 	);
 };

@@ -2,6 +2,7 @@
 
 import React, { createContext, useState, useEffect, ReactNode } from "react";
 import { I18nProvider } from "./i18n";
+import cookie from "cookie";
 
 interface LanguageContextProps {
 	currentLanguage: string;
@@ -11,7 +12,7 @@ interface LanguageContextProps {
 // Create the context with a default value
 export const LanguageContext = createContext<LanguageContextProps>({
 	currentLanguage: "en",
-	setCurrentLanguage: (language) => console.warn("no language provider"),
+	setCurrentLanguage: () => {},
 });
 
 // Define props for the LanguageProvider for TypeScript
@@ -22,16 +23,26 @@ interface LanguageProviderProps {
 // Create a LanguageProvider component
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({
 	children,
+	// initialLanguage,
 }) => {
-	const [currentLanguage, setCurrentLanguage] = useState("en");
+	const [currentLanguage, setCurrentLanguage] = useState(() => {
+		if (typeof window !== "undefined") {
+			return localStorage.getItem("language") || "en";
+		}
+		return "en";
+	});
 
 	useEffect(() => {
-		const savedLanguage = localStorage.getItem("language") || "en";
-		setCurrentLanguage(savedLanguage);
+		if (typeof window !== "undefined") {
+			const savedLanguage = localStorage.getItem("language") || "en";
+			setCurrentLanguage(savedLanguage);
+		}
 	}, []);
 
 	useEffect(() => {
-		localStorage.setItem("language", currentLanguage);
+		if (typeof window !== "undefined") {
+			localStorage.setItem("language", currentLanguage);
+		}
 	}, [currentLanguage]);
 
 	return (

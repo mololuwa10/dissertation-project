@@ -1,10 +1,20 @@
 import { IntlProvider } from "react-intl";
 import English from "@/locales/en.json";
 import French from "@/locales/fr.json";
+import Italian from "@/locales/it.json";
+import Spanish from "@/locales/es.json";
+import Japan from "@/locales/ja.json";
+import German from "@/locales/de.json";
+import Portugese from "@/locales/pt-PT.json";
 
 const messages = {
 	en: English,
 	fr: French,
+	it: Italian,
+	es: Spanish,
+	ja: Japan,
+	de: German,
+	ptPT: Portugese,
 };
 
 export function I18nProvider({ children, currentLocale }: any) {

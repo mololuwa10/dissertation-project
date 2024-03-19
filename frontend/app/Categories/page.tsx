@@ -5,6 +5,7 @@ import Footer from "@/components/layoutComponents/Footer";
 import Header from "@/components/layoutComponents/Header";
 import { useFetchSubcategories, useFetchCategoryById } from "@/lib/dbModels";
 import { useSearchParams } from "next/navigation";
+import { LanguageProvider } from "../LanguageContext";
 
 export default function Categories() {
 	interface Category {
@@ -37,48 +38,50 @@ export default function Categories() {
 	if (category) {
 		return (
 			<>
-				<Header />
-				<section key={category.categoryId} className="py-12">
-					<div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-						<header className="text-center">
-							<h2 className="text-xl font-bold text-gray-900 sm:text-3xl">
-								{category.categoryName}
-							</h2>
+				<LanguageProvider>
+					<Header />
+					<section key={category.categoryId} className="py-12">
+						<div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+							<header className="text-center">
+								<h2 className="text-xl font-bold text-gray-900 sm:text-3xl">
+									{category.categoryName}
+								</h2>
 
-							<p className="mx-auto mt-4 max-w-md text-gray-500">
-								{category.categoryDescription}
-							</p>
-						</header>
+								<p className="mx-auto mt-4 max-w-md text-gray-500">
+									{category.categoryDescription}
+								</p>
+							</header>
 
-						<ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-							{subcategories.map((subCategoryItem) => (
-								<li key={subCategoryItem.value}>
-									<a href="#" className="group block overflow-hidden">
-										<img
-											src={
-												subCategoryItem.image
-													? `http://localhost:8080${subCategoryItem.image}`
-													: "/blacktee.jpg"
-											}
-											alt=""
-											className="w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
-										/>
+							<ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+								{subcategories.map((subCategoryItem) => (
+									<li key={subCategoryItem.value}>
+										<a href="#" className="group block overflow-hidden">
+											<img
+												src={
+													subCategoryItem.image
+														? `http://localhost:8080${subCategoryItem.image}`
+														: "/blacktee.jpg"
+												}
+												alt=""
+												className="w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
+											/>
 
-										<div className="relative bg-white pt-3">
-											<h3 className="text-lg text-gray-700 group-hover:underline group-hover:underline-offset-4">
-												{subCategoryItem.label}
-											</h3>
-										</div>
-									</a>
-								</li>
-							))}
-						</ul>
-					</div>
-				</section>
+											<div className="relative bg-white pt-3">
+												<h3 className="text-lg text-gray-700 group-hover:underline group-hover:underline-offset-4">
+													{subCategoryItem.label}
+												</h3>
+											</div>
+										</a>
+									</li>
+								))}
+							</ul>
+						</div>
+					</section>
 
-				<hr className=" mx-20 border-t-2 border-gray-600" />
+					<hr className=" mx-20 border-t-2 border-gray-600" />
 
-				<Footer />
+					<Footer />
+				</LanguageProvider>
 			</>
 		);
 	} else {

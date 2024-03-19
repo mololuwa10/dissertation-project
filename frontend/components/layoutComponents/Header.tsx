@@ -29,7 +29,6 @@ export default function Header() {
 		if (jwt) {
 			fetchShoppingCart(jwt)
 				.then((cart) => {
-					// Assuming cart data has an array 'cartItems' and each item has 'quantity'
 					const itemCount = cart.cartItems.reduce(
 						(total: any, item: any) => total + item.quantity,
 						0
@@ -38,7 +37,6 @@ export default function Header() {
 				})
 				.catch((error) => {
 					console.error("Error fetching shopping cart:", error);
-					// Optionally handle the error, e.g., by setting cartItemCount to 0
 				});
 		}
 	}, []);
@@ -49,7 +47,7 @@ export default function Header() {
 	};
 
 	return (
-		<div>
+		<div className="sticky top-0 z-10 bg-white shadow">
 			<header className="sm:flex sm:justify-end py-3 px-4 border-b">
 				<div
 					className="relative px-4 sm:px-6 lg:px-8 flex items-center

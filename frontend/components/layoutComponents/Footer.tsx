@@ -1,19 +1,25 @@
 // The footer component is gotten from HyperUi
 // https://www.hyperui.dev/components/marketing/footers
+"use client";
 
 import { Instagram, Twitter } from "lucide-react";
+import { FormattedMessage, useIntl } from "react-intl";
 
 export default function Footer() {
+	const intl = useIntl();
 	return (
 		<>
 			<hr className=" mx-20 border-t-2 border-gray-600" />
 
 			<footer className="bg-white">
 				<div className="mx-auto max-w-screen-xl px-4 pb-6 sm:px-6 lg:px-8 lg:pt-12">
-					<div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+					<div className="grid grid-cols-1 gap-8 lg:grid-cols-3 footer-links">
 						<div>
 							<h3 className="text-2xl font-bold tracking-wider text-gray-900 uppercase">
-								CRAFTS COLLABORATIONS
+								<FormattedMessage
+									id="companyName"
+									defaultMessage="CRAFTS COLLABORATION"
+								/>
 							</h3>
 							<p className="mt-6 max-w-md text-center leading-relaxed text-gray-500 sm:max-w-xs sm:text-left">
 								Lorem ipsum dolor, sit amet consectetur adipisicing elit.
@@ -68,47 +74,9 @@ export default function Footer() {
 
 						<div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4 lg:col-span-2">
 							<div className="text-center sm:text-left">
-								<p className="text-lg font-medium text-gray-900">About Us</p>
-
-								<ul className="mt-8 space-y-4 text-sm">
-									<li>
-										<a
-											className="text-gray-700 transition hover:text-gray-700/75"
-											href="/">
-											Contact Us
-										</a>
-									</li>
-
-									<li>
-										<a
-											className="text-gray-700 transition hover:text-gray-700/75"
-											href="/">
-											About Us
-										</a>
-									</li>
-
-									<li>
-										<a
-											className="text-gray-700 transition hover:text-gray-700/75"
-											href="/">
-											Privacy Policy
-										</a>
-									</li>
-
-									<li>
-										<a
-											className="text-gray-700 transition hover:text-gray-700/75"
-											href="/">
-											{" "}
-											Seller Centre
-										</a>
-									</li>
-								</ul>
-							</div>
-
-							<div className="text-center sm:text-left">
 								<p className="text-lg font-medium text-gray-900">
-									Customer Services
+									{" "}
+									<FormattedMessage id="aboutUs" defaultMessage="About Us" />
 								</p>
 
 								<ul className="mt-8 space-y-4 text-sm">
@@ -116,7 +84,36 @@ export default function Footer() {
 										<a
 											className="text-gray-700 transition hover:text-gray-700/75"
 											href="/">
-											Help Centre
+											<FormattedMessage
+												id="contactUs"
+												defaultMessage="Contact Us"
+											/>
+										</a>
+									</li>
+
+									<li>
+										<a
+											className="text-gray-700 transition hover:text-gray-700/75"
+											href="/">
+											{intl.formatMessage({
+												id: "aboutUs",
+												defaultMessage: "About Us",
+											})}
+											{/* <FormattedMessage
+												id="aboutUs"
+												defaultMessage="About Us"
+											/> */}
+										</a>
+									</li>
+
+									<li>
+										<a
+											className="text-gray-700 transition hover:text-gray-700/75"
+											href="/">
+											<FormattedMessage
+												id="privacyPolicy"
+												defaultMessage="Privacy Policy"
+											/>
 										</a>
 									</li>
 
@@ -125,39 +122,10 @@ export default function Footer() {
 											className="text-gray-700 transition hover:text-gray-700/75"
 											href="/">
 											{" "}
-											How To Buy
-										</a>
-									</li>
-
-									<li>
-										<a
-											className="text-gray-700 transition hover:text-gray-700/75"
-											href="/">
-											Payment
-										</a>
-									</li>
-
-									<li>
-										<a
-											className="text-gray-700 transition hover:text-gray-700/75"
-											href="/">
-											Shipping
-										</a>
-									</li>
-
-									<li>
-										<a
-											className="text-gray-700 transition hover:text-gray-700/75"
-											href="/">
-											Return & Refund
-										</a>
-									</li>
-
-									<li>
-										<a
-											className="text-gray-700 transition hover:text-gray-700/75"
-											href="/">
-											Warranty Policy
+											<FormattedMessage
+												id="sellerCentre"
+												defaultMessage="Seller Centre"
+											/>
 										</a>
 									</li>
 								</ul>
@@ -165,7 +133,10 @@ export default function Footer() {
 
 							<div className="text-center sm:text-left">
 								<p className="text-lg font-medium text-gray-900">
-									Helpful Links
+									<FormattedMessage
+										id="customerServices"
+										defaultMessage="Customer Services"
+									/>
 								</p>
 
 								<ul className="mt-8 space-y-4 text-sm">
@@ -173,7 +144,10 @@ export default function Footer() {
 										<a
 											className="text-gray-700 transition hover:text-gray-700/75"
 											href="/">
-											FAQs
+											<FormattedMessage
+												id="helpCentre"
+												defaultMessage="Help Centre"
+											/>
 										</a>
 									</li>
 
@@ -182,7 +156,79 @@ export default function Footer() {
 											className="text-gray-700 transition hover:text-gray-700/75"
 											href="/">
 											{" "}
-											Support
+											<FormattedMessage
+												id="howToBuy"
+												defaultMessage="How To Buy"
+											/>
+										</a>
+									</li>
+
+									<li>
+										<a
+											className="text-gray-700 transition hover:text-gray-700/75"
+											href="/">
+											<FormattedMessage id="payment" defaultMessage="Payment" />
+										</a>
+									</li>
+
+									<li>
+										<a
+											className="text-gray-700 transition hover:text-gray-700/75"
+											href="/">
+											<FormattedMessage
+												id="shipping"
+												defaultMessage="Shipping"
+											/>
+										</a>
+									</li>
+
+									<li>
+										<a
+											className="text-gray-700 transition hover:text-gray-700/75"
+											href="/">
+											<FormattedMessage
+												id="returnRefund"
+												defaultMessage="Return & Refund"
+											/>
+										</a>
+									</li>
+
+									<li>
+										<a
+											className="text-gray-700 transition hover:text-gray-700/75"
+											href="/">
+											<FormattedMessage
+												id="warrantyPolicy"
+												defaultMessage="Warranty Policy"
+											/>
+										</a>
+									</li>
+								</ul>
+							</div>
+
+							<div className="text-center sm:text-left">
+								<p className="text-lg font-medium text-gray-900">
+									<FormattedMessage
+										id="helpfulLinks"
+										defaultMessage="Helpful Links"
+									/>
+								</p>
+
+								<ul className="mt-8 space-y-4 text-sm">
+									<li>
+										<a
+											className="text-gray-700 transition hover:text-gray-700/75"
+											href="/">
+											<FormattedMessage id="faqs" defaultMessage="FAQs" />
+										</a>
+									</li>
+
+									<li>
+										<a
+											className="text-gray-700 transition hover:text-gray-700/75"
+											href="/">
+											{" "}
+											<FormattedMessage id="support" defaultMessage="Support" />
 										</a>
 									</li>
 
@@ -191,7 +237,10 @@ export default function Footer() {
 											className="group flex justify-center gap-1.5 ltr:sm:justify-start rtl:sm:justify-end"
 											href="/">
 											<span className="text-gray-700 transition group-hover:text-gray-700/75">
-												Live Chat
+												<FormattedMessage
+													id="liveChat"
+													defaultMessage="Live Chat"
+												/>
 											</span>
 
 											<span className="relative flex h-2 w-2">
@@ -204,7 +253,12 @@ export default function Footer() {
 							</div>
 
 							<div className="text-center sm:text-left">
-								<p className="text-lg font-medium text-gray-900">Contact Us</p>
+								<p className="text-lg font-medium text-gray-900">
+									<FormattedMessage
+										id="contactUsTitle"
+										defaultMessage="Contact Us"
+									/>
+								</p>
 
 								<ul className="mt-8 space-y-4 text-sm">
 									<li>
@@ -272,7 +326,11 @@ export default function Footer() {
 										</svg>
 
 										<address className="-mt-0.5 flex-1 not-italic text-gray-700">
-											213 Lane, London, United Kingdom
+											<FormattedMessage
+												id="address"
+												defaultMessage="213 Lane, London, United Kingdom
+												"
+											/>
 										</address>
 									</li>
 								</ul>
@@ -283,17 +341,30 @@ export default function Footer() {
 					<div className="mt-12 border-t border-gray-100 pt-6">
 						<div className="text-center sm:flex sm:justify-between sm:text-left">
 							<p className="text-sm text-gray-500">
-								<span className="block sm:inline">All rights reserved.</span>
+								<span className="block sm:inline">
+									{" "}
+									<FormattedMessage
+										id="allRightsReserved"
+										defaultMessage="All rights reserved."
+									/>
+								</span>
 								<a
 									className="inline-block text-teal-600 underline transition hover:text-teal-600/75"
 									href="/">
-									Terms & Conditions
+									<FormattedMessage
+										id="termsConditions"
+										defaultMessage="Terms & Conditions"
+									/>
 								</a>
 								<span>&middot;</span>
 							</p>
 
 							<p className="mt-4 text-sm text-gray-500 sm:order-first sm:mt-0">
-								&copy; {new Date().getFullYear()} Craft Collaborations
+								&copy; {new Date().getFullYear()}{" "}
+								<FormattedMessage
+									id="companyName"
+									defaultMessage={"Craft Collaborations"}
+								/>
 							</p>
 						</div>
 					</div>

@@ -8,6 +8,7 @@ import Header from "@/components/layoutComponents/Header";
 import { useFetchSearchedProducts } from "@/lib/dbModels";
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { LanguageProvider } from "../LanguageContext";
 
 const SearchResults = () => {
 	const searchParams = useSearchParams();
@@ -28,19 +29,23 @@ const SearchResults = () => {
 	const { products } = useFetchSearchedProducts(searchTerm, filters);
 
 	return (
-		<div className="container mx-auto">
-			<Header />
-			<Breadcrumb title={`Result for "${searchTerm}"`} />
-			<div className="flex my-6">
-				<FilterSidebar
-					products={products}
-					filters={filters}
-					updateFilters={updateFilters}
-				/>
-				<ProductList products={products} />
-			</div>
-			<Footer />
-		</div>
+		<>
+			<LanguageProvider>
+				<div className="container mx-auto">
+					<Header />
+					<Breadcrumb title={`Result for "${searchTerm}"`} />
+					<div className="flex my-6">
+						<FilterSidebar
+							products={products}
+							filters={filters}
+							updateFilters={updateFilters}
+						/>
+						<ProductList products={products} />
+					</div>
+					<Footer />
+				</div>
+			</LanguageProvider>
+		</>
 	);
 };
 

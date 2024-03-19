@@ -6,6 +6,7 @@ import Header from "@/components/layoutComponents/Header";
 import Footer from "@/components/layoutComponents/Footer";
 import { fetchCurrentUserOrders } from "@/lib/dbModels";
 import { FaSearch } from "react-icons/fa";
+import { LanguageProvider } from "@/app/LanguageContext";
 
 const Orders = () => {
 	// State for the search query
@@ -119,55 +120,57 @@ const Orders = () => {
 
 	return (
 		<>
-			<Header />
-			<div className="bg-white">
-				<div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-					<div className="flex justify-between items-center my-3">
-						<h1 className="text-2xl font-bold leading-tight text-gray-900">
-							Your Orders
-						</h1>
-						<div className="relative">
-							<input
-								type="text"
-								className="h-10 pl-10 pr-20 rounded-lg z-0 focus:shadow focus:outline-none border-2"
-								placeholder="Search orders..."
-								value={searchQuery}
-								onChange={handleSearchChange}
-							/>
-							<div className="absolute top-2 left-3">
-								<i className="fa fa-search hover:text-gray-500">
-									<FaSearch />
-								</i>
-							</div>
-							<div className="absolute top-2 right-2">
-								<button
-									className="h-6 w-20 text-white rounded-lg bg-gray-800 hover:bg-gray-900"
-									onClick={() => {
-										/* Add search functionality here */
-									}}>
-									Search
-								</button>
+			<LanguageProvider>
+				<Header />
+				<div className="bg-white">
+					<div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+						<div className="flex justify-between items-center my-3">
+							<h1 className="text-2xl font-bold leading-tight text-gray-900">
+								Your Orders
+							</h1>
+							<div className="relative">
+								<input
+									type="text"
+									className="h-10 pl-10 pr-20 rounded-lg z-0 focus:shadow focus:outline-none border-2"
+									placeholder="Search orders..."
+									value={searchQuery}
+									onChange={handleSearchChange}
+								/>
+								<div className="absolute top-2 left-3">
+									<i className="fa fa-search hover:text-gray-500">
+										<FaSearch />
+									</i>
+								</div>
+								<div className="absolute top-2 right-2">
+									<button
+										className="h-6 w-20 text-white rounded-lg bg-gray-800 hover:bg-gray-900"
+										onClick={() => {
+											/* Add search functionality here */
+										}}>
+										Search
+									</button>
+								</div>
 							</div>
 						</div>
+						<HeaderTabs />
+						<div className="mt-8">
+							{filteredOrders.length > 0 ? (
+								filteredOrders.map((item) => (
+									<OrderCard
+										key={`${item.orderInfo.id}-${item.productDTO.productId}`}
+										orderInfo={item.orderInfo}
+										item={item}
+									/>
+								))
+							) : (
+								<p className="text-center text-gray-600">You have no orders.</p>
+							)}
+						</div>
 					</div>
-					<HeaderTabs />
-					<div className="mt-8">
-						{filteredOrders.length > 0 ? (
-							filteredOrders.map((item) => (
-								<OrderCard
-									key={`${item.orderInfo.id}-${item.productDTO.productId}`}
-									orderInfo={item.orderInfo}
-									item={item}
-								/>
-							))
-						) : (
-							<p className="text-center text-gray-600">You have no orders.</p>
-						)}
-					</div>
+					{/* <CategoriesComponents /> */}
 				</div>
-				{/* <CategoriesComponents /> */}
-			</div>
-			<Footer />
+				<Footer />
+			</LanguageProvider>
 		</>
 	);
 };

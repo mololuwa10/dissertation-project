@@ -14,31 +14,32 @@ import {
 } from "react-icons/fa";
 
 type IconMappingType = {
-	[key: string]: JSX.Element; // Index signature
+	[key: string]: JSX.Element;
 };
+import { FormattedMessage } from "react-intl";
 
 const iconMapping: IconMappingType = {
-	"Your Orders": <FaRegListAlt size="3em" className="mb-2" />,
-	"Your Addresses": <FaRegAddressCard size="3em" className="mb-2" />,
-	"Login & Security": <FaLock size="3em" className="mb-2" />,
-	"Your Payments": <FaRegCreditCard size="3em" className="mb-2" />,
-	"Artisan Profile": <FaTools size="3em" className="mb-2" />,
-	"Your Messages": <FaEnvelope size="3em" className="mb-2" />,
-	"Your Reviews": <FaStar size="3em" className="mb-2" />,
-	"Customer Service": <FaHeadset size="3em" className="mb-2" />,
-	"Your Testimonials": <FaCertificate size="3em" className="mb-2" />,
+	yourOrders: <FaRegListAlt size="3em" className="mb-2" />,
+	yourAddresses: <FaRegAddressCard size="3em" className="mb-2" />,
+	loginSecurity: <FaLock size="3em" className="mb-2" />,
+	yourPayments: <FaRegCreditCard size="3em" className="mb-2" />,
+	artisanProfile: <FaTools size="3em" className="mb-2" />,
+	yourMessages: <FaEnvelope size="3em" className="mb-2" />,
+	yourReviews: <FaStar size="3em" className="mb-2" />,
+	customerService: <FaHeadset size="3em" className="mb-2" />,
+	yourTestimonials: <FaCertificate size="3em" className="mb-2" />,
 };
 
 const AccountCard = ({
-	title,
-	description,
+	titleId,
+	descriptionId,
 	url,
 }: {
-	title: string;
-	description: string;
+	titleId: any;
+	descriptionId: any;
 	url?: string;
 }) => {
-	const icon = iconMapping[title] || (
+	const icon = iconMapping[titleId] || (
 		<FaRegListAlt size="3em" className="mb-2" />
 	);
 
@@ -47,8 +48,15 @@ const AccountCard = ({
 		return (
 			<div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out">
 				<div>{icon}</div>
-				<h2 className="font-semibold text-lg mb-1">{title}</h2>
-				<p className="text-gray-600 text-sm">{description}</p>
+				<h2 className="font-semibold text-lg mb-1">
+					<FormattedMessage id={titleId} defaultMessage="Default Title" />
+				</h2>
+				<p className="text-gray-600 text-sm">
+					<FormattedMessage
+						id={descriptionId}
+						defaultMessage="Default Description"
+					/>
+				</p>
 			</div>
 		);
 	}
@@ -57,8 +65,16 @@ const AccountCard = ({
 		<Link href={url} className="text-decoration-none">
 			<div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out">
 				<div>{icon}</div>
-				<h2 className="font-semibold text-lg mb-1">{title}</h2>
-				<p className="text-gray-600 text-sm">{description}</p>
+				<h2 className="font-semibold text-lg mb-1">
+					{" "}
+					<FormattedMessage id={titleId} defaultMessage="Default Title" />
+				</h2>
+				<p className="text-gray-600 text-sm">
+					<FormattedMessage
+						id={descriptionId}
+						defaultMessage="Default Description"
+					/>
+				</p>
 			</div>
 		</Link>
 	);
