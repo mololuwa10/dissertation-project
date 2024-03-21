@@ -15,6 +15,7 @@ import { fetchAllOrders } from "@/lib/dbModels";
 import { useEffect, useCallback, useState } from "react";
 import Link from "next/link";
 import { PaginationComponent } from "@/components/ui/PaginationDemo";
+import { LanguageProvider } from "@/app/LanguageContext";
 
 export default function Orders() {
 	interface Order {
@@ -96,76 +97,78 @@ export default function Orders() {
 
 	return (
 		<>
-			<Table>
-				<TableCaption>Order List</TableCaption>
-				<TableHeader>
-					<TableRow>
-						<TableHead>Order Id</TableHead>
-						<TableHead>Customer Name</TableHead>
-						<TableHead>Order Date and Time</TableHead>
-						<TableHead>Order Status</TableHead>
-						<TableHead>Total Price</TableHead>
-						<TableHead>Item Ordered</TableHead>
-						<TableHead>Shipping Address</TableHead>
-						<TableHead>Action</TableHead>
-					</TableRow>
-				</TableHeader>
-				<TableBody>
-					{currentOrders.map((allOrders) => (
-						<>
-							<TableRow
-								key={allOrders.productDTO.productId + allOrders.orderInfo.id}>
-								<TableCell>{allOrders.orderInfo.id}</TableCell>
-								<TableCell>
-									{allOrders.orderInfo.user?.firstname || "Unknown"}{" "}
-									{allOrders.orderInfo.user?.lastname}
-								</TableCell>
-								<TableCell>
-									{new Date(
-										allOrders.orderInfo.orderDateTime
-									).toLocaleDateString()}
-								</TableCell>
-								<TableCell>{allOrders.orderInfo.status}</TableCell>
-								<TableCell>
-									£{allOrders.orderInfo.totalPrice.toFixed(2)}
-								</TableCell>
-								<TableCell>
-									{allOrders.productDTO.productName} ({allOrders.quantity})
-								</TableCell>
-								<TableCell>
-									{allOrders.orderInfo.user.contactAddress ||
-										"No address provided"}
-								</TableCell>
-								<TableCell>
-									<div className="p-2 flex">
-										<Link
-											href={{
-												pathname: "/Dashboard/Orders/Edit",
-												query: { orderId: allOrders.orderInfo.id },
-											}}>
-											<Button size={"lg"} className="mr-2 mb-2 flex">
-												Edit
+			<LanguageProvider>
+				<Table>
+					<TableCaption>Order List</TableCaption>
+					<TableHeader>
+						<TableRow>
+							<TableHead>Order Id</TableHead>
+							<TableHead>Customer Name</TableHead>
+							<TableHead>Order Date and Time</TableHead>
+							<TableHead>Order Status</TableHead>
+							<TableHead>Total Price</TableHead>
+							<TableHead>Item Ordered</TableHead>
+							<TableHead>Shipping Address</TableHead>
+							<TableHead>Action</TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						{currentOrders.map((allOrders) => (
+							<>
+								<TableRow
+									key={allOrders.productDTO.productId + allOrders.orderInfo.id}>
+									<TableCell>{allOrders.orderInfo.id}</TableCell>
+									<TableCell>
+										{allOrders.orderInfo.user?.firstname || "Unknown"}{" "}
+										{allOrders.orderInfo.user?.lastname}
+									</TableCell>
+									<TableCell>
+										{new Date(
+											allOrders.orderInfo.orderDateTime
+										).toLocaleDateString()}
+									</TableCell>
+									<TableCell>{allOrders.orderInfo.status}</TableCell>
+									<TableCell>
+										£{allOrders.orderInfo.totalPrice.toFixed(2)}
+									</TableCell>
+									<TableCell>
+										{allOrders.productDTO.productName} ({allOrders.quantity})
+									</TableCell>
+									<TableCell>
+										{allOrders.orderInfo.user.contactAddress ||
+											"No address provided"}
+									</TableCell>
+									<TableCell>
+										<div className="p-2 flex">
+											<Link
+												href={{
+													pathname: "/Dashboard/Orders/Edit",
+													query: { orderId: allOrders.orderInfo.id },
+												}}>
+												<Button size={"lg"} className="mr-2 mb-2 flex">
+													Edit
+												</Button>
+											</Link>
+											<Button
+												size={"lg"}
+												// onClick={() => handleDelete(product.value)}
+												className="mr-2 mb-2 flex">
+												Delete
 											</Button>
-										</Link>
-										<Button
-											size={"lg"}
-											// onClick={() => handleDelete(product.value)}
-											className="mr-2 mb-2 flex">
-											Delete
-										</Button>
-									</div>
-								</TableCell>
-							</TableRow>
-						</>
-					))}
-				</TableBody>
-			</Table>
+										</div>
+									</TableCell>
+								</TableRow>
+							</>
+						))}
+					</TableBody>
+				</Table>
 
-			<PaginationComponent
-				totalPages={totalPages}
-				currentPage={currentPage}
-				paginate={(pageNumber) => setCurrentPage(pageNumber)}
-			/>
+				<PaginationComponent
+					totalPages={totalPages}
+					currentPage={currentPage}
+					paginate={(pageNumber) => setCurrentPage(pageNumber)}
+				/>
+			</LanguageProvider>
 		</>
 	);
 }

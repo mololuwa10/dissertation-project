@@ -6,6 +6,7 @@ import Header from "@/components/layoutComponents/Header";
 import { fetchReviewsByUserId } from "@/lib/dbModels";
 import { useFetchUserInfo } from "@/lib/data";
 import { FaPencilAlt, FaTrash } from "react-icons/fa";
+import { LanguageProvider } from "@/app/LanguageContext";
 
 interface Review {
 	reviewId: number;
@@ -96,23 +97,27 @@ const Reviews = () => {
 
 	return (
 		<>
-			<Header />
-			<h1 className="text-3xl font-semibold text-center my-4">Your Reviews</h1>
-			<div className="my-4 max-w-2xl mx-auto">
-				<input
-					type="text"
-					placeholder="Search Review"
-					className="w-full p-2 rounded-md focus:outline-none focus:ring focus:border-gray-400 border-2"
-				/>
-			</div>
-			<div className="max-w-7xl mx-auto">
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-					{reviews.map((review) => (
-						<ReviewCard key={review.reviewId} review={review} />
-					))}
+			<LanguageProvider>
+				<Header />
+				<h1 className="text-3xl font-semibold text-center my-4">
+					Your Reviews
+				</h1>
+				<div className="my-4 max-w-2xl mx-auto">
+					<input
+						type="text"
+						placeholder="Search Review"
+						className="w-full p-2 rounded-md focus:outline-none focus:ring focus:border-gray-400 border-2"
+					/>
 				</div>
-			</div>
-			<Footer />
+				<div className="max-w-7xl mx-auto">
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+						{reviews.map((review) => (
+							<ReviewCard key={review.reviewId} review={review} />
+						))}
+					</div>
+				</div>
+				<Footer />
+			</LanguageProvider>
 		</>
 	);
 };

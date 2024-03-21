@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { LanguageProvider } from "@/app/LanguageContext";
 
 export default function EditProduct() {
 	interface Product {
@@ -202,99 +203,101 @@ export default function EditProduct() {
 
 	return (
 		<>
-			<ToastContainer
-				position="top-right"
-				autoClose={5000}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-			/>
-			<div className={styles.container}>
-				<div className={styles.infoContainer}>
-					<div className={styles.imgContainer}>
-						{product?.imageUrls.map((imageUrl, index) => (
-							<Image
-								key={index}
-								src={`http://localhost:8080${imageUrl}` || "/noavatar.png"}
-								alt={`Product Image ${index + 1}`}
-								fill
-							/>
-						))}
-					</div>
-					{/* {user.username} */}
-				</div>
-				<div className={styles.formContainer}>
-					<form className={styles.form} onSubmit={handleSubmit}>
-						<input type="hidden" name="id" />
-						<label>Product Name</label>
-						<input
-							type="text"
-							name="productName"
-							placeholder={product.productName}
-							value={product.productName}
-							onChange={handleInputChange}
-						/>
-						<label>Product Price</label>
-						<input
-							type="text"
-							name="productPrice"
-							placeholder={String(product.productPrice)}
-							value={product.productPrice}
-							onChange={handleInputChange}
-						/>
-						<label>Product Stock Quantity</label>
-						<input
-							type="text"
-							name="stockQuanitiy"
-							placeholder={String(product.productStockQuantity)}
-							value={product.productStockQuantity}
-							onChange={handleInputChange}
-						/>
-						<label>Product Discount</label>
-						<input
-							type="text"
-							name="productDiscount"
-							placeholder={String(product.productDiscount)}
-							value={product.productDiscount}
-							onChange={handleInputChange}
-						/>
-						<label>Product Description</label>
-						<textarea
-							name="productDescription"
-							placeholder={product.productDescription}
-							value={product.productDescription}
-							onChange={handleInputChange}
-						/>
-						<label>Category</label>
-						<select
-							name="category"
-							id="category"
-							value={selectedCategoryId}
-							onChange={(e) => setSelectedCategoryId(e.target.value)}>
-							{categories.map((category) => (
-								<option key={category.value} value={category.value}>
-									{category.label}
-								</option>
+			<LanguageProvider>
+				<ToastContainer
+					position="top-right"
+					autoClose={5000}
+					hideProgressBar={false}
+					newestOnTop={false}
+					closeOnClick
+					rtl={false}
+					pauseOnFocusLoss
+					draggable
+					pauseOnHover
+				/>
+				<div className={styles.container}>
+					<div className={styles.infoContainer}>
+						<div className={styles.imgContainer}>
+							{product?.imageUrls.map((imageUrl, index) => (
+								<Image
+									key={index}
+									src={`http://localhost:8080${imageUrl}` || "/noavatar.png"}
+									alt={`Product Image ${index + 1}`}
+									fill
+								/>
 							))}
-						</select>
+						</div>
+						{/* {user.username} */}
+					</div>
+					<div className={styles.formContainer}>
+						<form className={styles.form} onSubmit={handleSubmit}>
+							<input type="hidden" name="id" />
+							<label>Product Name</label>
+							<input
+								type="text"
+								name="productName"
+								placeholder={product.productName}
+								value={product.productName}
+								onChange={handleInputChange}
+							/>
+							<label>Product Price</label>
+							<input
+								type="text"
+								name="productPrice"
+								placeholder={String(product.productPrice)}
+								value={product.productPrice}
+								onChange={handleInputChange}
+							/>
+							<label>Product Stock Quantity</label>
+							<input
+								type="text"
+								name="stockQuanitiy"
+								placeholder={String(product.productStockQuantity)}
+								value={product.productStockQuantity}
+								onChange={handleInputChange}
+							/>
+							<label>Product Discount</label>
+							<input
+								type="text"
+								name="productDiscount"
+								placeholder={String(product.productDiscount)}
+								value={product.productDiscount}
+								onChange={handleInputChange}
+							/>
+							<label>Product Description</label>
+							<textarea
+								name="productDescription"
+								placeholder={product.productDescription}
+								value={product.productDescription}
+								onChange={handleInputChange}
+							/>
+							<label>Category</label>
+							<select
+								name="category"
+								id="category"
+								value={selectedCategoryId}
+								onChange={(e) => setSelectedCategoryId(e.target.value)}>
+								{categories.map((category) => (
+									<option key={category.value} value={category.value}>
+										{category.label}
+									</option>
+								))}
+							</select>
 
-						<button>Update</button>
-					</form>
-					<form className={styles.form} onSubmit={handleImageUpload}>
-						<input
-							type="file"
-							name="images"
-							multiple
-							onChange={handleFileChange}
-						/>
-						<button type="submit">Upload Product Images</button>
-					</form>
+							<button>Update</button>
+						</form>
+						<form className={styles.form} onSubmit={handleImageUpload}>
+							<input
+								type="file"
+								name="images"
+								multiple
+								onChange={handleFileChange}
+							/>
+							<button type="submit">Upload Product Images</button>
+						</form>
+					</div>
 				</div>
-			</div>
+			</LanguageProvider>
 		</>
 	);
 }

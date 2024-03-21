@@ -10,6 +10,7 @@ import {
 import { updateProduct } from "@/lib/auth";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { LanguageProvider } from "@/app/LanguageContext";
 
 export default function EditProduct() {
 	interface Product {
@@ -140,13 +141,6 @@ export default function EditProduct() {
 			productDiscount: product?.productDiscount,
 		};
 
-		// const formData = new FormData();
-		// formData.append("product", JSON.stringify(productData));
-		// // Append product images if any
-		// productImages.forEach((file) => {
-		// 	formData.append("images", file);
-		// });
-
 		try {
 			await updateProduct(product?.productId, productData, jwt);
 		} catch (error) {
@@ -178,95 +172,99 @@ export default function EditProduct() {
 	};
 
 	return (
-		<div className={styles.container}>
-			<div className={styles.infoContainer}>
-				<div className={styles.imgContainer}>
-					{product?.imageUrls.map((imageUrl, index) => (
-						<Image
-							key={index}
-							src={`http://localhost:8080${imageUrl}` || "/noavatar.png"}
-							alt={`Product Image ${index + 1}`}
-							fill
-						/>
-					))}
-				</div>
-				{/* {user.username} */}
-			</div>
-			<div className={styles.formContainer}>
-				<form className={styles.form} onSubmit={handleSubmit}>
-					<input type="hidden" name="id" />
-					<label>Product Name</label>
-					<input
-						type="text"
-						name="productName"
-						placeholder={product.productName}
-						value={product.productName}
-						onChange={handleInputChange}
-					/>
-					<label>Product Price</label>
-					<input
-						type="text"
-						name="productPrice"
-						placeholder={String(product.productPrice)}
-						value={product.productPrice}
-						onChange={handleInputChange}
-					/>
-					<label>Product Stock Quantity</label>
-					<input
-						type="text"
-						name="stockQuanitiy"
-						placeholder={String(product.productStockQuantity)}
-						value={product.productStockQuantity}
-						onChange={handleInputChange}
-					/>
-					<label>Product Discount</label>
-					<input
-						type="text"
-						name="productDiscount"
-						placeholder={String(product.productDiscount)}
-						value={product.productDiscount}
-						onChange={handleInputChange}
-					/>
-					<label>Product Description</label>
-					<textarea
-						name="productDescription"
-						placeholder={product.productDescription}
-						value={product.productDescription}
-						onChange={handleInputChange}
-					/>
-					<label>Category</label>
-					<select
-						name="category"
-						id="category"
-						value={selectedCategoryId}
-						onChange={(e) => setSelectedCategoryId(e.target.value)}>
-						{categories.map((category) => (
-							<option key={category.value} value={category.value}>
-								{category.label}
-							</option>
-						))}
-					</select>
-					<label>Artisan</label>
-					<select
-						name="artisan"
-						id="artisan"
-						value={selectedArtisanId}
-						onChange={(e) => setSelectedArtisanId(e.target.value)}>
-						{allArtisans &&
-							allArtisans.map((artisan) => (
-								<option
-									key={artisan.artisanId}
-									value={artisan.artisanId.toString()}>
-									{artisan.artisanId} - {artisan.artisan.firstname}{" "}
-									{artisan.artisan.lastname}
-								</option>
+		<>
+			<LanguageProvider>
+				<div className={styles.container}>
+					<div className={styles.infoContainer}>
+						<div className={styles.imgContainer}>
+							{product?.imageUrls.map((imageUrl, index) => (
+								<Image
+									key={index}
+									src={`http://localhost:8080${imageUrl}` || "/noavatar.png"}
+									alt={`Product Image ${index + 1}`}
+									fill
+								/>
 							))}
-					</select>
+						</div>
+						{/* {user.username} */}
+					</div>
+					<div className={styles.formContainer}>
+						<form className={styles.form} onSubmit={handleSubmit}>
+							<input type="hidden" name="id" />
+							<label>Product Name</label>
+							<input
+								type="text"
+								name="productName"
+								placeholder={product.productName}
+								value={product.productName}
+								onChange={handleInputChange}
+							/>
+							<label>Product Price</label>
+							<input
+								type="text"
+								name="productPrice"
+								placeholder={String(product.productPrice)}
+								value={product.productPrice}
+								onChange={handleInputChange}
+							/>
+							<label>Product Stock Quantity</label>
+							<input
+								type="text"
+								name="stockQuanitiy"
+								placeholder={String(product.productStockQuantity)}
+								value={product.productStockQuantity}
+								onChange={handleInputChange}
+							/>
+							<label>Product Discount</label>
+							<input
+								type="text"
+								name="productDiscount"
+								placeholder={String(product.productDiscount)}
+								value={product.productDiscount}
+								onChange={handleInputChange}
+							/>
+							<label>Product Description</label>
+							<textarea
+								name="productDescription"
+								placeholder={product.productDescription}
+								value={product.productDescription}
+								onChange={handleInputChange}
+							/>
+							<label>Category</label>
+							<select
+								name="category"
+								id="category"
+								value={selectedCategoryId}
+								onChange={(e) => setSelectedCategoryId(e.target.value)}>
+								{categories.map((category) => (
+									<option key={category.value} value={category.value}>
+										{category.label}
+									</option>
+								))}
+							</select>
+							<label>Artisan</label>
+							<select
+								name="artisan"
+								id="artisan"
+								value={selectedArtisanId}
+								onChange={(e) => setSelectedArtisanId(e.target.value)}>
+								{allArtisans &&
+									allArtisans.map((artisan) => (
+										<option
+											key={artisan.artisanId}
+											value={artisan.artisanId.toString()}>
+											{artisan.artisanId} - {artisan.artisan.firstname}{" "}
+											{artisan.artisan.lastname}
+										</option>
+									))}
+							</select>
 
-					<input type="file" multiple onChange={handleFileChange} />
-					<button>Update</button>
-				</form>
-			</div>
-		</div>
+							<input type="file" multiple onChange={handleFileChange} />
+							<button>Update</button>
+						</form>
+					</div>
+				</div>
+			</LanguageProvider>
+		</>
 	);
 }

@@ -9,6 +9,7 @@ import {
 	disconnect,
 	isConnected,
 } from "@/lib/WebSocketService";
+import { LanguageProvider } from "@/app/LanguageContext";
 
 interface User {
 	userId: number;
@@ -216,95 +217,101 @@ export default function Messages() {
 
 	return (
 		<>
-			<div className="flex h-screen bg-gray-700">
-				<aside className="w-1/4 bg-gray-600 p-4 overflow-y-auto">
-					<div className="space-y-4">
-						{conversations.map((conversation) => {
-							const lastMessage = conversation.messages[0];
-							return (
-								<div
-									key={conversation.otherParty.userId}
-									className={`flex items-center px-2 py-1 cursor-pointer ${
-										selectedUserId === conversation.otherParty.userId
-											? "bg-gray-700 rounded-lg py-4 px-2"
-											: ""
-									}`}
-									onClick={() =>
-										handleUserClick(conversation.otherParty.userId)
-									}>
-									<img
-										src={
-											conversation.otherParty.avatar ||
-											"https://randomuser.me/api/portraits/men/1.jpg"
-										}
-										alt={conversation.otherParty.firstname}
-										className="h-10 w-10 rounded-full"
-									/>
-									<div className="ml-3">
-										<p className="text-sm font-semibold">{`${conversation.otherParty.firstname} ${conversation.otherParty.lastname}`}</p>
-										<p className="text-xs text-white">
-											{lastMessage.messageText}
-										</p>
-									</div>
-									<span className="ml-auto text-xs">
-										{new Date(lastMessage.dateSent).toLocaleTimeString()}
-									</span>
-								</div>
-							);
-						})}
-					</div>
-				</aside>
-
-				<main className="flex-1 p-4 bg-gray-700">
-					<div className="flex flex-col-reverse h-full">
-						<form onSubmit={handleSendMessage}>
-							<div className="mb-4">
-								<input
-									type="text"
-									className="w-full p-2 border rounded text-black focus:outline-none"
-									placeholder="Type a message..."
-									value={inputValue}
-									onChange={handleInputChange}
-								/>
-							</div>
-						</form>
-						<div className="flex-1 overflow-y-auto">
-							{messages.map((message: any, index: any) => {
-								// const isCurrentUser = message.sender.userId === userId;
-
-								const messageAlignment =
-									message.type === "RECEIVED" ? "justify-start" : "justify-end";
-								const messageBackground =
-									message.type === "RECEIVED"
-										? "bg-white text-gray-800"
-										: "bg-blue-500 text-white";
+			<LanguageProvider>
+				<div className="flex h-screen bg-gray-700">
+					<aside className="w-1/4 bg-gray-600 p-4 overflow-y-auto">
+						<div className="space-y-4">
+							{conversations.map((conversation) => {
+								const lastMessage = conversation.messages[0];
 								return (
-									<div key={index} className={`flex py-2 ${messageAlignment}`}>
-										<div
-											className={`rounded-lg p-3 mr-3 shadow ${messageBackground}`}>
-											{message.type === "text" && <p>{message.content}</p>}
-											{message.type === "image" && (
-												<img
-													src={message.content}
-													alt="Sent image"
-													className="max-h-40 w-auto"
-												/>
-											)}
-											{message.type === "audio" && (
-												<audio controls src={message.content}></audio>
-											)}
-											<p>{message.content}</p>
-											<p className="text-xs mt-1">
-												{new Date(message.localDateTime).toLocaleTimeString()}
+									<div
+										key={conversation.otherParty.userId}
+										className={`flex items-center px-2 py-1 cursor-pointer ${
+											selectedUserId === conversation.otherParty.userId
+												? "bg-gray-700 rounded-lg py-4 px-2"
+												: ""
+										}`}
+										onClick={() =>
+											handleUserClick(conversation.otherParty.userId)
+										}>
+										<img
+											src={
+												conversation.otherParty.avatar ||
+												"https://randomuser.me/api/portraits/men/1.jpg"
+											}
+											alt={conversation.otherParty.firstname}
+											className="h-10 w-10 rounded-full"
+										/>
+										<div className="ml-3">
+											<p className="text-sm font-semibold">{`${conversation.otherParty.firstname} ${conversation.otherParty.lastname}`}</p>
+											<p className="text-xs text-white">
+												{lastMessage.messageText}
 											</p>
 										</div>
+										<span className="ml-auto text-xs">
+											{new Date(lastMessage.dateSent).toLocaleTimeString()}
+										</span>
 									</div>
 								);
 							})}
 						</div>
-					</div>
-				</main>
-			</div>
+					</aside>
+
+					<main className="flex-1 p-4 bg-gray-700">
+						<div className="flex flex-col-reverse h-full">
+							<form onSubmit={handleSendMessage}>
+								<div className="mb-4">
+									<input
+										type="text"
+										className="w-full p-2 border rounded text-black focus:outline-none"
+										placeholder="Type a message..."
+										value={inputValue}
+										onChange={handleInputChange}
+									/>
+								</div>
+							</form>
+							<div className="flex-1 overflow-y-auto">
+								{messages.map((message: any, index: any) => {
+									// const isCurrentUser = message.sender.userId === userId;
+
+									const messageAlignment =
+										message.type === "RECEIVED"
+											? "justify-start"
+											: "justify-end";
+									const messageBackground =
+										message.type === "RECEIVED"
+											? "bg-white text-gray-800"
+											: "bg-blue-500 text-white";
+									return (
+										<div
+											key={index}
+											className={`flex py-2 ${messageAlignment}`}>
+											<div
+												className={`rounded-lg p-3 mr-3 shadow ${messageBackground}`}>
+												{message.type === "text" && <p>{message.content}</p>}
+												{message.type === "image" && (
+													<img
+														src={message.content}
+														alt="Sent image"
+														className="max-h-40 w-auto"
+													/>
+												)}
+												{message.type === "audio" && (
+													<audio controls src={message.content}></audio>
+												)}
+												<p>{message.content}</p>
+												<p className="text-xs mt-1">
+													{new Date(message.localDateTime).toLocaleTimeString()}
+												</p>
+											</div>
+										</div>
+									);
+								})}
+							</div>
+						</div>
+					</main>
+				</div>
+			</LanguageProvider>
 		</>
 	);
 }

@@ -11,6 +11,7 @@ import PersonalInformationComponents from "@/components/ProfilePageComponents/Pe
 import AccountSettingsComponents from "@/components/ProfilePageComponents/AccountSettingsComponents";
 import StoriesGallerySkillsComponents from "@/components/ProfilePageComponents/StoriesGallerySkillsComponents";
 import Link from "next/link";
+import { LanguageProvider } from "@/app/LanguageContext";
 
 const ProfileInformation = () => {
 	const router = useRouter();
@@ -62,21 +63,22 @@ const ProfileInformation = () => {
 
 	return (
 		<>
-			<Header />
-			<div className="bg-gray-100 min-h-screen">
-				<div className="container mx-auto p-8">
-					<div className="mb-10">
-						<h1 className="text-3xl font-bold text-gray-800 mb-4">
-							My Profile
-						</h1>
-						<p className="text-gray-600">
-							Manage your personal information, account settings, and more.
-						</p>
-					</div>
+			<LanguageProvider>
+				<Header />
+				<div className="bg-gray-100 min-h-screen">
+					<div className="container mx-auto p-8">
+						<div className="mb-10">
+							<h1 className="text-3xl font-bold text-gray-800 mb-4">
+								My Profile
+							</h1>
+							<p className="text-gray-600">
+								Manage your personal information, account settings, and more.
+							</p>
+						</div>
 
-					<PersonalInformationComponents />
+						<PersonalInformationComponents />
 
-					{/* <div className="bg-white shadow rounded-lg p-6 mb-6">
+						{/* <div className="bg-white shadow rounded-lg p-6 mb-6">
 						<h2 className="text-2xl text-gray-800 font-semibold mb-4">
 							Profile Picture
 						</h2>
@@ -88,13 +90,14 @@ const ProfileInformation = () => {
 						</form>
 					</div> */}
 
-					<AccountSettingsComponents />
+						<AccountSettingsComponents />
 
-					<StoriesGallerySkillsComponents />
+						<StoriesGallerySkillsComponents />
+					</div>
 				</div>
-			</div>
 
-			<Footer />
+				<Footer />
+			</LanguageProvider>
 		</>
 	);
 };

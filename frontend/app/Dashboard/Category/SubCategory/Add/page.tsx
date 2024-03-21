@@ -4,6 +4,7 @@ import styles from "@/components/dashboardComponents/users/addUser/addUser.modul
 import { useRef, useState } from "react";
 import { createCategoryOrSubcategory } from "@/lib/auth";
 import { useSearchParams } from "next/navigation";
+import { LanguageProvider } from "@/app/LanguageContext";
 
 const AddSubCategoryPage = () => {
 	const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -71,42 +72,46 @@ const AddSubCategoryPage = () => {
 	};
 
 	return (
-		<div className={styles.container}>
-			<form className={styles.form} onSubmit={handleSubmit}>
-				<input
-					type="text"
-					placeholder="Sub Category Name"
-					name="categoryName"
-					value={categoryName}
-					onChange={(event) => setCategoryName(event.target.value)}
-					required
-				/>
-				<textarea
-					name="description"
-					id="description"
-					rows="16"
-					value={categoryDescription}
-					onChange={(event) => setCategoryDescription(event.target.value)}
-					placeholder="Sub Category Description"></textarea>
-				<input
-					type="file"
-					ref={fileInputRef}
-					onChange={handleFileChange}
-					style={{ display: "none" }}
-				/>
-				<button
-					className="my-8"
-					type="button"
-					onClick={() => fileInputRef.current?.click()}>
-					Select Image
-				</button>
+		<>
+			<LanguageProvider>
+				<div className={styles.container}>
+					<form className={styles.form} onSubmit={handleSubmit}>
+						<input
+							type="text"
+							placeholder="Sub Category Name"
+							name="categoryName"
+							value={categoryName}
+							onChange={(event) => setCategoryName(event.target.value)}
+							required
+						/>
+						<textarea
+							name="description"
+							id="description"
+							rows="16"
+							value={categoryDescription}
+							onChange={(event) => setCategoryDescription(event.target.value)}
+							placeholder="Sub Category Description"></textarea>
+						<input
+							type="file"
+							ref={fileInputRef}
+							onChange={handleFileChange}
+							style={{ display: "none" }}
+						/>
+						<button
+							className="my-8"
+							type="button"
+							onClick={() => fileInputRef.current?.click()}>
+							Select Image
+						</button>
 
-				<button type="submit" disabled={loading}>
-					{loading ? "Submitting..." : "Submit"}
-				</button>
-			</form>
-			{error && <p className="error">{error}</p>}
-		</div>
+						<button type="submit" disabled={loading}>
+							{loading ? "Submitting..." : "Submit"}
+						</button>
+					</form>
+					{error && <p className="error">{error}</p>}
+				</div>
+			</LanguageProvider>
+		</>
 	);
 };
 

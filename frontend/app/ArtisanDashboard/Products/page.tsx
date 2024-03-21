@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { PaginationComponent } from "@/components/ui/PaginationDemo";
 import { deleteProduct } from "@/lib/auth";
 import { useFetchUserInfo } from "@/lib/data";
+import { LanguageProvider } from "@/app/LanguageContext";
 
 export default function Products() {
 	interface Product {
@@ -101,84 +102,89 @@ export default function Products() {
 
 	return (
 		<>
-			<Link href="/ArtisanDashboard/Products/Add">
-				<Button size={"lg"} className="my-4">
-					+ Add Product
-				</Button>
-			</Link>
+			<LanguageProvider>
+				<Link href="/ArtisanDashboard/Products/Add">
+					<Button size={"lg"} className="my-4">
+						+ Add Product
+					</Button>
+				</Link>
 
-			<Input
-				className="mb-5 w-64 rounded border border-black text-black"
-				placeholder="Filter by product details..."
-				type="text"
-				value={searchTerm}
-				onChange={(e) => setSearchTerm(e.target.value)}
-			/>
+				<Input
+					className="mb-5 w-64 rounded border border-black text-black"
+					placeholder="Filter by product details..."
+					type="text"
+					value={searchTerm}
+					onChange={(e) => setSearchTerm(e.target.value)}
+				/>
 
-			<Table>
-				<TableCaption>Product List</TableCaption>
-				<TableHeader>
-					<TableRow>
-						<TableHead>Product Id</TableHead>
-						<TableHead>Product Name</TableHead>
-						<TableHead>Product Description</TableHead>
-						<TableHead>Product Price</TableHead>
-						<TableHead>Product Quantity</TableHead>
-						<TableHead>Product Discount</TableHead>
-						<TableHead>Product Date Updated</TableHead>
-						<TableHead>Category Id</TableHead>
-						<TableHead>Artisan</TableHead>
-						<TableHead>Action</TableHead>
-					</TableRow>
-				</TableHeader>
-				<TableBody>
-					{filteredProducts.map((product) => (
-						<>
-							<TableRow key={product.productId}>
-								<TableCell>{product.productId}</TableCell>
-								<TableCell>{product.productName}</TableCell>
-								<TableCell>
-									{product.productDescription.split(" ").slice(0, 10).join(" ")}
-								</TableCell>
-								<TableCell>{product.productPrice}</TableCell>
-								<TableCell>{product.productStockQuantity}</TableCell>
-								<TableCell>{product.productDiscount}</TableCell>
-								<TableCell>
-									{new Date(product.dateTimeUpdated).toLocaleDateString()}
-								</TableCell>
-								<TableCell>{product.category.categoryName}</TableCell>
-								<TableCell>{product.artisanProfile.firstname}</TableCell>
+				<Table>
+					<TableCaption>Product List</TableCaption>
+					<TableHeader>
+						<TableRow>
+							<TableHead>Product Id</TableHead>
+							<TableHead>Product Name</TableHead>
+							<TableHead>Product Description</TableHead>
+							<TableHead>Product Price</TableHead>
+							<TableHead>Product Quantity</TableHead>
+							<TableHead>Product Discount</TableHead>
+							<TableHead>Product Date Updated</TableHead>
+							<TableHead>Category Id</TableHead>
+							<TableHead>Artisan</TableHead>
+							<TableHead>Action</TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						{filteredProducts.map((product) => (
+							<>
+								<TableRow key={product.productId}>
+									<TableCell>{product.productId}</TableCell>
+									<TableCell>{product.productName}</TableCell>
+									<TableCell>
+										{product.productDescription
+											.split(" ")
+											.slice(0, 10)
+											.join(" ")}
+									</TableCell>
+									<TableCell>{product.productPrice}</TableCell>
+									<TableCell>{product.productStockQuantity}</TableCell>
+									<TableCell>{product.productDiscount}</TableCell>
+									<TableCell>
+										{new Date(product.dateTimeUpdated).toLocaleDateString()}
+									</TableCell>
+									<TableCell>{product.category.categoryName}</TableCell>
+									<TableCell>{product.artisanProfile.firstname}</TableCell>
 
-								<TableCell>
-									<div className="p-2 flex">
-										<Link
-											href={{
-												pathname: "/ArtisanDashboard/Products/Edit",
-												query: { productId: product.productId },
-											}}>
-											<Button size={"lg"} className="mr-2 mb-2 flex">
-												Edit
+									<TableCell>
+										<div className="p-2 flex">
+											<Link
+												href={{
+													pathname: "/ArtisanDashboard/Products/Edit",
+													query: { productId: product.productId },
+												}}>
+												<Button size={"lg"} className="mr-2 mb-2 flex">
+													Edit
+												</Button>
+											</Link>
+											<Button
+												size={"lg"}
+												onClick={() => handleDelete(product.productId)}
+												className="mr-2 mb-2 flex">
+												Delete
 											</Button>
-										</Link>
-										<Button
-											size={"lg"}
-											onClick={() => handleDelete(product.productId)}
-											className="mr-2 mb-2 flex">
-											Delete
-										</Button>
-									</div>
-								</TableCell>
-							</TableRow>
-						</>
-					))}
-				</TableBody>
-			</Table>
+										</div>
+									</TableCell>
+								</TableRow>
+							</>
+						))}
+					</TableBody>
+				</Table>
 
-			<PaginationComponent
-				totalPages={totalPages}
-				paginate={paginate}
-				currentPage={currentPage}
-			/>
+				<PaginationComponent
+					totalPages={totalPages}
+					paginate={paginate}
+					currentPage={currentPage}
+				/>
+			</LanguageProvider>
 		</>
 	);
 }

@@ -19,6 +19,7 @@ import { PaginationComponent } from "@/components/ui/PaginationDemo";
 import { Input } from "@/components/ui/input";
 
 import { deleteCategory } from "@/lib/auth";
+import { LanguageProvider } from "@/app/LanguageContext";
 
 export default function Category() {
 	interface Category {
@@ -114,106 +115,110 @@ export default function Category() {
 
 	return (
 		<>
-			<Link href="/Dashboard/Category/Add">
-				<Button size={"lg"} className="my-4">
-					+ Add Category
-				</Button>
-			</Link>
+			<LanguageProvider>
+				<Link href="/Dashboard/Category/Add">
+					<Button size={"lg"} className="my-4">
+						+ Add Category
+					</Button>
+				</Link>
 
-			<Input
-				className="mb-5 w-64 rounded border border-black text-black"
-				placeholder="Filter by category details..."
-				type="text"
-				value={searchTerm}
-				onChange={(e) => setSearchTerm(e.target.value)}
-			/>
-			<Table>
-				<TableCaption>Category List</TableCaption>
-				<TableHeader>
-					<TableRow>
-						<TableHead>Category Id</TableHead>
-						<TableHead>Category Name</TableHead>
-						<TableHead>Category Description</TableHead>
-						<TableHead>Action</TableHead>
-					</TableRow>
-				</TableHeader>
-				<TableBody>
-					{filteredCategories.map((category) => (
-						<TableRow key={category.value}>
-							<TableCell>{category.value}</TableCell>
-							<TableCell>
-								{editingCategoryId === category.value ? (
-									<Input
-										value={newCategoryName}
-										onChange={(e) => setNewCategoryName(e.target.value)}
-										className="text-black"
-									/>
-								) : (
-									category.label
-								)}
-							</TableCell>
-							<TableCell>
-								{editingCategoryId === category.value ? (
-									<Input
-										value={newCategoryDescription}
-										onChange={(e) => setNewCategoryDescription(e.target.value)}
-										className="text-black"
-									/>
-								) : (
-									category.description
-								)}
-							</TableCell>
-							<TableCell>
-								<div className="p-2 flex">
-									{editingCategoryId === category.value ? (
-										<>
-											<Button
-												onClick={() => handleSaveEdit(category.value)}
-												className="mr-2 mb-2 flex">
-												Save
-											</Button>
-											<Button onClick={() => setEditingCategoryId(null)}>
-												Cancel
-											</Button>
-										</>
-									) : (
-										<Button
-											onClick={() => {
-												setEditingCategoryId(category.value);
-												setNewCategoryName(category.label);
-												setNewCategoryDescription(category.description);
-											}}
-											className="mr-2 mb-2 flex">
-											Edit
-										</Button>
-									)}
-									<Button
-										onClick={() => handleDelete(category.value)}
-										className="hover:bg-gray-700">
-										Delete
-									</Button>
-
-									<Button className="hover:bg-gray-700 ml-2">
-										<Link
-											href={{
-												pathname: "/Dashboard/Category/SubCategory",
-												query: { categoryId: category.value },
-											}}>
-											View Sub Category
-										</Link>
-									</Button>
-								</div>
-							</TableCell>
+				<Input
+					className="mb-5 w-64 rounded border border-black text-black"
+					placeholder="Filter by category details..."
+					type="text"
+					value={searchTerm}
+					onChange={(e) => setSearchTerm(e.target.value)}
+				/>
+				<Table>
+					<TableCaption>Category List</TableCaption>
+					<TableHeader>
+						<TableRow>
+							<TableHead>Category Id</TableHead>
+							<TableHead>Category Name</TableHead>
+							<TableHead>Category Description</TableHead>
+							<TableHead>Action</TableHead>
 						</TableRow>
-					))}
-				</TableBody>
-			</Table>
+					</TableHeader>
+					<TableBody>
+						{filteredCategories.map((category) => (
+							<TableRow key={category.value}>
+								<TableCell>{category.value}</TableCell>
+								<TableCell>
+									{editingCategoryId === category.value ? (
+										<Input
+											value={newCategoryName}
+											onChange={(e) => setNewCategoryName(e.target.value)}
+											className="text-black"
+										/>
+									) : (
+										category.label
+									)}
+								</TableCell>
+								<TableCell>
+									{editingCategoryId === category.value ? (
+										<Input
+											value={newCategoryDescription}
+											onChange={(e) =>
+												setNewCategoryDescription(e.target.value)
+											}
+											className="text-black"
+										/>
+									) : (
+										category.description
+									)}
+								</TableCell>
+								<TableCell>
+									<div className="p-2 flex">
+										{editingCategoryId === category.value ? (
+											<>
+												<Button
+													onClick={() => handleSaveEdit(category.value)}
+													className="mr-2 mb-2 flex">
+													Save
+												</Button>
+												<Button onClick={() => setEditingCategoryId(null)}>
+													Cancel
+												</Button>
+											</>
+										) : (
+											<Button
+												onClick={() => {
+													setEditingCategoryId(category.value);
+													setNewCategoryName(category.label);
+													setNewCategoryDescription(category.description);
+												}}
+												className="mr-2 mb-2 flex">
+												Edit
+											</Button>
+										)}
+										<Button
+											onClick={() => handleDelete(category.value)}
+											className="hover:bg-gray-700">
+											Delete
+										</Button>
 
-			<PaginationComponent
-				totalPages={totalPages}
-				paginate={paginate}
-				currentPage={currentPage}
-			/>
+										<Button className="hover:bg-gray-700 ml-2">
+											<Link
+												href={{
+													pathname: "/Dashboard/Category/SubCategory",
+													query: { categoryId: category.value },
+												}}>
+												View Sub Category
+											</Link>
+										</Button>
+									</div>
+								</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
+
+				<PaginationComponent
+					totalPages={totalPages}
+					paginate={paginate}
+					currentPage={currentPage}
+				/>
+			</LanguageProvider>
 		</>
 	);
 }

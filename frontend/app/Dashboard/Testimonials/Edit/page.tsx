@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useGetTestimonialsById } from "@/lib/dbModels";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { LanguageProvider } from "@/app/LanguageContext";
 
 export default function EditTestimonials() {
 	interface Testimonials {
@@ -78,98 +79,100 @@ export default function EditTestimonials() {
 
 	return (
 		<>
-			<ToastContainer
-				position="top-right"
-				autoClose={5000}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-			/>
-			<div className={styles.container}>
-				<div className={styles.formContainer}>
-					<form className={styles.form} onSubmit={handleSubmit}>
-						<input type="hidden" name="id" />
-						<label>Testimonials Title</label>
-						<input
-							type="text"
-							name="firstname"
-							placeholder={testimonials.testimonialTitle}
-							value={testimonials.testimonialTitle}
-							onChange={handleInputChange}
-						/>
-						<label>Testimonials Comment</label>
-						<input
-							type="text"
-							name="lastname"
-							placeholder={testimonials.comment}
-							value={testimonials.comment}
-							onChange={handleInputChange}
-						/>
-						<label>Testimonials Rating</label>
-						<input
-							type="text"
-							name="username"
-							placeholder={String(testimonials.rating)}
-							value={testimonials.rating}
-							onChange={handleInputChange}
-						/>
-						<label>Customer Name</label>
-						<input
-							type="text"
-							name="customerName"
-							placeholder={`${testimonials.applicationUser?.firstname} ${testimonials.applicationUser?.lastname}`}
-							value={`${testimonials.applicationUser?.firstname} ${testimonials.applicationUser?.lastname}`}
-							onChange={handleInputChange}
-						/>
-						<label>Testimonials Date and time</label>
-						<input
-							type="text"
-							name="dateAndTime"
-							placeholder={new Date(
-								testimonials.testimonialDate
-							).toLocaleDateString()}
-							value={new Date(
-								testimonials.testimonialDate
-							).toLocaleDateString()}
-							onChange={handleInputChange}
-						/>
-						<label>Is Approved?</label>
-						<div>
+			<LanguageProvider>
+				<ToastContainer
+					position="top-right"
+					autoClose={5000}
+					hideProgressBar={false}
+					newestOnTop={false}
+					closeOnClick
+					rtl={false}
+					pauseOnFocusLoss
+					draggable
+					pauseOnHover
+				/>
+				<div className={styles.container}>
+					<div className={styles.formContainer}>
+						<form className={styles.form} onSubmit={handleSubmit}>
+							<input type="hidden" name="id" />
+							<label>Testimonials Title</label>
 							<input
-								type="radio"
-								id="approvedYes"
-								name="isApproved"
-								value="Yes"
-								checked={selectedApproval === "Yes"}
-								onChange={(e) => {
-									setSelectedApproval(e.target.value);
-									approveTestimonial(testimonialId, true);
-								}}
+								type="text"
+								name="firstname"
+								placeholder={testimonials.testimonialTitle}
+								value={testimonials.testimonialTitle}
+								onChange={handleInputChange}
 							/>
-							<label htmlFor="approvedYes">Yes</label>
+							<label>Testimonials Comment</label>
+							<input
+								type="text"
+								name="lastname"
+								placeholder={testimonials.comment}
+								value={testimonials.comment}
+								onChange={handleInputChange}
+							/>
+							<label>Testimonials Rating</label>
+							<input
+								type="text"
+								name="username"
+								placeholder={String(testimonials.rating)}
+								value={testimonials.rating}
+								onChange={handleInputChange}
+							/>
+							<label>Customer Name</label>
+							<input
+								type="text"
+								name="customerName"
+								placeholder={`${testimonials.applicationUser?.firstname} ${testimonials.applicationUser?.lastname}`}
+								value={`${testimonials.applicationUser?.firstname} ${testimonials.applicationUser?.lastname}`}
+								onChange={handleInputChange}
+							/>
+							<label>Testimonials Date and time</label>
+							<input
+								type="text"
+								name="dateAndTime"
+								placeholder={new Date(
+									testimonials.testimonialDate
+								).toLocaleDateString()}
+								value={new Date(
+									testimonials.testimonialDate
+								).toLocaleDateString()}
+								onChange={handleInputChange}
+							/>
+							<label>Is Approved?</label>
+							<div>
+								<input
+									type="radio"
+									id="approvedYes"
+									name="isApproved"
+									value="Yes"
+									checked={selectedApproval === "Yes"}
+									onChange={(e) => {
+										setSelectedApproval(e.target.value);
+										approveTestimonial(testimonialId, true);
+									}}
+								/>
+								<label htmlFor="approvedYes">Yes</label>
 
-							<input
-								type="radio"
-								id="approvedNo"
-								name="isApproved"
-								value="No"
-								checked={selectedApproval === "No"}
-								onChange={(e) => {
-									setSelectedApproval(e.target.value);
-									approveTestimonial(testimonialId, false);
-								}}
-								className="mr-4 text-xl"
-							/>
-							<label htmlFor="approvedNo">No</label>
-						</div>
-						<button>Update</button>
-					</form>
+								<input
+									type="radio"
+									id="approvedNo"
+									name="isApproved"
+									value="No"
+									checked={selectedApproval === "No"}
+									onChange={(e) => {
+										setSelectedApproval(e.target.value);
+										approveTestimonial(testimonialId, false);
+									}}
+									className="mr-4 text-xl"
+								/>
+								<label htmlFor="approvedNo">No</label>
+							</div>
+							<button>Update</button>
+						</form>
+					</div>
 				</div>
-			</div>
+			</LanguageProvider>
 		</>
 	);
 }
