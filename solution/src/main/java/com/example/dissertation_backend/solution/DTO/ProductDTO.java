@@ -16,6 +16,7 @@ public class ProductDTO {
   private Double productDiscount;
   private CategoryDTO category;
   private Set<String> imageUrls;
+  private Set<ProductAttributeDTO> attributes;
 
   public ProductDTO() {
     super();
@@ -134,5 +135,13 @@ public class ProductDTO {
 
   public void setProductDiscount(Double productDiscount) {
     this.productDiscount = productDiscount;
+  }
+
+  public Set<ProductAttributeDTO> getAttributes() {
+    return attributes;
+  }
+
+  public void setAttributes(Set<ProductAttributeDTO> attributes) {
+    this.attributes = attributes;
   }
 }

@@ -6,9 +6,12 @@ import com.example.dissertation_backend.solution.Category.Repository.CategoryRep
 import com.example.dissertation_backend.solution.Customers.Model.ArtisanProfile;
 import com.example.dissertation_backend.solution.DTO.ArtisanProfileDTO;
 import com.example.dissertation_backend.solution.DTO.CategoryDTO;
+import com.example.dissertation_backend.solution.DTO.ProductAttributeDTO;
 import com.example.dissertation_backend.solution.DTO.ProductDTO;
+import com.example.dissertation_backend.solution.Products.Model.ProductAttributes;
 import com.example.dissertation_backend.solution.Products.Model.ProductImages;
 import com.example.dissertation_backend.solution.Products.Model.Products;
+import com.example.dissertation_backend.solution.Products.Repository.ProductAttributeRepository;
 import com.example.dissertation_backend.solution.Products.Repository.ProductRepository;
 import com.example.dissertation_backend.solution.Review.Model.Review;
 import jakarta.persistence.criteria.*;
@@ -31,6 +34,9 @@ public class ProductServices {
 
   @Autowired
   private CategoryRepository categoryRepository;
+
+  @Autowired
+  private ProductAttributeRepository attributeRepository;
 
   public Page<ProductDTO> searchProducts(
     String searchTerm,
@@ -229,14 +235,6 @@ public class ProductServices {
       .collect(Collectors.toList());
   }
 
-  // public List<ProductDTO> getProductsByUser(ApplicationUser user) {
-  //   if (user.getAuthorities().equals("ARISAN")) {
-  //     return getProductsByArtisanId(user.getArtisanProfile().getId());
-  //   }
-  //   // Handle other roles or default action
-  //   return new ArrayList<>();
-  // }
-
   public List<ProductDTO> getProductsByArtisanId(Integer artisanId) {
     List<Products> products = productRepository.findByArtisan_ArtisanId(
       artisanId
@@ -247,18 +245,34 @@ public class ProductServices {
       .collect(Collectors.toList());
   }
 
-  public Products saveOrUpdateProduct(Products product) {
+  public Products saveOrUpdateProduct(
+    Products product,
+    List<ProductAttributes> newAttributes
+  ) {
     if (product == null) {
       return null;
     }
-    return productRepository.save(product);
+
+    Products savedProduct = productRepository.save(product);
+
+    if (product.getProductId() == null) {
+      attributeRepository.deleteByProductId(product.getProductId());
+    }
+
+    for (ProductAttributes newAttribute : newAttributes) {
+      newAttribute.setProduct(product);
+      attributeRepository.save(newAttribute);
+    }
+
+    return savedProduct;
   }
 
-  public void deleteProduct(Integer id) {
-    if (id == null) {
+  public void deleteProduct(Integer productId) {
+    if (productId == null) {
       return;
     }
-    productRepository.deleteById(id);
+    attributeRepository.deleteByProductId(productId);
+    productRepository.deleteById(productId);
   }
 
   // Additional business logic methods can be added here
@@ -330,6 +344,20 @@ public class ProductServices {
     dto.setImageUrls(imageUrls);
     dto.setDateTimeListed(product.getDateListed());
     dto.setDateTimeUpdated(product.getDateTimeUpdated());
+
+    Set<ProductAttributeDTO> attributeDTOs = product
+      .getAttributes()
+      .stream()
+      .map(attr ->
+        new ProductAttributeDTO(
+          attr.getProductAttributesId(),
+          attr.getProductAttributesKey(),
+          attr.getProductAttributesValue()
+        )
+      )
+      .collect(Collectors.toSet());
+
+    dto.setAttributes(attributeDTOs);
 
     return dto;
   }

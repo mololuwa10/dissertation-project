@@ -89,6 +89,7 @@ export default function Profile() {
 		{
 			titleId: "yourMessages",
 			descriptionId: "messagesDescription",
+			url: "/Profile/Messages",
 		},
 		{
 			titleId: "yourReviews",

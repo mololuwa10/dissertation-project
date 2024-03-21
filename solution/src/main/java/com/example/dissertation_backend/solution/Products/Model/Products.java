@@ -52,6 +52,14 @@ public class Products {
   @Column(name = "product_date_updated")
   private LocalDateTime dateTimeUpdated;
 
+  @OneToMany(
+    mappedBy = "product",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true,
+    fetch = FetchType.LAZY
+  )
+  private Set<ProductAttributes> attributes = new HashSet<>();
+
   // CONSTRUCTORS
   public Products() {
     super();
@@ -168,17 +176,36 @@ public class Products {
     this.productDiscount = productDiscount;
   }
 
-  // Method to add an image to the product
-  public void addImage(ProductImages image) {
-    this.images.add(image);
-    image.setProduct(this);
-  }
-
   public LocalDateTime getDateTimeUpdated() {
     return dateTimeUpdated;
   }
 
   public void setDateTimeUpdated(LocalDateTime dateTimeUpdated) {
     this.dateTimeUpdated = dateTimeUpdated;
+  }
+
+  public Set<ProductAttributes> getAttributes() {
+    return attributes;
+  }
+
+  public void setAttributes(Set<ProductAttributes> attributes) {
+    this.attributes = attributes;
+  }
+
+  // Method to add an image to the product
+  public void addImage(ProductImages image) {
+    this.images.add(image);
+    image.setProduct(this);
+  }
+
+  // Include methods to add and remove attributes
+  public void addAttribute(ProductAttributes attribute) {
+    attributes.add(attribute);
+    attribute.setProduct(this);
+  }
+
+  public void removeAttribute(ProductAttributes attribute) {
+    attributes.remove(attribute);
+    attribute.setProduct(null);
   }
 }

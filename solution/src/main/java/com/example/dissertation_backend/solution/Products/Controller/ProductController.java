@@ -8,6 +8,7 @@ import com.example.dissertation_backend.solution.Customers.Service.ArtisanProfil
 import com.example.dissertation_backend.solution.Customers.Service.UserService;
 import com.example.dissertation_backend.solution.DTO.ProductDTO;
 import com.example.dissertation_backend.solution.Exception.ImageStorageException;
+import com.example.dissertation_backend.solution.Products.Model.ProductAttributes;
 import com.example.dissertation_backend.solution.Products.Model.ProductImages;
 import com.example.dissertation_backend.solution.Products.Model.Products;
 import com.example.dissertation_backend.solution.Products.Service.ProductImageService;
@@ -145,12 +146,18 @@ public class ProductController {
   public ResponseEntity<Object> createProduct(
     Principal principal,
     @RequestParam("product") String productStr,
+    @RequestParam("attributes") String attributesStr,
     @RequestParam("images") MultipartFile[] files
   ) {
     try {
       // Converting the JSON string to a product object
       ObjectMapper mapper = new ObjectMapper();
       Products product = mapper.readValue(productStr, Products.class);
+
+      // Convert attributes JSON to list of ProductAttribute
+      List<ProductAttributes> attributes = Arrays.asList(
+        mapper.readValue(attributesStr, ProductAttributes[].class)
+      );
 
       // Getting the user from user service
       ApplicationUser user = userService.findByUsername(principal.getName());
@@ -199,7 +206,10 @@ public class ProductController {
       product.setCategory(category);
       product.setArtisan(artisan);
       product.setDateListed(LocalDateTime.now());
-      Products createdProduct = productService.saveOrUpdateProduct(product);
+      Products createdProduct = productService.saveOrUpdateProduct(
+        product,
+        attributes
+      );
 
       for (MultipartFile file : files) {
         try {
@@ -337,10 +347,14 @@ public class ProductController {
   public ResponseEntity<Object> updateProduct(
     @PathVariable Integer id,
     @RequestParam("product") String productJson,
+    @RequestParam("attributes") String attributesStr,
     Principal principal
   ) throws IOException {
     Products updatedProducts = new ObjectMapper()
       .readValue(productJson, Products.class);
+    List<ProductAttributes> newAttributes = Arrays.asList(
+      new ObjectMapper().readValue(attributesStr, ProductAttributes[].class)
+    );
     Optional<Products> existingProduct = productService.getProductById(id);
 
     if (existingProduct != null) {
@@ -401,7 +415,7 @@ public class ProductController {
       updatedProducts.setDateListed(existingProduct.get().getDateListed());
       updatedProducts.setDateTimeUpdated(LocalDateTime.now());
       return ResponseEntity.ok(
-        productService.saveOrUpdateProduct(updatedProducts)
+        productService.saveOrUpdateProduct(updatedProducts, newAttributes)
       );
     } else {
       return ResponseEntity.notFound().build();

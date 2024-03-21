@@ -7,28 +7,31 @@ import Footer from "@/components/layoutComponents/Footer";
 import Header from "@/components/layoutComponents/Header";
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
+import { LanguageProvider } from "../LanguageContext";
 
 export default function ProductOverview() {
 	return (
 		<>
-			<Header />
-			<div className="container mx-auto mt-10">
-				<div className="flex flex-wrap md:flex-nowrap">
-					<div className="w-full md:w-1/2 p-4">
-						<ImageGalleryComponents />
+			<LanguageProvider>
+				<Header />
+				<div className="container mx-auto mt-10">
+					<div className="flex flex-wrap md:flex-nowrap">
+						<div className="w-full md:w-1/2 p-4">
+							<ImageGalleryComponents />
+						</div>
+						<ProductInfo />
 					</div>
-					<ProductInfo />
+
+					<div className="mt-10">
+						{/* Product Reviews Component */}
+						<ProductReviews />
+					</div>
 				</div>
 
-				<div className="mt-10">
-					{/* Product Reviews Component */}
-					<ProductReviews />
-				</div>
-			</div>
+				<hr className=" mx-20 border-t-2 border-gray-600" />
 
-			<hr className=" mx-20 border-t-2 border-gray-600" />
-
-			<Footer />
+				<Footer />
+			</LanguageProvider>
 		</>
 	);
 }

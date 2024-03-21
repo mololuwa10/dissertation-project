@@ -30,6 +30,7 @@ interface Product {
 		storeName: string;
 	};
 	dateTimeUpdated: string;
+	attributes: {};
 }
 
 interface Review {
@@ -62,6 +63,17 @@ export default function ProductInfo() {
 		{ length: maxSelectableQuantity },
 		(_, index) => index + 1
 	);
+
+	const groupAttributes = (attributes: any) => {
+		return attributes.reduce((acc: any, attr: any) => {
+			// If the attribute key already exists, add the value to the existing array.
+			// Otherwise, create a new array with the first value.
+			acc[attr.key] = acc[attr.key]
+				? [...acc[attr.key], attr.value]
+				: [attr.value];
+			return acc;
+		}, {});
+	};
 
 	useEffect(() => {
 		fetchReviewsByProductId(productId as string)
@@ -109,7 +121,9 @@ export default function ProductInfo() {
 		if (productId) {
 			fetchProductById(Number(productId))
 				.then((fetchedProduct) => {
-					setProduct(fetchedProduct);
+					const groupedAttributes = groupAttributes(fetchedProduct.attributes);
+					// Set product with grouped attributes
+					setProduct({ ...fetchedProduct, attributes: groupedAttributes });
 				})
 				.catch((err: Error) => {
 					console.error(err);
@@ -223,6 +237,30 @@ export default function ProductInfo() {
 								</option>
 							))}
 						</select>
+
+						{/* Attribute Selectors */}
+						{product &&
+							Object.entries(product.attributes).map(([key, values]) =>
+								Array.isArray(values) && values.length > 1 ? (
+									<div key={key} className="my-6">
+										<Label htmlFor={key} className="font-normal text-xl">
+											{key}
+										</Label>
+										<select
+											id={key}
+											name={key}
+											className="border-gray-900 border-2 p-4 rounded-2xl w-full my-3"
+											// You would handle onChange here if needed
+										>
+											{values.map((value) => (
+												<option key={value} value={value}>
+													{value}
+												</option>
+											))}
+										</select>
+									</div>
+								) : null
+							)}
 						<Button
 							size="lg"
 							className="w-full text-white py-3 rounded-3xl hover:bg-blue-600 mt-4"
@@ -248,6 +286,14 @@ export default function ProductInfo() {
 					<div className="text-lg font-medium text-gray-900">Item details</div>
 					<ul className="space-y-4 text-sm text-gray-600">
 						<li>Handmade</li>
+						{product &&
+							Object.entries(product.attributes).map(([key, values]) => (
+								<li key={key}>
+									{key}: {values[0]}
+								</li>
+							))}
+					</ul>
+					{/* <ul className="space-y-4 text-sm text-gray-600">
 						<li>Delivery from a small business in United Kingdom</li>
 						<li>Materials: stained glass, cactus gravel, fusible glass</li>
 					</ul>
@@ -265,7 +311,7 @@ export default function ProductInfo() {
 						Please note: The color of the glass is difficult to capture and will
 						vary in different lighting conditions; the color will also vary
 						slightly on different displays.
-					</p>
+					</p> */}
 					<div className="text-lg font-medium text-gray-900">
 						Delivery and return policies
 					</div>

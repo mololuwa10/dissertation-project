@@ -282,6 +282,48 @@ export const deleteProduct = async (productId: number, jwt: string) => {
 	}
 };
 
+export const translateTextWithApertium = async (
+	text: any,
+	sourceLang: any,
+	targetLang: any
+) => {
+	const response = await fetch(
+		`https://www.apertium.org/apy/translate?langpair=${sourceLang}|${targetLang}&q=${encodeURIComponent(
+			text
+		)}`,
+		{
+			method: "GET", // Apertium API uses GET for simple translation requests
+		}
+	);
+
+	const data = await response.json();
+	if (data.responseStatus === 200 && data.responseData) {
+		console.log(data.responseData.translatedText);
+		return data.responseData.translatedText;
+	} else {
+		console.error("Error translating text:", data);
+		return "Translation error";
+	}
+};
+
+export const translateText = async (text: any) => {
+	const res = await fetch("https://libretranslate.com/translate", {
+		method: "POST",
+		body: JSON.stringify({
+			q: text,
+			source: "auto",
+			target: "fr",
+			format: "text",
+			api_key: "", // Use your API key if needed
+		}),
+		headers: { "Content-Type": "application/json" },
+	});
+
+	const data = await res.json();
+	console.log(data); // Contains the translated text
+	return data.translatedText; // Assuming 'translatedText' is part of the response
+};
+
 // Update Product
 export const updateProduct = async (
 	productId: number,

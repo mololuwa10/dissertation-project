@@ -92,7 +92,7 @@ export default function TrendingSections() {
 					reviews.length;
 				ratings[product.value] = isNaN(averageRating)
 					? 0
-					: Number(averageRating.toFixed(1)); // Check for NaN and round to 1 decimal
+					: Number(averageRating.toFixed(1));
 			}
 			setAverageRatings(ratings);
 		};
@@ -111,7 +111,7 @@ export default function TrendingSections() {
 					</h2>
 
 					<div className="mt-3 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-						{products.slice(0, 8).map((product) => (
+						{products.slice(0, 12).map((product) => (
 							<div key={product.value} className="group relative">
 								<div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
 									<img

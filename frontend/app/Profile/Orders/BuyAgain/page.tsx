@@ -9,6 +9,7 @@ import HeaderTabs from "@/components/ProfilePageComponents/OrderPageComponents/H
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { addProductToCart } from "@/lib/auth";
+import { LanguageProvider } from "@/app/LanguageContext";
 
 interface Order {
 	id: string;
@@ -172,56 +173,58 @@ const BuyAgain = () => {
 
 	return (
 		<>
-			<ToastContainer
-				position="top-right"
-				autoClose={5000}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-			/>
-			<Header />
+			<LanguageProvider>
+				<ToastContainer
+					position="top-right"
+					autoClose={5000}
+					hideProgressBar={false}
+					newestOnTop={false}
+					closeOnClick
+					rtl={false}
+					pauseOnFocusLoss
+					draggable
+					pauseOnHover
+				/>
+				<Header />
 
-			<div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-				<div className="flex justify-between items-center my-3">
-					<h1 className="text-2xl font-bold leading-tight text-gray-900">
-						Your Orders
-					</h1>
-					<div className="relative">
-						<input
-							type="text"
-							className="h-10 pl-10 pr-20 rounded-lg z-0 focus:shadow focus:outline-none border-2"
-							placeholder="Search orders..."
-							value={searchQuery}
-							onChange={handleSearchChange}
-						/>
-						<div className="absolute top-2 left-3">
-							<i className="fa fa-search hover:text-gray-500">
-								<FaSearch />
-							</i>
-						</div>
-						<div className="absolute top-2 right-2">
-							<button
-								className="h-6 w-20 text-white rounded-lg bg-gray-800 hover:bg-gray-900"
-								onClick={() => {
-									/* Add search functionality here */
-								}}>
-								Search
-							</button>
+				<div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+					<div className="flex justify-between items-center my-3">
+						<h1 className="text-2xl font-bold leading-tight text-gray-900">
+							Your Orders
+						</h1>
+						<div className="relative">
+							<input
+								type="text"
+								className="h-10 pl-10 pr-20 rounded-lg z-0 focus:shadow focus:outline-none border-2"
+								placeholder="Search orders..."
+								value={searchQuery}
+								onChange={handleSearchChange}
+							/>
+							<div className="absolute top-2 left-3">
+								<i className="fa fa-search hover:text-gray-500">
+									<FaSearch />
+								</i>
+							</div>
+							<div className="absolute top-2 right-2">
+								<button
+									className="h-6 w-20 text-white rounded-lg bg-gray-800 hover:bg-gray-900"
+									onClick={() => {
+										/* Add search functionality here */
+									}}>
+									Search
+								</button>
+							</div>
 						</div>
 					</div>
+					<HeaderTabs />
 				</div>
-				<HeaderTabs />
-			</div>
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
-				{filteredOrders.map((product, index) => (
-					<ProductCard key={index} product={product} />
-				))}
-			</div>
-			<Footer />
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
+					{filteredOrders.map((product, index) => (
+						<ProductCard key={index} product={product} />
+					))}
+				</div>
+				<Footer />
+			</LanguageProvider>
 		</>
 	);
 };

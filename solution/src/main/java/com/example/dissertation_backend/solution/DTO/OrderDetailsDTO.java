@@ -107,6 +107,20 @@ public class OrderDetailsDTO {
     dto.setDateTimeListed(product.getDateListed());
     dto.setDateTimeUpdated(product.getDateTimeUpdated());
 
+    Set<ProductAttributeDTO> attributeDTOs = product
+      .getAttributes()
+      .stream()
+      .map(attr ->
+        new ProductAttributeDTO(
+          attr.getProductAttributesId(),
+          attr.getProductAttributesKey(),
+          attr.getProductAttributesValue()
+        )
+      )
+      .collect(Collectors.toSet());
+
+    dto.setAttributes(attributeDTOs);
+
     return dto;
   }
   // private static ArtisanProfileDTO convertArtisanProfileToDTO(
