@@ -114,7 +114,7 @@ export default function Products() {
 								<TableRow key={product.value}>
 									<TableCell>{product.value}</TableCell>
 									<TableCell>{product.label}</TableCell>
-									<TableCell>{product.description}</TableCell>
+									<TableCell>{product.description.slice(0, 30)}</TableCell>
 									<TableCell>{product.price}</TableCell>
 									<TableCell>{product.quantity}</TableCell>
 									<TableCell>{product.discount}</TableCell>

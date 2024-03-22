@@ -64,6 +64,10 @@ export default function EditProduct() {
 		categories: Category[];
 	};
 
+	const [attributes, setAttributes] = useState([
+		{ productAttributesKey: "", productAttributesValue: "" },
+	]);
+
 	const [selectedArtisanId, setSelectedArtisanId] = useState<number | string>(
 		""
 	);
@@ -98,6 +102,9 @@ export default function EditProduct() {
 					if (fetchedProduct && fetchedProduct.category) {
 						setSelectedCategoryId(fetchedProduct.category.categoryId);
 					}
+					if (fetchedProduct.attributes) {
+						setAttributes(fetchedProduct.attributes);
+					}
 					// Set the artisan that owns the product
 					if (fetchedProduct && fetchedProduct.artisanProfile) {
 						setSelectedArtisanId(fetchedProduct.artisanProfile.artisanId);
@@ -118,6 +125,29 @@ export default function EditProduct() {
 		return <div>Loading...</div>;
 	}
 
+	// Function to add a new attribute input field
+	const handleAddAttributeField = () => {
+		setAttributes([
+			...attributes,
+			{ productAttributesKey: "", productAttributesValue: "" },
+		]);
+	};
+
+	const handleAttributeChange = (index: any, key: any, value: any) => {
+		const updatedAttributes = attributes.map((attr, i) => {
+			if (i === index) {
+				return { ...attr, [key]: value };
+			}
+			return attr;
+		});
+		setAttributes(updatedAttributes);
+	};
+
+	// Function to remove an attribute input field
+	const handleRemoveAttributeField = (index: any) => {
+		const updatedAttributes = attributes.filter((_, i) => i !== index);
+		setAttributes(updatedAttributes);
+	};
 	const handleSubmit = async (event: any) => {
 		event.preventDefault();
 
@@ -141,8 +171,18 @@ export default function EditProduct() {
 			productDiscount: product?.productDiscount,
 		};
 
+		// Prepare attributes for submission, filtering out any empty keys or values
+		const filteredAttributes = attributes.filter(
+			(attr) => attr.productAttributesKey && attr.productAttributesValue
+		);
+
 		try {
-			await updateProduct(product?.productId, productData, jwt);
+			await updateProduct(
+				product?.productId,
+				filteredAttributes,
+				productData,
+				jwt
+			);
 		} catch (error) {
 			if (error instanceof Error) {
 				console.error("Failed to update the product:", error.message);
@@ -230,6 +270,50 @@ export default function EditProduct() {
 								value={product.productDescription}
 								onChange={handleInputChange}
 							/>
+
+							{attributes.map((attribute, index) => (
+								<div key={index} className="flex items-center mb-4">
+									<input
+										type="text"
+										placeholder="Attribute Key"
+										className="input-field"
+										value={attribute.productAttributesKey}
+										onChange={(e) =>
+											handleAttributeChange(
+												index,
+												"productAttributesKey",
+												e.target.value
+											)
+										}
+									/>
+									<input
+										type="text"
+										placeholder="Attribute Value"
+										className="input-field"
+										value={attribute.productAttributesValue}
+										onChange={(e) =>
+											handleAttributeChange(
+												index,
+												"productAttributesValue",
+												e.target.value
+											)
+										}
+									/>
+									<button
+										type="button"
+										className="remove-attribute-button"
+										onClick={() => handleRemoveAttributeField(index)}>
+										Remove
+									</button>
+								</div>
+							))}
+							<button
+								type="button"
+								className="add-attribute-button"
+								onClick={handleAddAttributeField}>
+								Add Attribute
+							</button>
+
 							<label>Category</label>
 							<select
 								name="category"

@@ -32,6 +32,29 @@ const AddProductPage = () => {
 		categories: Category[];
 	};
 
+	const [attributes, setAttributes] = useState([
+		{ productAttributesKey: "", productAttributesValue: "" },
+	]);
+
+	const handleAttributeChange = (index: any, field: any, value: any) => {
+		const newAttributes = [...attributes];
+		newAttributes[index] = { ...newAttributes[index], [field]: value };
+		setAttributes(newAttributes);
+	};
+
+	const handleAddAttribute = () => {
+		setAttributes([
+			...attributes,
+			{ productAttributesKey: "", productAttributesValue: "" },
+		]);
+	};
+
+	const handleRemoveAttribute = (index: any) => {
+		const newAttributes = [...attributes];
+		newAttributes.splice(index, 1);
+		setAttributes(newAttributes);
+	};
+
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		if (
@@ -52,20 +75,6 @@ const AddProductPage = () => {
 				throw new Error("Authentication token not found.");
 			}
 
-			// const formData = new FormData();
-			// formData.append(
-			// 	"product",
-			// 	JSON.stringify({
-			// 		productName,
-			// 		productDescription,
-			// 		productPrice: parseFloat(productPrice),
-			// 		productStockQuantity: parseInt(productStockQuantity),
-			// 		categoryId: { categoryId },
-			// 		productDiscount: parseFloat(productDiscount),
-			// 	})
-			// );
-			// formData.append("image", selectedImage);
-
 			const productData = {
 				productName,
 				productDescription,
@@ -76,9 +85,15 @@ const AddProductPage = () => {
 				images: [selectedImage], // TODO: Add multiple images support
 			};
 
+			const attributesData = attributes.map((attr) => ({
+				productAttributesKey: attr.productAttributesKey,
+				productAttributesValue: attr.productAttributesValue,
+			}));
+
 			setLoading(true);
 			const response = await addProduct(
 				productData,
+				attributesData,
 				selectedImage ? [selectedImage] : [],
 				jwt
 			);
@@ -110,6 +125,44 @@ const AddProductPage = () => {
 		if (fileInputRef.current) {
 			fileInputRef.current.click();
 		}
+	};
+
+	const AttributeInput = ({
+		attribute,
+		onAttributeChange,
+		onRemove,
+		index,
+	}: {
+		attribute: any;
+		onAttributeChange: any;
+		onRemove: any;
+		index: any;
+	}) => {
+		return (
+			<div className="flex items-center space-x-3">
+				<input
+					type="text"
+					placeholder="Key"
+					value={attribute.productAttributesKey}
+					onChange={(e) =>
+						onAttributeChange(index, "productAttributesKey", e.target.value)
+					}
+					className="input"
+				/>
+				<input
+					type="text"
+					placeholder="Value"
+					value={attribute.productAttributesValue}
+					onChange={(e) =>
+						onAttributeChange(index, "productAttributesValue", e.target.value)
+					}
+					className="input"
+				/>
+				<button type="button" onClick={() => onRemove(index)}>
+					Remove
+				</button>
+			</div>
+		);
 	};
 
 	return (
@@ -208,6 +261,23 @@ const AddProductPage = () => {
 							onChange={handleFileChange}
 							style={{ display: "none" }}
 						/>
+
+						{/* Attributes section */}
+						<div>
+							<h3>Product Attributes</h3>
+							{attributes.map((attribute, index) => (
+								<AttributeInput
+									key={index}
+									attribute={attribute}
+									onAttributeChange={handleAttributeChange}
+									onRemove={handleRemoveAttribute}
+									index={index}
+								/>
+							))}
+							<button type="button" onClick={handleAddAttribute}>
+								Add Attribute
+							</button>
+						</div>
 						<button
 							className="my-8"
 							type="button"

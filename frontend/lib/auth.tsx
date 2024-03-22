@@ -199,6 +199,7 @@ export const createArtisanProfile = async (userId: number, jwt: string) => {
 // Add Product
 export const addProduct = async (
 	productData: any,
+	attributes: any,
 	images: File[],
 	jwt: string
 ) => {
@@ -206,6 +207,7 @@ export const addProduct = async (
 		const url = "http://localhost:8080/api/products";
 		const formData = new FormData();
 		formData.append("product", JSON.stringify(productData));
+		formData.append("attributes", JSON.stringify(attributes));
 
 		images.forEach((image) => {
 			formData.append("images", image);
@@ -327,6 +329,7 @@ export const translateText = async (text: any) => {
 // Update Product
 export const updateProduct = async (
 	productId: number,
+	attributes: any,
 	productData: any,
 	jwt: string
 ) => {
@@ -334,10 +337,7 @@ export const updateProduct = async (
 		const url = `http://localhost:8080/api/products/${productId}`;
 		const formData = new FormData();
 		formData.append("product", JSON.stringify(productData));
-
-		// images.forEach((image) => {
-		// 	formData.append("images", image);
-		// });
+		formData.append("attributes", JSON.stringify(attributes));
 
 		const response = await fetch(url, {
 			method: "PUT",
