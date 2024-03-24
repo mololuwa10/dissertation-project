@@ -1,28 +1,95 @@
 /* eslint-disable @next/next/no-img-element */
 import { registerUser } from "@/lib/auth";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function RegisterComponents() {
+	interface FormErrors {
+		firstname?: string;
+		lastname?: string;
+		user_email?: string;
+		username?: string;
+		password?: string;
+	}
+
 	const router = useRouter();
+	const [firstname, setFirstname] = useState("");
+	const [lastname, setLastname] = useState("");
+	const [user_email, setEmail] = useState("");
+	const [username, setUsername] = useState("");
+	const [password, setPassword] = useState("");
+	const [errors, setErrors] = useState<FormErrors>({});
+	const [showPassword, setShowPassword] = useState(false);
+	const [submitting, setSubmitting] = useState(false);
+	const [submitError, setSubmitError] = useState(null);
+	const [submitSuccess, setSubmitSuccess] = useState(false);
+
+	let formErrors: Record<string, string> = {};
+
+	const fieldsToValidate = {
+		firstname: { value: firstname, message: "First name is required" },
+		lastname: { value: lastname, message: "Last name is required" },
+		user_email: { value: user_email, message: "Email is required" },
+		username: { value: username, message: "Username is required" },
+		password: {
+			value: password,
+			message: "Password must include an uppercase character and a number",
+			additionalCheck: () => !/(?=.*[A-Z])(?=.*[0-9])/.test(password),
+		},
+	};
+
+	const validateForm = () => {
+		// Reset errors before new validation check
+		formErrors = {};
+
+		Object.entries(fieldsToValidate).forEach(
+			([fieldName, { value, message, additionalCheck }]) => {
+				if (!value.trim() || (additionalCheck && additionalCheck())) {
+					formErrors[fieldName] = message;
+				}
+			}
+		);
+
+		setErrors(formErrors);
+
+		// If there are any errors, return false
+		return Object.keys(formErrors).length === 0;
+	};
 
 	const handleSubmit = async (event: any) => {
 		event.preventDefault();
-		const formData = new FormData(event.currentTarget);
+
+		if (!validateForm()) {
+			return;
+		}
+
+		setSubmitting(true);
+		setSubmitError(null);
 
 		const userData = {
-			firstname: formData.get("firstname"),
-			lastname: formData.get("lastname"),
-			username: formData.get("username"),
-			user_email: formData.get("email"),
-			password: formData.get("password"),
-			contactAddress: formData.get("address"),
+			firstname,
+			lastname,
+			user_email,
+			username,
+			password,
 		};
-		const result = await registerUser(userData);
-		toast.success("Registration successful!");
-		router.push("/");
-		console.log(result);
+
+		try {
+			const result = await registerUser(userData);
+			setSubmitSuccess(true);
+			toast.success("Registration successful!");
+			router.push("/");
+			console.log(result);
+		} catch (error: any) {
+			setSubmitting(false);
+			const errorMessage =
+				error.response?.data?.error ||
+				"An unexpected error occurred! Either the username or the email already exists";
+			setSubmitError(errorMessage);
+			toast.error(errorMessage);
+		}
 	};
 
 	return (
@@ -87,7 +154,14 @@ export default function RegisterComponents() {
 										id="firstname"
 										name="firstname"
 										className="mt-2 w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
+										value={firstname}
+										onChange={(e) => setFirstname(e.target.value)}
 									/>
+									{errors.firstname && (
+										<p className="text-red-500 text-md italic">
+											{errors.firstname}
+										</p>
+									)}
 								</div>
 
 								<div className="col-span-6 sm:col-span-3">
@@ -101,8 +175,15 @@ export default function RegisterComponents() {
 										type="text"
 										id="lastname"
 										name="lastname"
+										value={lastname}
+										onChange={(e) => setLastname(e.target.value)}
 										className="mt-2 w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
 									/>
+									{errors.lastname && (
+										<p className="text-red-500 text-md italic">
+											{errors.lastname}
+										</p>
+									)}
 								</div>
 
 								<div className="col-span-6">
@@ -117,8 +198,15 @@ export default function RegisterComponents() {
 										type="email"
 										id="email"
 										name="email"
+										value={user_email}
+										onChange={(e) => setEmail(e.target.value)}
 										className="mt-2 w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
 									/>
+									{errors.user_email && (
+										<p className="text-red-500 text-md italic">
+											{errors.user_email}
+										</p>
+									)}
 								</div>
 
 								<div className="col-span-6 sm:col-span-3">
@@ -133,8 +221,15 @@ export default function RegisterComponents() {
 										type="text"
 										id="username"
 										name="username"
+										value={username}
+										onChange={(e) => setUsername(e.target.value)}
 										className="mt-2 w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
 									/>
+									{errors.username && (
+										<p className="text-red-500 text-md italic">
+											{errors.username}
+										</p>
+									)}
 								</div>
 
 								<div className="col-span-6 sm:col-span-3">
@@ -149,8 +244,15 @@ export default function RegisterComponents() {
 										name="password"
 										id="password"
 										placeholder="Your Password"
+										value={password}
+										onChange={(e) => setPassword(e.target.value)}
 										className="mt-2 w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
 									/>
+									{errors.password && (
+										<p className="text-red-500 text-md italic">
+											{errors.password}
+										</p>
+									)}
 								</div>
 
 								<div className="col-span-6">

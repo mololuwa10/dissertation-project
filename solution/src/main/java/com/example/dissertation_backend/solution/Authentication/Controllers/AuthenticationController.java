@@ -1,7 +1,7 @@
 package com.example.dissertation_backend.solution.Authentication.Controllers;
 
 import com.example.dissertation_backend.solution.Authentication.Services.AuthenticationService;
-import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
+// import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
 import com.example.dissertation_backend.solution.DTO.LoginResponseDTO;
 import com.example.dissertation_backend.solution.DTO.RegistrationDTO;
 import com.example.dissertation_backend.solution.Exception.InvalidCredentialsException;
@@ -20,7 +20,7 @@ public class AuthenticationController {
   private AuthenticationService authenticationService;
 
   @PostMapping("/register")
-  public ApplicationUser registerUser(@RequestBody RegistrationDTO body) {
+  public ResponseEntity<?> registerUser(@RequestBody RegistrationDTO body) {
     LocalDateTime now = LocalDateTime.now();
     return authenticationService.registerUser(
       body.getFirstname(),

@@ -52,10 +52,10 @@ export const useFetchUsers = () => {
 		}[];
 	}
 
-	const [users, setUsers] = useState<User[]>([]); // Use the User interface for state
+	const [users, setUsers] = useState<User[]>([]);
 
 	useEffect(() => {
-		const jwt = localStorage.getItem("jwt"); // Retrieve JWT token from localStorage
+		const jwt = localStorage.getItem("jwt");
 
 		// Ensure JWT token exists before making the request
 		if (jwt) {
@@ -63,7 +63,7 @@ export const useFetchUsers = () => {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization: `Bearer ${jwt}`, // Include the JWT token in the Authorization header
+					Authorization: `Bearer ${jwt}`,
 				},
 			})
 				.then((response) => {
@@ -93,13 +93,11 @@ export const useFetchUsers = () => {
 				})
 				.catch((error) => {
 					console.error("Error fetching users:", error);
-					// Handle errors, such as by setting an error state or notifying the user
 				});
 		} else {
 			console.log(
 				"JWT token not found. User must be logged in to access this data."
 			);
-			// Handle the case where there is no JWT token (e.g., user is not logged in)
 		}
 	}, []);
 
@@ -736,7 +734,6 @@ export async function fetchOrdersByArtisan() {
 		console.error("Failed to fetch orders:", error);
 		throw error;
 	}
-
 }
 
 // Messages
@@ -744,13 +741,16 @@ export const getAllConversations = async () => {
 	const jwtToken = localStorage.getItem("jwt");
 
 	try {
-		const response = await fetch("http://localhost:8080/api/messages/conversations", {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${jwtToken}`,
-			},
-		});
+		const response = await fetch(
+			"http://localhost:8080/api/messages/conversations",
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${jwtToken}`,
+				},
+			}
+		);
 
 		if (!response.ok) {
 			throw new Error("Network response was not ok");

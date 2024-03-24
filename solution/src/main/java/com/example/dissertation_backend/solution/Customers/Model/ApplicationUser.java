@@ -22,8 +22,8 @@ public class ApplicationUser implements UserDetails {
   @Column(name = "lastname")
   public String lastname;
 
-  @Column(name = "user_email")
-  public String user_email;
+  @Column(name = "user_email", unique = true)
+  public String userEmail;
 
   @Column(name = "username", unique = true)
   private String username;
@@ -94,7 +94,7 @@ public class ApplicationUser implements UserDetails {
     this.userId = userId;
     this.firstname = firstname;
     this.lastname = lastname;
-    this.user_email = user_email;
+    this.userEmail = user_email;
     this.username = username;
     this.password = password;
     this.bankAccountNo = bankAccountNo;
@@ -132,11 +132,11 @@ public class ApplicationUser implements UserDetails {
   }
 
   public String getUser_email() {
-    return user_email;
+    return userEmail;
   }
 
   public void setUser_email(String user_email) {
-    this.user_email = user_email;
+    this.userEmail = user_email;
   }
 
   public String getUsername() {

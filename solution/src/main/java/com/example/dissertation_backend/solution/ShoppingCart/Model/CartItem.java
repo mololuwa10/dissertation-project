@@ -1,8 +1,11 @@
 package com.example.dissertation_backend.solution.ShoppingCart.Model;
 
+import com.example.dissertation_backend.solution.Products.Model.ProductAttributes;
 import com.example.dissertation_backend.solution.Products.Model.Products;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "cart_item")
@@ -27,6 +30,14 @@ public class CartItem {
   @JoinColumn(name = "cart_id", referencedColumnName = "cart_id")
   @JsonBackReference
   private ShoppingCart shoppingCart;
+
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+    name = "cart_item_attributes",
+    joinColumns = @JoinColumn(name = "cart_item_id"),
+    inverseJoinColumns = @JoinColumn(name = "attribute_id")
+  )
+  private Set<ProductAttributes> selectedAttributes = new HashSet<>();
 
   // Constructor
   public CartItem() {
@@ -92,5 +103,13 @@ public class CartItem {
 
   public void setTotalProductPrice(Double totalProductPrice) {
     this.totalProductPrice = totalProductPrice;
+  }
+
+  public Set<ProductAttributes> getSelectedAttributes() {
+    return selectedAttributes;
+  }
+
+  public void setSelectedAttributes(Set<ProductAttributes> selectedAttributes) {
+    this.selectedAttributes = selectedAttributes;
   }
 }

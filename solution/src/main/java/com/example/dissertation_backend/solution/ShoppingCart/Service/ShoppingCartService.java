@@ -9,8 +9,10 @@ import com.example.dissertation_backend.solution.DTO.CartItemDTO;
 import com.example.dissertation_backend.solution.DTO.CategoryDTO;
 import com.example.dissertation_backend.solution.DTO.ProductDTO;
 import com.example.dissertation_backend.solution.DTO.ShoppingCartDTO;
+import com.example.dissertation_backend.solution.Products.Model.ProductAttributes;
 import com.example.dissertation_backend.solution.Products.Model.ProductImages;
 import com.example.dissertation_backend.solution.Products.Model.Products;
+import com.example.dissertation_backend.solution.Products.Repository.ProductAttributeRepository;
 import com.example.dissertation_backend.solution.Products.Repository.ProductRepository;
 import com.example.dissertation_backend.solution.ShoppingCart.Model.CartItem;
 import com.example.dissertation_backend.solution.ShoppingCart.Model.ShoppingCart;
@@ -20,6 +22,7 @@ import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -42,6 +45,9 @@ public class ShoppingCartService {
 
   @Autowired
   private UserRepository userRepository;
+
+  @Autowired
+  private ProductAttributeRepository productAttributeRepository;
 
   @Transactional
   public ShoppingCart getOrCreateCart(ApplicationUser user) {
@@ -66,15 +72,16 @@ public class ShoppingCartService {
     return existingCart.get();
   }
 
+  @SuppressWarnings("null")
   public CartItemDTO addProductToCart(
     ApplicationUser user,
     Integer productId,
-    Integer quantity
+    Integer quantity,
+    List<Integer> attributeIds
   ) {
     ShoppingCart cart = getOrCreateCart(user);
 
     // Fetch the product
-    @SuppressWarnings("null")
     Products product = productRepository
       .findById(productId)
       .orElseThrow(() -> new RuntimeException("Product not found"));
@@ -96,6 +103,16 @@ public class ShoppingCartService {
       .stream()
       .filter(item -> item.getProduct().getProductId().equals(productId))
       .findFirst();
+
+    // Now handle the product attributes
+
+    Set<ProductAttributes> selectedAttributes = new HashSet<>();
+    for (Integer attributeId : attributeIds) {
+      ProductAttributes attribute = productAttributeRepository
+        .findById(attributeId)
+        .orElseThrow(() -> new RuntimeException("Attribute not found"));
+      selectedAttributes.add(attribute);
+    }
 
     CartItemDTO cartItemDTO;
     if (existingCartItem.isPresent()) {
@@ -128,6 +145,7 @@ public class ShoppingCartService {
         .setScale(2, RoundingMode.HALF_UP);
 
       cartItem.setTotalProductPrice(totalProductPrice.doubleValue());
+      cartItem.setSelectedAttributes(selectedAttributes);
       cartItemDTO = convertCartItemToDTO(cartItemRepository.save(cartItem));
     }
 

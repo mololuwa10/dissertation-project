@@ -51,6 +51,14 @@ export default function ProductInfo() {
 	const [error, setError] = useState("");
 	const [reviews, setReviews] = useState<Review[]>([]);
 	const [selectedQuantity, setSelectedQuantity] = useState(1);
+	const [selectedAttributes, setSelectedAttributes] = useState({});
+
+	const handleAttributeChange = (attributeKey: any, attributeId: any) => {
+		setSelectedAttributes((prevAttributes) => ({
+			...prevAttributes,
+			[attributeKey]: parseInt(attributeId, 10),
+		}));
+	};
 
 	// Determining the maximum selectable quantity
 	const maxSelectableQuantity = Math.min(
@@ -150,8 +158,27 @@ export default function ProductInfo() {
 			return;
 		}
 
+		// // Converting selectedAttributes into an array of selected attribute IDs
+		// const attributeIds = Object.values(selectedAttributes);
+
+		// Log the selected attributes to confirm their values before sending
+		console.log("Selected Attributes:", selectedAttributes);
+
+		// Convert selectedAttributes into an array of selected attribute IDs
+		const attributeIds = Object.values(selectedAttributes).filter(
+			(id) => id !== null
+		);
+
+		// Log the attribute IDs to check they are what you expect
+		console.log("Attribute IDs:", attributeIds);
+
 		try {
-			await addProductToCart(productId, selectedQuantity, jwtToken);
+			await addProductToCart(
+				productId,
+				selectedQuantity,
+				attributeIds,
+				jwtToken
+			);
 			toast.success("Product added to cart successfully!");
 		} catch (error) {
 			console.error("Error adding product to cart:", error);
@@ -240,6 +267,38 @@ export default function ProductInfo() {
 
 						{/* Attribute Selectors */}
 						{product &&
+							Object.entries(product.attributes).map(
+								([productAttributeId, attributes]) =>
+									Array.isArray(attributes) && attributes.length > 1 ? (
+										<div key={productAttributeId} className="my-6">
+											<Label
+												htmlFor={productAttributeId}
+												className="font-normal text-xl">
+												{productAttributeId}
+											</Label>
+											<select
+												id={productAttributeId}
+												name={productAttributeId}
+												className="border-gray-900 border-2 p-4 rounded-2xl w-full my-3"
+												onChange={(e) =>
+													handleAttributeChange(
+														productAttributeId,
+														e.target.value
+													)
+												}>
+												{attributes.map((attribute) => (
+													<option
+														key={attribute.productAttributeId}
+														value={attribute.productAttributeId}>
+														{attribute}
+													</option>
+												))}
+											</select>
+										</div>
+									) : null
+							)}
+
+						{/* {product &&
 							Object.entries(product.attributes).map(([key, values]) =>
 								Array.isArray(values) && values.length > 1 ? (
 									<div key={key} className="my-6">
@@ -250,17 +309,20 @@ export default function ProductInfo() {
 											id={key}
 											name={key}
 											className="border-gray-900 border-2 p-4 rounded-2xl w-full my-3"
-											// You would handle onChange here if needed
-										>
-											{values.map((value) => (
-												<option key={value} value={value}>
-													{value}
+											onChange={(e) =>
+												handleAttributeChange(key, parseInt(e.target.value, 10))
+											}>
+											{values.map((attribute) => (
+												<option
+													key={attribute.productAttributeId}
+													value={attribute.productAttributeId}>
+													{attribute}
 												</option>
 											))}
 										</select>
 									</div>
 								) : null
-							)}
+							)} */}
 						<Button
 							size="lg"
 							className="w-full text-white py-3 rounded-3xl hover:bg-blue-600 mt-4"
@@ -289,7 +351,7 @@ export default function ProductInfo() {
 						{product &&
 							Object.entries(product.attributes).map(([key, values]) => (
 								<li key={key}>
-									{key}: {values[0]}
+									{key}: {(values as string[])[0]}
 								</li>
 							))}
 					</ul>

@@ -14,10 +14,13 @@ import com.example.dissertation_backend.solution.Exception.InvalidCredentialsExc
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 // import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 // import org.springframework.mail.SimpleMailMessage;
 // import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -56,7 +59,7 @@ public class AuthenticationService {
   // @Autowired
   // private JavaMailSender mailSender;
 
-  public ApplicationUser registerUser(
+  public ResponseEntity<?> registerUser(
     String firstname,
     String lastname,
     String user_email,
@@ -68,6 +71,19 @@ public class AuthenticationService {
     String contactAddress,
     LocalDateTime dateJoined
   ) {
+    // Check if username exists
+    if (userRepository.findByUsername(username).isPresent()) {
+      return ResponseEntity
+        .status(HttpStatus.CONFLICT)
+        .body(Collections.singletonMap("error", "Username already exists"));
+    }
+
+    // Check if email exists
+    if (userRepository.findByUserEmail(user_email).isPresent()) {
+      return ResponseEntity
+        .status(HttpStatus.CONFLICT)
+        .body(Collections.singletonMap("error", "Email already exists"));
+    }
     String encodedPassword = passwordEncoder.encode(password);
     // String encryptedBankAccountNo = EncryptionUtil.encrypt(bankAccountNo);
     // String encryptedBankSortCode = EncryptionUtil.encrypt(bankSortCode);
@@ -101,7 +117,7 @@ public class AuthenticationService {
     // // // Send verification email
     // sendVerificationEmail(newUser, token);
 
-    return newUser;
+    return ResponseEntity.ok(newUser);
   }
 
   public LoginResponseDTO loginUser(String username, String password) {

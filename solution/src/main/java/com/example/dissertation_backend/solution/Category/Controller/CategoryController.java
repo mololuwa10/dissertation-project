@@ -81,7 +81,7 @@ public class CategoryController {
     @RequestParam("category") String categoryStr
   ) {
     try {
-      String imageUrl = storeImage(image); // Method to store the image and return the URL
+      String imageUrl = storeImage(image);
 
       ObjectMapper mapper = new ObjectMapper();
       Category category = mapper.readValue(categoryStr, Category.class);

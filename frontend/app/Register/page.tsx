@@ -1,7 +1,6 @@
 "use client";
 
-import RegisterComponents from "@/components/RegisterComponents/RegisterComponents.client";
-import RootLayout from "../layout";
+import RegisterComponents from "@/components/RegisterComponents/RegisterComponents";
 import { LanguageProvider } from "../LanguageContext";
 
 export default function Register() {

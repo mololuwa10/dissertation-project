@@ -1,8 +1,12 @@
 package com.example.dissertation_backend.solution.DTO;
 
+import java.util.List;
+
 public class AddToCartRequest {
+
   private Integer userId;
   private Integer quantity;
+  private List<Integer> attributeIds;
 
   public Integer getUserId() {
     return userId;
@@ -20,4 +24,11 @@ public class AddToCartRequest {
     this.quantity = quantity;
   }
 
+  public List<Integer> getAttributeIds() {
+    return attributeIds;
+  }
+
+  public void setAttributeIds(List<Integer> attributeIds) {
+    this.attributeIds = attributeIds;
+  }
 }

@@ -58,7 +58,8 @@ public class ShoppingCartController {
       CartItemDTO cartItemDTO = shoppingCartService.addProductToCart(
         user,
         productId,
-        request.getQuantity()
+        request.getQuantity(),
+        request.getAttributeIds()
       );
 
       AddToCartResponse response = new AddToCartResponse(

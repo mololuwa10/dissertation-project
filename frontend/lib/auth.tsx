@@ -471,6 +471,7 @@ export const removeCartItem = async (cartItemId: any, jwt: any) => {
 export const addProductToCart = async (
 	productId: any,
 	quantity: any,
+	selectedAttributes: any,
 	jwt: any
 ) => {
 	try {
@@ -482,7 +483,7 @@ export const addProductToCart = async (
 					"Content-Type": "application/json",
 					Authorization: `Bearer ${jwt}`,
 				},
-				body: JSON.stringify({ quantity }),
+				body: JSON.stringify({ quantity, attributeIds: selectedAttributes, }),
 			}
 		);
 
