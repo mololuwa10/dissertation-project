@@ -8,6 +8,10 @@ import Orders from "@/components/dashboardComponents/orders/orders";
 import { useState, useEffect } from "react";
 import { fetchAllOrders, useFetchUsers } from "@/lib/dbModels";
 import { useFetchProducts } from "@/lib/dbModels";
+import { LanguageProvider } from "../LanguageContext";
+import { useFetchUserInfo } from "@/lib/data";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const Dashboard = () => {
 	const [usersData, setUsersData] = useState({

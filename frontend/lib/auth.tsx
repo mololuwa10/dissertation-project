@@ -165,13 +165,13 @@ export const updateUser = async (
 	}
 };
 
-export const createArtisanProfile = async (userId: number, jwt: string) => {
+export const createArtisanProfile = async (jwt: string) => {
 	if (!jwt) {
 		throw new Error("No JWT provided");
 	}
 	try {
 		const response = await fetch(
-			`http://localhost:8080/api/user/createArtisanProfile/${userId}`,
+			`http://localhost:8080/api/user/createArtisanProfile`,
 			{
 				method: "POST",
 				headers: {
@@ -183,7 +183,7 @@ export const createArtisanProfile = async (userId: number, jwt: string) => {
 
 		if (response.ok) {
 			const data = await response.json();
-			alert("Artisan profile created successfully");
+			// alert("Artisan profile created successfully");
 			return data;
 		} else {
 			const errorText = await response.text();
@@ -483,7 +483,7 @@ export const addProductToCart = async (
 					"Content-Type": "application/json",
 					Authorization: `Bearer ${jwt}`,
 				},
-				body: JSON.stringify({ quantity, attributeIds: selectedAttributes, }),
+				body: JSON.stringify({ quantity, attributeIds: selectedAttributes }),
 			}
 		);
 

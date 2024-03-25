@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { LanguageProvider } from "../LanguageContext";
 import { FormattedMessage } from "react-intl";
+import PageNotFound from "@/components/layoutComponents/PageNotFound";
 
 export default function Profile() {
 	const router = useRouter();
@@ -62,6 +63,8 @@ export default function Profile() {
 		);
 	}
 
+	// <PageNotFound isLoggedIn={isLoggedIn} />;
+
 	const accountOptions = [
 		{
 			titleId: "yourOrders",
@@ -85,6 +88,7 @@ export default function Profile() {
 		{
 			titleId: "artisanProfile",
 			descriptionId: "profileDescription",
+			url: "/Profile/ArtisanProfile",
 		},
 		{
 			titleId: "yourMessages",

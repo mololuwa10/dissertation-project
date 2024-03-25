@@ -8,6 +8,9 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { createArtisanProfile } from "@/lib/auth";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
@@ -19,6 +22,20 @@ const ProfileButton = () => {
 	const { isLoggedIn, userRole } = useFetchUserInfo();
 
 	const logout = useLogout();
+
+	const handleCreateArtisanProfile = async () => {
+		try {
+			const jwt = localStorage.getItem("jwt");
+			if (!jwt) throw new Error("JWT not found");
+
+			const profileData = await createArtisanProfile(jwt);
+			toast.success("Artisan profile created successfully");
+			console.log("Artisan profile created:", profileData);
+		} catch (error) {
+			console.error("Error creating artisan profile:", error);
+			toast.error("Error creating artisan profile");
+		}
+	};
 
 	if (!isLoggedIn) {
 		return (
@@ -32,6 +49,17 @@ const ProfileButton = () => {
 
 	return (
 		<>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
 			<DropdownMenu>
 				<DropdownMenuTrigger>
 					<Avatar>
@@ -57,13 +85,13 @@ const ProfileButton = () => {
 						</DropdownMenuItem>
 					)}
 					{isLoggedIn && userRole === "USER" && (
-						<DropdownMenuItem className="cursor-pointer">
-							<Link href="/">
-								<FormattedMessage
-									id="sellOnCraftCollaborations"
-									defaultMessage="Sell on Craft Collaborations"
-								/>
-							</Link>
+						<DropdownMenuItem
+							className="cursor-pointer"
+							onClick={handleCreateArtisanProfile}>
+							<FormattedMessage
+								id="sellOnCraftCollaborations"
+								defaultMessage="Sell on Craft Collaborations"
+							/>
 						</DropdownMenuItem>
 					)}
 					<DropdownMenuItem className="cursor-pointer">

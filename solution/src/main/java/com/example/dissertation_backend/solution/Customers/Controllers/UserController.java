@@ -165,36 +165,71 @@ public class UserController {
     );
   }
 
-  @PostMapping("/createArtisanProfile/{userId}")
-  public ResponseEntity<?> createArtisanProfile(@PathVariable Integer userId) {
+  @PostMapping("/createArtisanProfile")
+  public ResponseEntity<?> createArtisanProfile() {
     try {
-      // Check if the user exists
-      ApplicationUser user = userService
-        .findById(userId)
+      // Extract username or userId from the security context
+      String username = SecurityContextHolder
+        .getContext()
+        .getAuthentication()
+        .getName();
+
+      // Use the username to find the user (adjust based on your user service)
+      ApplicationUser user = userRepository
+        .findByUsername(username)
         .orElseThrow(() ->
           new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
         );
 
-      // Check if the user already has an artisan profile
-      Optional<ArtisanProfile> existingProfile = artisanProfileService.findByArtisan(
-        user
-      );
-      if (existingProfile.isPresent()) {
+      System.out.println(user + ": " + username);
+
+      // Check user's roles
+      boolean isUser = user
+        .getAuthorities()
+        .stream()
+        .anyMatch(role -> "USER".equals(role.getAuthority()));
+
+      System.out.println("User value " + isUser);
+      boolean isArtisan = user
+        .getAuthorities()
+        .stream()
+        .anyMatch(role -> "ARTISAN".equals(role.getAuthority()));
+
+      System.out.println("Artisan Value " + isArtisan);
+
+      if (isArtisan) {
         return ResponseEntity
           .badRequest()
-          .body("Artisan profile already exists for this user.");
+          .body("User already has an artisan profile.");
+      } else if (isUser) {
+        // Check if the user already has an artisan profile
+        Optional<ArtisanProfile> existingProfile = artisanProfileService.findByArtisan(
+          user
+        );
+        if (existingProfile.isPresent()) {
+          return ResponseEntity
+            .badRequest()
+            .body("Artisan profile already exists for this user.");
+        }
+
+        // Update the role of the user to ARTISAN
+        userService.updateUserRoleToArtisan(user);
+
+        // Create a new artisan profile for the user
+        ArtisanProfile newProfile = new ArtisanProfile();
+        newProfile.setArtisan(user);
+        newProfile.setBio("Default bio");
+
+        ArtisanProfile createdProfile = artisanProfileService.saveOrUpdateArtisanProfile(
+          newProfile
+        );
+
+        return ResponseEntity.ok(createdProfile);
+      } else {
+        return ResponseEntity
+          .badRequest()
+          .body("User does not have permission to create an artisan profile.");
       }
-
-      // Create a new artisan profile for the user
-      ArtisanProfile newProfile = new ArtisanProfile();
-      newProfile.setArtisan(user);
-      newProfile.setBio("Default bio");
-
-      ArtisanProfile createdProfile = artisanProfileService.saveOrUpdateArtisanProfile(
-        newProfile
-      );
-
-      return ResponseEntity.ok(createdProfile);
     } catch (Exception e) {
       return ResponseEntity
         .status(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -12,8 +12,14 @@ import com.example.dissertation_backend.solution.DTO.ArtisanProfileDTO;
 import com.example.dissertation_backend.solution.utils.EncryptionUtil;
 import jakarta.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -289,6 +295,40 @@ public class UserService implements UserDetailsService {
     } else {
       throw new IllegalStateException("User is already an artisan.");
     }
+  }
+
+  public void updateUserRoleToArtisan(ApplicationUser user) {
+    // Fetch the "ARTISAN" role entity from the database
+    Roles artisanRole = roleRepository
+      .findByAuthority("ARTISAN")
+      .orElseThrow(() -> new IllegalArgumentException("ARTISAN role not found")
+      );
+
+    // Remove the "USER" role from the user (assuming it exists)
+    user.getAuthorities().removeIf(role -> "USER".equals(role.getAuthority()));
+
+    // Add the "ARTISAN" role to the user
+    user.getAuthorities().add(artisanRole);
+
+    // Save the updated user to the database
+    userRepository.save(user);
+
+    // Update the Security Context with the new roles
+    List<GrantedAuthority> updatedAuthorities = user
+      .getAuthorities()
+      .stream()
+      .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
+      .collect(Collectors.toList());
+
+    // Create a new Authentication token with the updated authorities
+    Authentication newAuth = new UsernamePasswordAuthenticationToken(
+      user.getUsername(),
+      user.getPassword(),
+      updatedAuthorities
+    );
+
+    // Set the new authentication in the SecurityContext
+    SecurityContextHolder.getContext().setAuthentication(newAuth);
   }
 
   public ArtisanProfile createOrUpdateArtisanProfile(

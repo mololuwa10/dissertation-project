@@ -1,9 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-/* eslint-disable @next/next/no-img-element */
 const fetchReviewsByProduct = async (productId: any) => {
 	if (productId !== undefined) {
 		try {
