@@ -14,6 +14,7 @@ import PageNotFound from "@/components/layoutComponents/PageNotFound";
 export default function Profile() {
 	const router = useRouter();
 	const { isLoggedIn, userRole, userDetails } = useFetchUserInfo();
+	console.log(userRole);
 
 	if (!isLoggedIn) {
 		return (
@@ -65,7 +66,7 @@ export default function Profile() {
 
 	// <PageNotFound isLoggedIn={isLoggedIn} />;
 
-	const accountOptions = [
+	let accountOptions = [
 		{
 			titleId: "yourOrders",
 			descriptionId: "ordersDescription",
@@ -86,11 +87,6 @@ export default function Profile() {
 			descriptionId: "paymentsDescription",
 		},
 		{
-			titleId: "artisanProfile",
-			descriptionId: "profileDescription",
-			url: "/Profile/ArtisanProfile",
-		},
-		{
 			titleId: "yourMessages",
 			descriptionId: "messagesDescription",
 			url: "/Profile/Messages",
@@ -109,6 +105,18 @@ export default function Profile() {
 			descriptionId: "testimonialsDescription",
 		},
 	];
+
+	// Filter out the Artisan Profile option if the user role is 'USER'
+	if (userRole !== "USER") {
+		accountOptions = [
+			...accountOptions,
+			{
+				titleId: "artisanProfile",
+				descriptionId: "profileDescription",
+				url: "/Profile/ArtisanProfile",
+			},
+		];
+	}
 
 	return (
 		<>

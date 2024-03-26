@@ -94,6 +94,20 @@ public class OrderController {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<?> deleteOrder(
+    @PathVariable Long id,
+    Principal principal
+  ) {
+    ApplicationUser currentUser = userRepository
+      .findByUsername(principal.getName())
+      .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+    orderService.deleteOrder(id, currentUser);
+
+    return ResponseEntity.ok().body("Order deleted successfully");
+  }
   // private boolean hasRole(ApplicationUser user, String roleName) {
   //   for (Roles role : user.getAuthorities()) {
   //     if (roleName.equals(role.getAuthority())) {

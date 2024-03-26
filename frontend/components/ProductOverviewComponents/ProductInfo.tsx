@@ -297,32 +297,6 @@ export default function ProductInfo() {
 										</div>
 									) : null
 							)}
-
-						{/* {product &&
-							Object.entries(product.attributes).map(([key, values]) =>
-								Array.isArray(values) && values.length > 1 ? (
-									<div key={key} className="my-6">
-										<Label htmlFor={key} className="font-normal text-xl">
-											{key}
-										</Label>
-										<select
-											id={key}
-											name={key}
-											className="border-gray-900 border-2 p-4 rounded-2xl w-full my-3"
-											onChange={(e) =>
-												handleAttributeChange(key, parseInt(e.target.value, 10))
-											}>
-											{values.map((attribute) => (
-												<option
-													key={attribute.productAttributeId}
-													value={attribute.productAttributeId}>
-													{attribute}
-												</option>
-											))}
-										</select>
-									</div>
-								) : null
-							)} */}
 						<Button
 							size="lg"
 							className="w-full text-white py-3 rounded-3xl hover:bg-blue-600 mt-4"
@@ -330,7 +304,7 @@ export default function ProductInfo() {
 							Add to cart
 						</Button>
 
-						<Button
+						{/* <Button
 							size="lg"
 							className="w-full text-white py-3 rounded-3xl hover:bg-blue-600 mt-4">
 							Buy Now
@@ -339,7 +313,7 @@ export default function ProductInfo() {
 							size="lg"
 							className="w-full text-white py-3 rounded-3xl hover:bg-blue-600 mt-4">
 							Add to Collection
-						</Button>
+						</Button> */}
 					</>
 				)}
 

@@ -9,7 +9,9 @@ import {
 	NavigationMenuTrigger,
 	NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
-import Link from "next/link";
+import { handleCancelOrder } from "@/lib/auth";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Order {
 	id: string;
@@ -62,8 +64,29 @@ function formatDate(dateString: any) {
 const OrderCard = ({ orderInfo, item }: { orderInfo: Order; item: any }) => {
 	// Call the formatDate function before rendering
 	const formattedDate = formatDate(orderInfo.orderDateTime);
+
+	// This function handles the click event and the success/error toast messages
+	const cancelOrder = async () => {
+		try {
+			await handleCancelOrder(orderInfo.id);
+			toast.success("Order deleted successfully");
+		} catch (error) {
+			toast.error("Failed to cancel the order");
+		}
+	};
 	return (
 		<>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
 			<div className="border rounded-lg shadow-sm mb-5 p-4 bg-white">
 				<div className="flex justify-between items-start">
 					<div className="flex-1">
@@ -107,19 +130,20 @@ const OrderCard = ({ orderInfo, item }: { orderInfo: Order; item: any }) => {
 						</div>
 						<div className="mt-4">
 							<p className="text-green-600">{orderInfo.status}</p>
-							{/* <p className="text-lg">{orderInfo.deliveryRange}</p> */}
 
 							<p className="text-lg font-bold">{item.productDTO.productName}</p>
 
 							<div className="flex gap-3 mt-2">
-								{/* <Link></Link> */}
 								<button className="mt-2 text-blue-600 hover:text-blue-800 text-sm">
 									Buy again
 								</button>
 								<button className="mt-2 text-blue-600 hover:text-blue-800 text-sm">
 									View Order Details
 								</button>
-								<button className="mt-2 text-blue-600 hover:text-blue-800 text-sm">
+								<button
+									onClick={cancelOrder}
+									className="mt-2 text-blue-600 hover:text-blue-800 text-sm"
+									disabled={orderInfo.status === "DELIVERED"}>
 									{orderInfo.status === "DELIVERED"
 										? "Return or replace items"
 										: "Cancel Order"}

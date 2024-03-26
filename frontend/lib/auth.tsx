@@ -525,3 +525,31 @@ export const checkout = async (checkoutData: any, jwt: any) => {
 	const data = await response.json();
 	return data;
 };
+
+// Order function
+export const handleCancelOrder = async (orderId: any) => {
+	const jwt = localStorage.getItem("jwt");
+
+	try {
+		const response = await fetch(
+			`http://localhost:8080/api/orders/${orderId}`,
+			{
+				method: "DELETE",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${jwt}`, // Assuming you're using Bearer tokens
+				},
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error(`Error: ${response.status}`);
+		}
+
+		// If the response is successful, resolve the promise
+		return Promise.resolve("Order cancelled successfully");
+	} catch (error) {
+		// Handle any errors here
+		console.error("Failed to cancel the order:", error);
+	}
+};

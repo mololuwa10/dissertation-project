@@ -106,11 +106,22 @@ public class OrderService {
       .collect(Collectors.toList());
   }
 
-  public void deleteOrder(Long id) {
-    if (id == null) {
-      return;
+  @SuppressWarnings("null")
+  public void deleteOrder(Long orderId, ApplicationUser currentUser) {
+    // Check for non-null orderId and currentUser
+    if (orderId == null || currentUser == null) {
+      throw new IllegalArgumentException("Order ID and User cannot be null");
     }
-    ordersRepository.deleteById(id);
+
+    // Find the order by ID and User
+    Orders order = ordersRepository
+      .findByIdAndUserId(orderId, currentUser)
+      .orElseThrow(() ->
+        new IllegalStateException("No matching order found for this user")
+      );
+
+    // Perform the delete operation
+    ordersRepository.delete(order);
   }
 
   @Scheduled(fixedDelayString = "PT1H")

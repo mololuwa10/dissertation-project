@@ -28,6 +28,7 @@ export default function TrendingSections() {
 		label: string;
 		description: string;
 		price: number;
+		discount: number;
 		quantity: number;
 		image: string;
 		category: {
@@ -114,6 +115,15 @@ export default function TrendingSections() {
 						{products.slice(0, 12).map((product) => (
 							<div key={product.value} className="group relative">
 								<div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+									{product.price && product.price > product.discount && (
+										<div className="absolute top-0 left-0 bg-red-600 text-white text-xs font-bold py-1 px-2">
+											{(
+												((product.price - product.discount) / product.price) *
+												100
+											).toFixed(0)}
+											% Off
+										</div>
+									)}
 									<img
 										src={
 											product.image
@@ -146,9 +156,29 @@ export default function TrendingSections() {
 											</Link>
 										</h3>
 									</div>
-									<p className="text-sm font-medium text-gray-900">
-										£{product.price}
-									</p>
+									{/* <p className="text-sm font-medium text-gray-900">
+										£{product.discount}
+									</p> */}
+
+									<div>
+										{/* Check if product has original price and if it's greater than the current price */}
+										{product.price && product.price > product.discount && (
+											<div className="flex flex-col items-end">
+												<span className="text-sm font-medium text-gray-900 line-through">
+													£{product.price.toFixed(2)}
+												</span>
+												<span className="text-sm font-medium text-gray-900">
+													£{product.discount.toFixed(2)}
+												</span>
+											</div>
+										)}
+										{/* If no original price or if it's not greater than current price, just show current price */}
+										{(!product.price || product.price <= product.discount) && (
+											<span className="text-sm font-medium text-gray-900">
+												£{product.discount.toFixed(2)}
+											</span>
+										)}
+									</div>
 								</div>
 								<p className="text-gray-500 text-sm mt-2">
 									{product.description.split(" ").slice(0, 10).join(" ")}

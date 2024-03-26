@@ -12,7 +12,6 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-// import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -181,21 +180,16 @@ public class UserController {
           new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
         );
 
-      System.out.println(user + ": " + username);
-
       // Check user's roles
       boolean isUser = user
         .getAuthorities()
         .stream()
         .anyMatch(role -> "USER".equals(role.getAuthority()));
 
-      System.out.println("User value " + isUser);
       boolean isArtisan = user
         .getAuthorities()
         .stream()
         .anyMatch(role -> "ARTISAN".equals(role.getAuthority()));
-
-      System.out.println("Artisan Value " + isArtisan);
 
       if (isArtisan) {
         return ResponseEntity
