@@ -172,25 +172,45 @@ public class AuthenticationService {
     artisanProfileDTO.setProfilePicture(artisanProfile.getProfilePicture());
     artisanProfileDTO.setLocation(artisanProfile.getLocation());
     artisanProfileDTO.setStoreName(artisanProfile.getStoreName());
+    artisanProfileDTO.setStoreBanner(artisanProfile.getStoreBanner());
+    artisanProfileDTO.setAnnouncements(artisanProfile.getAnnouncements());
+    artisanProfileDTO.setBusinessHours(artisanProfile.getBusinessHours());
+    artisanProfileDTO.setGallery(artisanProfile.getGallery());
+    artisanProfileDTO.setStories(artisanProfile.getStories());
+    artisanProfileDTO.setSpecializations(artisanProfile.getSpecializations());
+    artisanProfileDTO.setMaterialsUsed(artisanProfile.getMaterialsUsed());
+    artisanProfileDTO.setServicesOffered(artisanProfile.getServicesOffered());
+    artisanProfileDTO.setExperienceYears(artisanProfile.getExperienceYears());
+    artisanProfileDTO.setShippingPolicies(artisanProfile.getShippingPolicies());
+    artisanProfileDTO.setReturnPolicy(artisanProfile.getReturnPolicy());
+    artisanProfileDTO.setPaymentOptions(artisanProfile.getPaymentOptions());
+    artisanProfileDTO.setTermsConditions(artisanProfile.getTermsConditions());
+    artisanProfileDTO.setPrivacyPolicy(artisanProfile.getPrivacyPolicy());
+    artisanProfileDTO.setCommunicationPreferences(
+      artisanProfile.getCommunicationPreferences()
+    );
+    artisanProfileDTO.setPreferredLanguage(
+      artisanProfile.getPreferredLanguage()
+    );
 
     // Map other fields from ApplicationUser to ArtisanProfileDTO as needed
-    artisanProfileDTO.setFirstname(artisanProfile.getArtisan().getFirstname());
-    artisanProfileDTO.setLastname(artisanProfile.getArtisan().getLastname());
-    artisanProfileDTO.setUser_email(
-      artisanProfile.getArtisan().getUser_email()
-    );
-    artisanProfileDTO.setBankAccountNo(
-      artisanProfile.getArtisan().getBankAccountNo()
-    );
-    artisanProfileDTO.setBankSortCode(
-      artisanProfile.getArtisan().getBankSortCode()
-    );
-    artisanProfileDTO.setContactTelephone(
-      artisanProfile.getArtisan().getContactTelephone()
-    );
-    artisanProfileDTO.setContactAddress(
-      artisanProfile.getArtisan().getContactAddress()
-    );
+    // artisanProfileDTO.setFirstname(artisanProfile.getArtisan().getFirstname());
+    // artisanProfileDTO.setLastname(artisanProfile.getArtisan().getLastname());
+    // artisanProfileDTO.setUser_email(
+    //   artisanProfile.getArtisan().getUser_email()
+    // );
+    // artisanProfileDTO.setBankAccountNo(
+    //   artisanProfile.getArtisan().getBankAccountNo()
+    // );
+    // artisanProfileDTO.setBankSortCode(
+    //   artisanProfile.getArtisan().getBankSortCode()
+    // );
+    // artisanProfileDTO.setContactTelephone(
+    //   artisanProfile.getArtisan().getContactTelephone()
+    // );
+    // artisanProfileDTO.setContactAddress(
+    //   artisanProfile.getArtisan().getContactAddress()
+    // );
 
     return artisanProfileDTO;
   }
