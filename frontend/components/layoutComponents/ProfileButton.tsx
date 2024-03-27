@@ -105,7 +105,6 @@ const ProfileButton = () => {
 									</>
 								)}
 							</div>
-							{/* {userDetails.user.firstname} {userDetails.user.lastname} */}
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem className="cursor-pointer">

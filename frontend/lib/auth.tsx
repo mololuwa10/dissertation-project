@@ -165,6 +165,7 @@ export const updateUser = async (
 	}
 };
 
+// Create Artisan Profile
 export const createArtisanProfile = async (jwt: string) => {
 	if (!jwt) {
 		throw new Error("No JWT provided");
@@ -191,6 +192,33 @@ export const createArtisanProfile = async (jwt: string) => {
 		}
 	} catch (error) {
 		console.error("Error creating artisan profile:", error);
+		throw error;
+	}
+};
+
+// update Artisan Profile
+export const updateArtisanProfile = async (artisanData: any, jwt: string) => {
+	try {
+		const url = `http://localhost:8080/api/artisan`;
+		const response = await fetch(url, {
+			method: "PUT",
+			headers: {
+				Authorization: `Bearer ${jwt}`,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(artisanData),
+		});
+
+		if (response.ok) {
+			const data = await response.json();
+			alert("Artisan Profile Updated Successfully");
+			return data;
+		} else {
+			const errorText = await response.text();
+			throw new Error(`Failed to update artisan profile: ${errorText}`);
+		}
+	} catch (error) {
+		console.error("Error updating artisan profile: ", error);
 		throw error;
 	}
 };
