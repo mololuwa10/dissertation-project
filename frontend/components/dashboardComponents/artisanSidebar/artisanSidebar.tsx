@@ -38,11 +38,11 @@ const menuItems = [
 				path: "/ArtisanDashboard/Products",
 				icon: <MdShoppingBag />,
 			},
-			{
-				title: "Sales",
-				path: "/ArtisanDashboard/Sales",
-				icon: <MdSell />,
-			},
+			// {
+			// 	title: "Sales",
+			// 	path: "/ArtisanDashboard/Sales",
+			// 	icon: <MdSell />,
+			// },
 			{
 				title: "Orders",
 				path: "/ArtisanDashboard/Orders",

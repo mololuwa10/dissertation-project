@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useFetchUserInfo } from "@/lib/data";
@@ -18,7 +19,15 @@ export default function ShopInfo() {
 					{/* Shop image and name */}
 					<div className="flex items-center space-x-4">
 						<div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
-							{/* Include img tag here if you have a shop image */}
+							<img
+								src={
+									userDetails.artisanProfile?.profilePicture
+										? `http://localhost:8080${userDetails.artisanProfile?.profilePicture}`
+										: "/blacktee.jpg"
+								}
+								alt={userDetails?.artisanProfile?.storeName}
+								className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+							/>
 						</div>
 						<div className="flex flex-col">
 							<h2 className="text-2xl font-semibold">
@@ -33,7 +42,15 @@ export default function ShopInfo() {
 					{/* Shop owner and contact */}
 					<div className="flex items-center space-x-2">
 						<div className="bg-gray-300 rounded-full w-12 h-12 flex items-center justify-center overflow-hidden">
-							{/* Include img tag here if you have an owner image */}
+							<img
+								src={
+									userDetails.artisanProfile?.profilePicture
+										? `http://localhost:8080${userDetails.artisanProfile?.profilePicture}`
+										: "/blacktee.jpg"
+								}
+								alt={userDetails?.artisanProfile?.storeName}
+								className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+							/>{" "}
 						</div>
 						<div className="flex flex-col items-end">
 							<p className="text-lg font-semibold">

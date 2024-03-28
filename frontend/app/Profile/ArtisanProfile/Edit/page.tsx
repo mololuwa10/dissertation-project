@@ -95,6 +95,15 @@ export default function EditArtisanPage() {
 		},
 	});
 
+	const [selectedProfilePicture, setSelectedProfilePicture] =
+		useState<File | null>(null);
+	const [selectedBannerImage, setSelectedBannerImage] = useState<File | null>(
+		null
+	);
+	const [selectedGalleryImages, setSelectedGalleryImages] = useState<File[]>(
+		[]
+	);
+
 	useEffect(() => {
 		if (userDetails) {
 			setArtisanProfile(userDetails as UserDetails);
@@ -112,20 +121,26 @@ export default function EditArtisanPage() {
 		}));
 	};
 
-	const handleFileChange = (event: any) => {
-		const { name, files } = event.target;
-		setArtisanProfile({
-			...artisanProfile,
-			[name]: files[0],
-		});
+	const handleProfilePictureChange = (
+		event: React.ChangeEvent<HTMLInputElement>
+	) => {
+		if (event.target.files && event.target.files[0]) {
+			setSelectedProfilePicture(event.target.files[0]);
+		}
 	};
 
-	const handleGalleryChange = (event: any) => {
-		const { files } = event.target;
-		setArtisanProfile((prevDetails) => ({
-			...prevDetails,
-			gallery: Array.from(files),
-		}));
+	const handleBannerImageChange = (
+		event: React.ChangeEvent<HTMLInputElement>
+	) => {
+		if (event.target.files && event.target.files[0]) {
+			setSelectedBannerImage(event.target.files[0]);
+		}
+	};
+
+	const handleGalleryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (event.target.files) {
+			setSelectedGalleryImages(Array.from(event.target.files));
+		}
 	};
 
 	const handleSubmit = async (event: any) => {
@@ -135,13 +150,13 @@ export default function EditArtisanPage() {
 
 			const updatedData = {
 				bio: artisanProfile.artisanProfile.bio,
-				profilePicture: artisanProfile.artisanProfile.profilePicture,
+				// profilePicture: artisanProfile.artisanProfile.profilePicture,
 				location: artisanProfile.artisanProfile.location,
 				storeName: artisanProfile.artisanProfile.storeName,
-				storeBanner: artisanProfile.artisanProfile.storeBanner,
+				// storeBanner: artisanProfile.artisanProfile.storeBanner,
 				announcements: artisanProfile.artisanProfile.announcements,
 				businessHours: artisanProfile.artisanProfile.businessHours,
-				gallery: artisanProfile.artisanProfile.gallery,
+				// gallery: artisanProfile.artisanProfile.gallery,
 				stories: artisanProfile.artisanProfile.stories,
 				specializations: artisanProfile.artisanProfile.specializations,
 				materialsUsed: artisanProfile.artisanProfile.materialsUsed,
@@ -157,7 +172,13 @@ export default function EditArtisanPage() {
 				preferredLanguage: artisanProfile.artisanProfile.preferredLanguage,
 			};
 
-			const result = await updateArtisanProfile(updatedData, jwt);
+			const result = await updateArtisanProfile(
+				updatedData,
+				selectedBannerImage,
+				selectedProfilePicture,
+				selectedGalleryImages,
+				jwt
+			);
 			toast.success("Artisan Profile Updated Successfully!!");
 			console.log(result);
 		} catch (error) {
@@ -385,7 +406,7 @@ export default function EditArtisanPage() {
 											<input
 												type="file"
 												name="profilePicture"
-												onChange={handleFileChange}
+												onChange={handleProfilePictureChange}
 											/>
 										</label>
 									</div>
@@ -396,8 +417,18 @@ export default function EditArtisanPage() {
 											<input
 												type="file"
 												multiple
-												name="gallery"
+												name="galleryImages"
 												onChange={handleGalleryChange}
+											/>
+										</label>
+									</div>
+									<div className="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+										<label>
+											Store Banner:
+											<input
+												type="file"
+												name="storeBanner"
+												onChange={handleBannerImageChange}
 											/>
 										</label>
 									</div>

@@ -1,7 +1,6 @@
 import { LanguageProvider } from "@/app/LanguageContext";
 import Announcement from "@/components/ArtisanProfileComponents/Announcements";
 import ArtisanProfileHeader from "@/components/ArtisanProfileComponents/ArtisanProfileHeader";
-import ContactOwner from "@/components/ArtisanProfileComponents/ContactOwner";
 import ItemList from "@/components/ArtisanProfileComponents/ItemList";
 import OtherArtisanDetails from "@/components/ArtisanProfileComponents/OtherArtisanDetails";
 import ShopInfo from "@/components/ArtisanProfileComponents/ShopInfo";

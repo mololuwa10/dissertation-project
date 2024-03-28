@@ -197,16 +197,41 @@ export const createArtisanProfile = async (jwt: string) => {
 };
 
 // update Artisan Profile
-export const updateArtisanProfile = async (artisanData: any, jwt: any) => {
+export const updateArtisanProfile = async (
+	artisanData: any,
+	selectedStoreBanner: any,
+	selectedProfilePicture: any,
+	selectedGalleryImages: any,
+	jwt: any
+) => {
+	const formData = new FormData();
+	formData.append("artisanProfile", JSON.stringify(artisanData));
+
+	// Append the profile picture if it's been updated
+	if (selectedProfilePicture) {
+		formData.append("profilePicture", selectedProfilePicture);
+	}
+
+	// Append the profile picture if it's been updated
+	if (selectedStoreBanner) {
+		formData.append("storeBanner", selectedStoreBanner);
+	}
+
+	// Append gallery images if there are any
+	if (selectedGalleryImages) {
+		for (let i = 0; i < selectedGalleryImages.length; i++) {
+			formData.append("galleryImages", selectedGalleryImages[i]);
+		}
+	}
+
 	try {
 		const url = `http://localhost:8080/api/artisan`;
 		const response = await fetch(url, {
 			method: "PUT",
 			headers: {
 				Authorization: `Bearer ${jwt}`,
-				"Content-Type": "application/json",
 			},
-			body: JSON.stringify(artisanData),
+			body: formData,
 		});
 
 		if (response.ok) {

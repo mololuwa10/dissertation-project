@@ -77,7 +77,6 @@ const AddCategoryPage = () => {
 						<textarea
 							name="description"
 							id="description"
-							rows="16"
 							value={categoryDescription}
 							onChange={(event) => setCategoryDescription(event.target.value)}
 							placeholder="Category Description"></textarea>
