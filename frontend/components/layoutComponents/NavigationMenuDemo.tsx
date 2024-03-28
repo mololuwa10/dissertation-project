@@ -96,7 +96,7 @@ export function NavigationMenuDemo() {
 				<NavigationMenuItem>
 					<Link href="/ContactUs" legacyBehavior passHref>
 						<NavigationMenuLink className={navigationMenuTriggerStyle()}>
-							<FormattedMessage id="navWhatsNew" defaultMessage="Contacts" />
+							<FormattedMessage id="navContacts" defaultMessage="Contacts" />
 						</NavigationMenuLink>
 					</Link>
 				</NavigationMenuItem>

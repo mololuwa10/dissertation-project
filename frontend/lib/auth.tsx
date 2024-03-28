@@ -197,7 +197,7 @@ export const createArtisanProfile = async (jwt: string) => {
 };
 
 // update Artisan Profile
-export const updateArtisanProfile = async (artisanData: any, jwt: string) => {
+export const updateArtisanProfile = async (artisanData: any, jwt: any) => {
 	try {
 		const url = `http://localhost:8080/api/artisan`;
 		const response = await fetch(url, {
@@ -211,7 +211,6 @@ export const updateArtisanProfile = async (artisanData: any, jwt: string) => {
 
 		if (response.ok) {
 			const data = await response.json();
-			alert("Artisan Profile Updated Successfully");
 			return data;
 		} else {
 			const errorText = await response.text();

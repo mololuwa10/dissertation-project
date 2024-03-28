@@ -348,6 +348,26 @@ public class ReviewController {
     artisanProfileDTO.setBio(artisanProfile.getBio());
     artisanProfileDTO.setProfilePicture(artisanProfile.getProfilePicture());
     artisanProfileDTO.setLocation(artisanProfile.getLocation());
+    artisanProfileDTO.setStoreBanner(artisanProfile.getStoreBanner());
+    artisanProfileDTO.setAnnouncements(artisanProfile.getAnnouncements());
+    artisanProfileDTO.setBusinessHours(artisanProfile.getBusinessHours());
+    artisanProfileDTO.setGallery(artisanProfile.getGallery());
+    artisanProfileDTO.setStories(artisanProfile.getStories());
+    artisanProfileDTO.setSpecializations(artisanProfile.getSpecializations());
+    artisanProfileDTO.setMaterialsUsed(artisanProfile.getMaterialsUsed());
+    artisanProfileDTO.setServicesOffered(artisanProfile.getServicesOffered());
+    artisanProfileDTO.setExperienceYears(artisanProfile.getExperienceYears());
+    artisanProfileDTO.setShippingPolicies(artisanProfile.getShippingPolicies());
+    artisanProfileDTO.setReturnPolicy(artisanProfile.getReturnPolicy());
+    artisanProfileDTO.setPaymentOptions(artisanProfile.getPaymentOptions());
+    artisanProfileDTO.setTermsConditions(artisanProfile.getTermsConditions());
+    artisanProfileDTO.setPrivacyPolicy(artisanProfile.getPrivacyPolicy());
+    artisanProfileDTO.setCommunicationPreferences(
+      artisanProfile.getCommunicationPreferences()
+    );
+    artisanProfileDTO.setPreferredLanguage(
+      artisanProfile.getPreferredLanguage()
+    );
 
     // Map other fields from ApplicationUser to ArtisanProfileDTO as needed
     artisanProfileDTO.setFirstname(artisanProfile.getArtisan().getFirstname());
