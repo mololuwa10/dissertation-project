@@ -8,8 +8,8 @@ import com.example.dissertation_backend.solution.Customers.Repository.RoleReposi
 import com.example.dissertation_backend.solution.Customers.Repository.UserRepository;
 import com.example.dissertation_backend.solution.DTO.ArtisanProfileDTO;
 import com.example.dissertation_backend.solution.DTO.LoginResponseDTO;
-// import com.example.dissertation_backend.solution.EmailVerification.VerificationToken;
-// import com.example.dissertation_backend.solution.EmailVerification.VerificationTokenRepository;
+import com.example.dissertation_backend.solution.EmailVerification.VerificationToken;
+import com.example.dissertation_backend.solution.EmailVerification.VerificationTokenRepository;
 import com.example.dissertation_backend.solution.Exception.InvalidCredentialsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -17,12 +17,12 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-// import java.util.UUID;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-// import org.springframework.mail.SimpleMailMessage;
-// import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -53,11 +53,11 @@ public class AuthenticationService {
   @Autowired
   private TokenService tokenService;
 
-  // @Autowired
-  // private VerificationTokenRepository verificationTokenRepository;
+  @Autowired
+  private VerificationTokenRepository verificationTokenRepository;
 
-  // @Autowired
-  // private JavaMailSender mailSender;
+  @Autowired
+  private JavaMailSender mailSender;
 
   public ResponseEntity<?> registerUser(
     String firstname,
@@ -110,12 +110,12 @@ public class AuthenticationService {
 
     newUser = userRepository.save(newUser);
 
-    // // Generate verification token
-    // String token = UUID.randomUUID().toString();
-    // createVerificationToken(newUser, token);
+    // Generate verification token
+    String token = UUID.randomUUID().toString();
+    createVerificationToken(newUser, token);
 
-    // // // Send verification email
-    // sendVerificationEmail(newUser, token);
+    // Send verification email
+    sendVerificationEmail(newUser, token);
 
     return ResponseEntity.ok(newUser);
   }
@@ -153,8 +153,6 @@ public class AuthenticationService {
   }
 
   private ArtisanProfileDTO fetchArtisanDetailsForUser(ApplicationUser user) {
-    // Fetch artisan profile from the database and convert to DTO
-    // This is pseudocode; actual implementation will depend on your database and classes
     ArtisanProfile artisanProfile = artisanProfileRepository
       .findByArtisan_UserId(user.getUserId())
       .orElseThrow(() ->
@@ -221,24 +219,25 @@ public class AuthenticationService {
       .stream()
       .anyMatch(role -> "ARTISAN".equals(role.getAuthority()));
   }
-  // public void sendVerificationEmail(ApplicationUser user, String token) {
-  //   String recipientAddress = user.getUser_email();
-  //   String subject = "Registration Confirmation";
-  //   String confirmationUrl = "/api/auth/verify?token=" + token;
-  //   String message = "Please click the link to verify your account: ";
 
-  //   SimpleMailMessage email = new SimpleMailMessage();
-  //   email.setTo(recipientAddress);
-  //   email.setSubject(subject);
-  //   email.setText(message + "http://localhost:8080" + confirmationUrl);
-  //   mailSender.send(email);
-  // }
+  public void sendVerificationEmail(ApplicationUser user, String token) {
+    String recipientAddress = user.getUser_email();
+    String subject = "Registration Confirmation";
+    String confirmationUrl = "/api/email/verify?token=" + token;
+    String message = "Please click the link to verify your account: ";
 
-  // public void createVerificationToken(ApplicationUser user, String token) {
-  //   VerificationToken verificationToken = new VerificationToken();
-  //   verificationToken.setUser(user);
-  //   verificationToken.setToken(token);
-  //   verificationToken.setExpiryDate(LocalDateTime.now().plusHours(24));
-  //   verificationTokenRepository.save(verificationToken);
-  // }
+    SimpleMailMessage email = new SimpleMailMessage();
+    email.setTo(recipientAddress);
+    email.setSubject(subject);
+    email.setText(message + "http://localhost:8080" + confirmationUrl);
+    mailSender.send(email);
+  }
+
+  public void createVerificationToken(ApplicationUser user, String token) {
+    VerificationToken verificationToken = new VerificationToken();
+    verificationToken.setUser(user);
+    verificationToken.setToken(token);
+    verificationToken.setExpiryDate(LocalDateTime.now().plusHours(24));
+    verificationTokenRepository.save(verificationToken);
+  }
 }

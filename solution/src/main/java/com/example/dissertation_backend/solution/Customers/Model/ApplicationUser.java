@@ -63,8 +63,8 @@ public class ApplicationUser implements UserDetails {
   @JsonBackReference
   private ArtisanProfile artisanProfile;
 
-  // @Column(name = "enabled")
-  // private boolean enabled;
+  @Column(name = "enabled")
+  private Boolean enabled;
 
   public ApplicationUser() {
     super();
@@ -212,13 +212,13 @@ public class ApplicationUser implements UserDetails {
     this.artisanProfile = artisanProfile;
   }
 
-  // public boolean getEnabled() {
-  //   return enabled;
-  // }
+  public Boolean getEnabled() {
+    return enabled;
+  }
 
-  // public void setEnabled(boolean enabled) {
-  //   this.enabled = enabled;
-  // }
+  public void setEnabled(Boolean enabled) {
+    this.enabled = enabled;
+  }
 
   @Override
   public boolean isAccountNonExpired() {
@@ -237,6 +237,6 @@ public class ApplicationUser implements UserDetails {
 
   @Override
   public boolean isEnabled() {
-    return true;
+    return Boolean.TRUE.equals(enabled);
   }
 }
