@@ -104,8 +104,8 @@ public class AuthenticationService {
       contactTelephone,
       contactAddress,
       authorities,
-      dateJoined
-      // false
+      dateJoined,
+      false
     );
 
     newUser = userRepository.save(newUser);
@@ -136,6 +136,7 @@ public class AuthenticationService {
           )
         );
 
+      boolean isVerified = user.isEnabled();
       ArtisanProfileDTO artisanDetails = null;
       if (userIsArtisan(user)) {
         // Fetch artisan details
@@ -145,7 +146,8 @@ public class AuthenticationService {
       return new LoginResponseDTO(
         userRepository.findByUsername(username).get(),
         token,
-        artisanDetails
+        artisanDetails,
+        isVerified
       );
     } catch (AuthenticationException e) {
       throw new InvalidCredentialsException("Invalid credentials");
@@ -222,7 +224,7 @@ public class AuthenticationService {
 
   public void sendVerificationEmail(ApplicationUser user, String token) {
     String recipientAddress = user.getUser_email();
-    String subject = "Registration Confirmation";
+    String subject = "Craft Collaboration Registration Confirmation";
     String confirmationUrl = "/api/email/verify?token=" + token;
     String message = "Please click the link to verify your account: ";
 

@@ -49,7 +49,8 @@ public class SolutionApplication {
         "07473143014",
         "86 Park Lane",
         roles,
-        LocalDateTime.now()
+        LocalDateTime.now(),
+        true
       );
 
       userRepository.save(admin);

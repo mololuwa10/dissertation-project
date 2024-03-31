@@ -105,3 +105,33 @@ export const useLogout = () => {
 
 	return handleLogout;
 };
+
+// Check verification
+export const checkVerificationStatus = async () => {
+	try {
+		const token = localStorage.getItem("jwt");
+
+		// Make the GET request to the backend
+		const response = await fetch(
+			`http://localhost:8080/api/email/check-verification`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		// Assuming the response body is just a boolean
+		const isVerified = await response.json();
+		return isVerified;
+	} catch (error) {
+		console.error("Error checking verification status:", error);
+		throw error;
+	}
+};

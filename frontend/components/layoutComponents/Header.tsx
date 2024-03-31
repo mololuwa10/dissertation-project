@@ -2,12 +2,10 @@
 
 import { ShoppingCart } from "lucide-react";
 import React, { useEffect } from "react";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { LanguageComboBox } from "./LanguageComboBox";
 import { LocationComboBox } from "./LocationComboBox";
 import { NavigationMenuDemo } from "./NavigationMenuDemo";
-// import styles from "./sidebar.module.css";
-
 import ProfileButton from "./ProfileButton";
 import Container from "../ui/container";
 import { Button } from "../ui/button";
@@ -15,12 +13,13 @@ import { useRouter } from "next/navigation";
 import { fetchShoppingCart } from "@/lib/dbModels";
 import SearchBar from "./SearchBar";
 import { FormattedMessage } from "react-intl";
-import { useFetchUserInfo } from "@/lib/data";
+import { checkVerificationStatus, useFetchUserInfo } from "@/lib/data";
 
 export default function Header() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const [cartItemCount, setCartItemCount] = useState(0);
 	const router = useRouter();
+	const [isVerified, setIsVerified] = useState(false);
 
 	const { isLoggedIn, userDetails, userRole } = useFetchUserInfo();
 
@@ -50,9 +49,29 @@ export default function Header() {
 		// Perform the search action, such as querying an API
 	};
 
+	useEffect(() => {
+		const verifyUser = async () => {
+			try {
+				const verified = await checkVerificationStatus();
+				setIsVerified(verified);
+			} catch (error) {
+				// Handle errors, for example by setting an error state
+				console.error("Error during verification check", error);
+			}
+		};
+
+		verifyUser();
+	}, []);
+
 	return (
 		<>
 			<div className="sticky top-0 z-10 bg-white shadow">
+				{!isVerified && isLoggedIn && (
+					<div className="text-center py-2 bg-yellow-200 text-yellow-800">
+						Your account is not verified. Please check your email for the
+						verification link.
+					</div>
+				)}
 				<header className="sm:flex sm:justify-end py-3 px-4 border-b">
 					<div
 						className="relative px-4 sm:px-6 lg:px-8 flex items-center
@@ -110,17 +129,6 @@ export default function Header() {
 								</div>
 
 								<ProfileButton />
-
-								{/* <div className="relative">
-									{userDetails && (
-										<>
-											<span className="flex flex-col space-x-2"></span>
-											<span className="text-lg mt-2 ml-[20px]">
-												{userDetails.user.firstname} {userDetails.user.lastname}
-											</span>
-										</>
-									)}
-								</div> */}
 							</div>
 						</div>
 					</Container>

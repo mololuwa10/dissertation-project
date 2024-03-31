@@ -161,4 +161,13 @@ const ShopPage = () => {
 	);
 };
 
+4. Error Handling
+Consider adding more detailed error handling and feedback for cases like:
+
+The token does not exist.
+The token has expired.
+The account is already verified.
+
 export default ShopPage; -->
+
+

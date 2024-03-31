@@ -180,6 +180,12 @@ public class UserController {
           new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
         );
 
+      if (user.getEnabled()) {
+        return ResponseEntity
+          .status(HttpStatus.FORBIDDEN)
+          .body("User is not verified");
+      }
+
       // Check user's roles
       boolean isUser = user
         .getAuthorities()

@@ -52,6 +52,12 @@ public class ShoppingCartController {
       .findByUsername(username)
       .orElseThrow(() -> new RuntimeException("User not found"));
 
+    if (user.getEnabled()) {
+      return ResponseEntity
+        .status(HttpStatus.FORBIDDEN)
+        .body("User is not verified");
+    }
+
     try {
       // The service method is responsible for calculating the total price
       // including handling discounts and checking stock availability.

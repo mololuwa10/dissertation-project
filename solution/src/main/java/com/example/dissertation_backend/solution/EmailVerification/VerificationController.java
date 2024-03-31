@@ -2,8 +2,10 @@ package com.example.dissertation_backend.solution.EmailVerification;
 
 import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
 import com.example.dissertation_backend.solution.Customers.Repository.UserRepository;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,4 +36,43 @@ public class VerificationController {
 
     return ResponseEntity.ok("Account verified successfully");
   }
+
+  // Checking if the user is verified
+  @GetMapping("/check-verification")
+  public ResponseEntity<?> checkVerificationStatus(Principal principal) {
+    if (principal == null) {
+      return ResponseEntity
+        .status(HttpStatus.UNAUTHORIZED)
+        .body("User is not logged in");
+    }
+
+    String username = principal.getName();
+    ApplicationUser user = userRepository
+      .findByUsername(username)
+      .orElseThrow(() -> new RuntimeException("User not found"));
+
+    return ResponseEntity.ok(user.getEnabled());
+  }
+  // @GetMapping("/resend-verification")
+  // public ResponseEntity<?> resendVerificationEmail(Principal principal) {
+  //   if (principal == null) {
+  //     return ResponseEntity
+  //       .status(HttpStatus.UNAUTHORIZED)
+  //       .body("User is not logged in");
+  //   }
+
+  //   String username = principal.getName();
+  //   ApplicationUser user = userRepository
+  //     .findByUsername(username)
+  //     .orElseThrow(() -> new RuntimeException("User not found"));
+
+  //   if (user.isEnabled()) {
+  //     return ResponseEntity
+  //       .status(HttpStatus.BAD_REQUEST)
+  //       .body("User is already verified");
+  //   }
+
+  //   // Send verification email
+  //   return ResponseEntity.ok("Verification email sent");
+  // }
 }

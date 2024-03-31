@@ -88,8 +88,8 @@ public class ApplicationUser implements UserDetails {
     String contactTelephone,
     String contactAddress,
     Set<Roles> authorities,
-    LocalDateTime dateJoined
-    // boolean enabled
+    LocalDateTime dateJoined,
+    Boolean enabled
   ) {
     this.userId = userId;
     this.firstname = firstname;
@@ -103,7 +103,7 @@ public class ApplicationUser implements UserDetails {
     this.contactAddress = contactAddress;
     this.authorities = authorities;
     this.dateJoined = dateJoined;
-    // this.enabled = enabled;
+    this.enabled = enabled;
   }
 
   // Getters and Setters
@@ -237,6 +237,6 @@ public class ApplicationUser implements UserDetails {
 
   @Override
   public boolean isEnabled() {
-    return Boolean.TRUE.equals(enabled);
+    return true;
   }
 }
