@@ -74,8 +74,6 @@ export default function ProductInfo() {
 
 	const groupAttributes = (attributes: any) => {
 		return attributes.reduce((acc: any, attr: any) => {
-			// If the attribute key already exists, add the value to the existing array.
-			// Otherwise, create a new array with the first value.
 			acc[attr.key] = acc[attr.key]
 				? [...acc[attr.key], attr.value]
 				: [attr.value];
@@ -299,7 +297,7 @@ export default function ProductInfo() {
 							)}
 						<Button
 							size="lg"
-							className="w-full text-white py-3 rounded-3xl hover:bg-blue-600 mt-4"
+							className="w-full bg-gray-800 text-white py-3 rounded-3xl hover:bg-gray-900 mt-4"
 							onClick={handleAddToCart}>
 							Add to cart
 						</Button>

@@ -1,5 +1,7 @@
 package com.example.dissertation_backend.solution.Stripe.Controller;
 
+import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
+import com.example.dissertation_backend.solution.Customers.Repository.UserRepository;
 import com.example.dissertation_backend.solution.Products.Model.Products;
 import com.example.dissertation_backend.solution.Products.Repository.ProductRepository;
 import com.example.dissertation_backend.solution.Stripe.Model.CheckoutItem;
@@ -15,6 +17,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,11 +42,31 @@ public class StripeController {
   @Autowired
   private ProductRepository productRepository;
 
+  @Autowired
+  private UserRepository userRepository;
+
   @PostMapping("/create-checkout-session")
   public ResponseEntity<?> createCheckoutSession(
     @Valid @RequestBody CheckoutPayment checkoutPayment
   ) {
     try {
+      Authentication authentication = SecurityContextHolder
+        .getContext()
+        .getAuthentication();
+      String currentUsername = authentication.getName();
+      ApplicationUser user = userRepository
+        .findByUsername(currentUsername)
+        .orElseThrow(() ->
+          new UsernameNotFoundException(
+            "User not found with username: " + currentUsername
+          )
+        );
+
+      if (!user.getEnabled()) {
+        return ResponseEntity
+          .status(HttpStatus.FORBIDDEN)
+          .body("User is not verified and cannot checkout.");
+      }
       // Use checkoutItems from CheckoutPayment for validations and updates
       List<CheckoutItem> checkoutItems = checkoutPayment.getItems();
       SessionCreateParams.Builder paramsBuilder = SessionCreateParams

@@ -180,10 +180,10 @@ public class UserController {
           new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
         );
 
-      if (user.getEnabled()) {
+      if (!user.getEnabled()) {
         return ResponseEntity
           .status(HttpStatus.FORBIDDEN)
-          .body("User is not verified");
+          .body("User is not verified and cannot create an artisan profile.");
       }
 
       // Check user's roles

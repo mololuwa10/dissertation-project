@@ -36,11 +36,20 @@ const ProfileButton = () => {
 			if (!jwt) throw new Error("JWT not found");
 
 			const profileData = await createArtisanProfile(jwt);
-			toast.success("Artisan profile created successfully");
-			console.log("Artisan profile created:", profileData);
+			if (profileData.status === 403) {
+				toast.error(
+					"Your account is not verified. Please verify your account to create an artisan profile."
+				);
+			} else {
+				toast.success("Artisan profile created successfully");
+				console.log("Artisan profile created:", profileData.data);
+			}
 		} catch (error) {
-			console.error("Error creating artisan profile:", error);
-			toast.error("Error creating artisan profile");
+			console.error("Error creating artisan profile:", error.message);
+			toast.error(
+				error.profileData?.data ||
+					"Your account is not verified. Please verify your account to create an artisan profile."
+			);
 		}
 	};
 

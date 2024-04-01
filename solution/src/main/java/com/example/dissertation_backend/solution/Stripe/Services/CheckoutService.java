@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 // import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,7 +38,7 @@ public class CheckoutService {
   private CartItemRepository cartItemRepository;
 
   @Transactional
-  public String checkout(List<CheckoutItem> checkoutItems) {
+  public ResponseEntity<?> checkout(List<CheckoutItem> checkoutItems) {
     Authentication authentication = SecurityContextHolder
       .getContext()
       .getAuthentication();
@@ -48,6 +50,12 @@ public class CheckoutService {
           "User not found with username: " + currentUsername
         )
       );
+
+    if (!user.getEnabled()) {
+      return ResponseEntity
+        .status(HttpStatus.FORBIDDEN)
+        .body("User is not verified and cannot checkout an item");
+    }
 
     Orders order = new Orders();
     order.setUserId(user);
@@ -99,7 +107,7 @@ public class CheckoutService {
 
     cartItemRepository.deleteByShoppingCart_User_UserId(user.getUserId());
 
-    return "Checkout successful. Order ID: " + order.getId();
+    return ResponseEntity.ok("Checkout successful. Order ID: " + order.getId());
   }
 
   private long calculateTotalQuantity(List<CheckoutItem> checkoutItems) {

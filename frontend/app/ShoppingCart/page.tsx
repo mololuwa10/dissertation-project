@@ -166,7 +166,7 @@ const OrderSummary = ({ cartItems }: { cartItems: Item[] }) => {
 					productId: item.product.productId,
 					quantity: item.quantity,
 				})),
-				customerEmail: "test@email.com", // TODO: Get from JWT or form input
+				customerEmail: "test@email.com",
 				quantity: total,
 				amount: total,
 				currency: "gbp",
@@ -182,14 +182,25 @@ const OrderSummary = ({ cartItems }: { cartItems: Item[] }) => {
 					window.location.href = checkoutResponse.url;
 				}, 1500);
 			} else {
-				toast.error("Unexpected response. Please try again.");
+				toast.error(
+					"Your account is not verified. Please verify your account to checkout"
+				);
 				console.error("Unexpected response structure:", checkoutResponse);
 			}
-		} catch (error) {
+		} catch (error: any) {
 			console.error("Checkout error:", error);
-			toast.error("Checkout failed. Please try again.");
+			let errorMessage = "Checkout failed. Please try again.";
+
+			// Assuming error is thrown with message when fetch is not ok
+			if (error.message.includes("User is not verified")) {
+				errorMessage =
+					"Your account is not verified. Please verify your account to checkout.";
+			}
+
+			toast.error(errorMessage);
 		}
 	};
+
 	return (
 		<div className="p-4 bg-white rounded-md shadow">
 			<h2 className="text-lg font-semibold mb-3">Order summary</h2>
@@ -210,7 +221,7 @@ const OrderSummary = ({ cartItems }: { cartItems: Item[] }) => {
 				<span>{`£${total.toFixed(2)}`}</span>
 			</div>
 			<button
-				className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 mt-3"
+				className="w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-900 mt-3"
 				onClick={handelCheckoutClick}>
 				Checkout
 			</button>
@@ -232,7 +243,6 @@ const ShoppingCart = () => {
 
 		try {
 			const data = await fetchShoppingCart(jwt);
-			// console.log("Shopping cart data:", data);
 			setCartData(data);
 		} catch (error) {
 			if (error instanceof Error) {

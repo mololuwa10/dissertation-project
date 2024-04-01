@@ -52,7 +52,7 @@ public class ShoppingCartController {
       .findByUsername(username)
       .orElseThrow(() -> new RuntimeException("User not found"));
 
-    if (user.getEnabled()) {
+    if (!user.getEnabled()) {
       return ResponseEntity
         .status(HttpStatus.FORBIDDEN)
         .body("User is not verified");

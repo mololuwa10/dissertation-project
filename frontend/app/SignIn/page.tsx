@@ -132,20 +132,19 @@ export default function SignIn() {
 											/>
 										</button>
 									</div>
-									<p className="text-sm text-center text-gray-400">
+									<p className="text-lg font-medium text-center text-gray-400">
 										<FormattedMessage
 											id="noAccountPrompt"
 											defaultMessage="Don&#x27;t have an account yet? Sign up."
 										/>
 										<a
 											href="/Register"
-											className="text-indigo-400 focus:outline-none focus:underline focus:text-indigo-500 dark:focus:border-indigo-800">
+											className="text-indigo-400 focus:outline-none focus:underline focus:text-indigo-500 dark:focus:border-indigo-800 hover:underline">
 											<FormattedMessage
 												id="signUpLink"
 												defaultMessage="Sign up"
 											/>
 										</a>
-										.
 									</p>
 								</form>
 								<div className="relative my-4">

@@ -56,7 +56,12 @@ export default function TrendingSections() {
 		};
 	}
 
-	const { products } = useFetchProducts() as { products: Product[] };
+	const { products, isLoading: productsLoading } =
+		useFetchProducts() as unknown as {
+			products: Product[];
+			isLoading: boolean;
+		};
+	const [reviewsLoading, setReviewsLoading] = useState(false);
 	const [reviewCounts, setReviewCounts] = useState<{ [key: number]: number }>(
 		{}
 	);
@@ -102,6 +107,14 @@ export default function TrendingSections() {
 			calculateAndSetRatings();
 		}
 	}, [products]);
+
+	if (productsLoading || reviewsLoading) {
+		return (
+			<div className="flex justify-center items-center h-screen">
+				<div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+			</div>
+		);
+	}
 
 	return (
 		<>
