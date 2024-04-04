@@ -111,14 +111,12 @@ public class MessageController {
     @RequestParam Integer otherUserId,
     @RequestParam(required = false) Integer productId
   ) {
-    @SuppressWarnings("null")
     ApplicationUser currentUser = userRepository
       .findById(userId)
       .orElseThrow(() ->
         new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
       );
 
-    @SuppressWarnings("null")
     ApplicationUser otherUser = userRepository
       .findById(otherUserId)
       .orElseThrow(() ->

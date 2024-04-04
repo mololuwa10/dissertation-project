@@ -72,7 +72,6 @@ public class ShoppingCartService {
     return existingCart.get();
   }
 
-  @SuppressWarnings("null")
   public CartItemDTO addProductToCart(
     ApplicationUser user,
     Integer productId,

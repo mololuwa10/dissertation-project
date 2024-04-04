@@ -81,16 +81,6 @@ export const words = [
 	"your",
 ];
 
-export const checkLogin = () => {
-	const jwt = localStorage.getItem("jwt");
-
-	if (!jwt) {
-		return false;
-	} else {
-		return true;
-	}
-};
-
 export const useLogout = () => {
 	const router = useRouter();
 	const [userDetails, setUserDetails] = useState(null);

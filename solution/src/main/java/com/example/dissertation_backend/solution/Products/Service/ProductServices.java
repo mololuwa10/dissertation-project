@@ -159,7 +159,6 @@ public class ProductServices {
     };
 
     // Execute the query with the provided specification and pagination
-    @SuppressWarnings("null")
     Page<Products> productsPage = productRepository.findAll(spec, pageable);
 
     // Convert the product entities to DTOs

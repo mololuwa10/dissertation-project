@@ -27,7 +27,6 @@ public class UserChannelInterceptor implements ChannelInterceptor {
     @SuppressWarnings("null") Message<?> message,
     @SuppressWarnings("null") MessageChannel channel
   ) {
-    @SuppressWarnings("null")
     StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(
       message,
       StompHeaderAccessor.class

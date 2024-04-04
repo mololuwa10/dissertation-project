@@ -46,7 +46,6 @@ public class ChatController {
 
   @MessageMapping("/chat.sendMessage")
   @SendTo("/topic/public")
-  @SuppressWarnings("null")
   public ChatMessage sendMessage(
     @Payload ChatMessage chatMessage,
     Principal principal

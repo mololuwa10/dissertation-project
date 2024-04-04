@@ -19,7 +19,6 @@ public class WebSocketEventListener {
 
   private final SimpMessageSendingOperations messagingTemplate;
 
-  @SuppressWarnings("null")
   @EventListener
   public void handleWebSocketConnectListener(SessionConnectedEvent event) {
     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(

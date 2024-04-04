@@ -27,7 +27,6 @@ public class LanguageController {
   private MessageSource messageSource;
 
   @GetMapping("/messages")
-  @SuppressWarnings("null")
   public Map<String, String> getLocalizedMessages(HttpServletRequest request) {
     Locale locale = LocaleContextHolder.getLocale();
     String[] keys = { "greeting", "farewell", "welcome", "cart", "checkOut" };

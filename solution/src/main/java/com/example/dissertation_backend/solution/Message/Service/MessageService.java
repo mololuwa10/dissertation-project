@@ -88,7 +88,6 @@ public class MessageService {
       .collect(Collectors.toList());
   }
 
-  @SuppressWarnings("null")
   public List<ChatMessage> markMessagesAsRead(
     Integer senderId,
     Integer receiverId,
@@ -191,7 +190,6 @@ public class MessageService {
     return conversation;
   }
 
-  @SuppressWarnings("null")
   public List<MessageDTO> getAllConversations(Integer currentUserId) {
     ApplicationUser currentUser = userRepository
       .findById(currentUserId)

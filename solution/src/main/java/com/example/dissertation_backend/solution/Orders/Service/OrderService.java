@@ -106,7 +106,6 @@ public class OrderService {
       .collect(Collectors.toList());
   }
 
-  @SuppressWarnings("null")
   public void deleteOrder(Long orderId, ApplicationUser currentUser) {
     // Check for non-null orderId and currentUser
     if (orderId == null || currentUser == null) {

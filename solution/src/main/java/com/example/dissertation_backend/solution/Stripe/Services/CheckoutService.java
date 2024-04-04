@@ -65,7 +65,6 @@ public class CheckoutService {
 
     double totalPrice = 0.0;
     for (CheckoutItem item : checkoutItems) {
-      @SuppressWarnings("null")
       Products product = productRepository
         .findById(item.getProductId())
         .orElseThrow(() -> new RuntimeException("Product not found"));

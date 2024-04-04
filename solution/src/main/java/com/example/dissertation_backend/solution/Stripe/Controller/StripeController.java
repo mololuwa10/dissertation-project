@@ -79,7 +79,6 @@ public class StripeController {
 
       // Dynamically add line items based on checkoutItems
       for (CheckoutItem item : checkoutItems) {
-        @SuppressWarnings("null")
         Products product = productRepository
           .findById(item.getProductId())
           .orElseThrow(() -> new RuntimeException("Product not found"));
