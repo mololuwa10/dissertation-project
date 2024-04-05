@@ -2,7 +2,7 @@ package com.example.dissertation_backend.solution.Customers.Model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "artisan_profiles")
@@ -80,6 +80,10 @@ public class ArtisanProfile {
   @Column(name = "preferred_language")
   private String preferredLanguage;
 
+  @Column(name = "creation_date")
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date creationDate;
+
   // Constructor
   public ArtisanProfile() {
     super();
@@ -120,7 +124,8 @@ public class ArtisanProfile {
     String privacyPolicy,
     String communicationPreferences,
     String preferredLanguage,
-    String storeBanner
+    String storeBanner,
+    Date creationDate
   ) {
     this.artisan = artisan;
     this.bio = bio;
@@ -143,6 +148,7 @@ public class ArtisanProfile {
     this.communicationPreferences = communicationPreferences;
     this.preferredLanguage = preferredLanguage;
     this.storeBanner = storeBanner;
+    this.creationDate = creationDate;
   }
 
   // Getters and Setters
@@ -320,5 +326,13 @@ public class ArtisanProfile {
 
   public void setStoreBanner(String storeBanner) {
     this.storeBanner = storeBanner;
+  }
+
+  public Date getCreationDate() {
+    return creationDate;
+  }
+
+  public void setCreationDate(Date creationDate) {
+    this.creationDate = creationDate;
   }
 }

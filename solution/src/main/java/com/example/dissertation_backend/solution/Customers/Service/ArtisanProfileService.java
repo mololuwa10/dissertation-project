@@ -36,6 +36,15 @@ public class ArtisanProfileService {
     return artisanProfileRepository.save(artisanProfile);
   }
 
+  public List<ArtisanProfile> findNewArtisansToHighlight() {
+    // Calculate the date 2 weeks ago from current date
+    Calendar cal = Calendar.getInstance();
+    cal.add(Calendar.WEEK_OF_YEAR, -2);
+    Date twoWeeksAgo = cal.getTime();
+
+    return artisanProfileRepository.findAllByCreationDateAfter(twoWeeksAgo);
+  }
+
   public ArtisanProfile updateArtisanProfile(
     ArtisanProfile artisanProfile,
     ApplicationUser currentUser

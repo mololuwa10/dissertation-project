@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { ShoppingCart } from "lucide-react";
@@ -99,6 +100,11 @@ export default function Header() {
 									</nav>
 								</SheetContent>
 							</Sheet> */}
+								{/* <img
+									src="/CraftLogo.jpeg"
+									alt="Company logo"
+									className="h-16 md:h-10"
+								/> */}
 								<a
 									href="/"
 									className="ml-1 lg:ml-0 text-lg font-bold text-emerald-900">

@@ -219,6 +219,7 @@ public class UserController {
         ArtisanProfile newProfile = new ArtisanProfile();
         newProfile.setArtisan(user);
         newProfile.setBio("Default bio");
+        newProfile.setCreationDate(new Date());
 
         ArtisanProfile createdProfile = artisanProfileService.saveOrUpdateArtisanProfile(
           newProfile
@@ -235,5 +236,10 @@ public class UserController {
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .body(e.getMessage());
     }
+  }
+
+  @GetMapping("/newArtisans")
+  public List<ArtisanProfile> getNewArtisans() {
+    return artisanProfileService.findNewArtisansToHighlight();
   }
 }

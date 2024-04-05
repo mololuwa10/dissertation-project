@@ -12,4 +12,5 @@ public interface ArtisanProfileRepository
   // Add custom query methods if needed
   Optional<ArtisanProfile> findByArtisan(ApplicationUser artisan);
   Optional<ArtisanProfile> findByArtisan_UserId(Integer userId);
+  List<ArtisanProfile> findAllByCreationDateAfter(Date date);
 }
