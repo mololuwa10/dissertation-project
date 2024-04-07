@@ -32,7 +32,8 @@ public class AuthenticationController {
       body.getBankSortCode(),
       body.getContactTelephone(),
       body.getContactAddress(),
-      now
+      now,
+      body.getEnabled()
     );
   }
 

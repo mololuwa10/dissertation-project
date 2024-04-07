@@ -1,7 +1,32 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, SetStateAction } from "react";
-// import { useFilterContext } from "./UseFilterContext";
+
+export interface ArtisanProfile {
+	artisanId: number;
+	bio: string;
+	profilePicture: string | null;
+	location: string | null;
+	storeName: string | null;
+	storeBanner: string | null;
+	announcements: string | null;
+	businessHours: string | null;
+	gallery: string[];
+	stories: string | null;
+	specializations: string | null;
+	materialsUsed: string | null;
+	servicesOffered: string | null;
+	experienceYears: number | null;
+	shippingPolicies: string | null;
+	returnPolicy: string | null;
+	paymentOptions: string | null;
+	termsConditions: string | null;
+	privacyPolicy: string | null;
+	communicationPreferences: string | null;
+	preferredLanguage: string | null;
+	creationDate: string; // Assuming ISO 8601 format string; adjust if using Date objects
+}
+
 export const useFetchCategoryById = (categoryId: any) => {
 	interface Category {
 		categoryId: number;
@@ -154,6 +179,7 @@ export async function fetchAllRoles(jwt: string) {
 	}
 }
 
+// Artisan functions
 // Get all artisans
 export async function fetchAllArtisans() {
 	const response = await fetch("http://localhost:8080/api/user/allArtisans", {
@@ -169,6 +195,22 @@ export async function fetchAllArtisans() {
 
 	return response.json();
 }
+
+// Getting all new artisans within the span of 2 weeks
+export const fetchNewArtisans = async (): Promise<ArtisanProfile[]> => {
+	try {
+		// Adjust the URL to match your API endpoint's actual location
+		const response = await fetch("http://localhost:8080/api/user/newArtisans");
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const artisans: ArtisanProfile[] = await response.json();
+		return artisans;
+	} catch (error) {
+		console.error("Error fetching new artisans:", error);
+		throw error; // Re-throw to let calling code handle it
+	}
+};
 
 // Get all searched products
 export const useFetchSearchedProducts = (
@@ -415,7 +457,6 @@ export const useFetchSubcategories = (categoryId: any) => {
 };
 
 // get all testimonials
-
 export const useGetAllTestimonials = () => {
 	interface Testimonials {
 		testimonialId: number;

@@ -69,7 +69,8 @@ public class AuthenticationService {
     String bankSortCode,
     String contactTelephone,
     String contactAddress,
-    LocalDateTime dateJoined
+    LocalDateTime dateJoined,
+    Boolean enabled
   ) {
     // Check if username exists
     if (userRepository.findByUsername(username).isPresent()) {

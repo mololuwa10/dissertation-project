@@ -15,6 +15,10 @@ export default function SignIn() {
 	const togglePasswordVisibility = () => setPasswordShown(!passwordShown);
 	const { login, error } = useLogin();
 
+	const handleLoginWithGoogle = () => {
+		window.location.href = "http://localhost:8080/oauth2/authorization/google";
+	};
+
 	const handleSubmit = async (event: { preventDefault: () => void }) => {
 		event.preventDefault();
 		await login(username, password);
@@ -163,6 +167,7 @@ export default function SignIn() {
 								<div>
 									<button
 										type="submit"
+										onClick={handleLoginWithGoogle}
 										className="w-full items-center block px-10 py-3.5 text-base font-medium text-center text-blue-600 transition duration-500 ease-in-out transform border-2 border-white shadow-md rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
 										data-fdprocessedid="eburrg">
 										<div className="flex items-center justify-center">

@@ -60,6 +60,11 @@ public class SecurityConfiguration {
           .hasAnyRole("ADMIN", "USER", "ARTISAN");
         auth.requestMatchers("/ws/**").permitAll();
         auth.anyRequest().authenticated();
+      })
+      .oauth2Login(oauth2 -> {
+        // oauth2.loginPage("/oauth2/authorization/google");
+        oauth2.defaultSuccessUrl("http://localhost:3000/");
+        oauth2.failureUrl("/auth/login?error=true");
       });
 
     http.oauth2ResourceServer(oauth2 ->

@@ -64,7 +64,7 @@ public class ApplicationUser implements UserDetails {
   private ArtisanProfile artisanProfile;
 
   @Column(name = "enabled")
-  private Boolean enabled;
+  private boolean enabled;
 
   public ApplicationUser() {
     super();
@@ -89,7 +89,7 @@ public class ApplicationUser implements UserDetails {
     String contactAddress,
     Set<Roles> authorities,
     LocalDateTime dateJoined,
-    Boolean enabled
+    boolean enabled
   ) {
     this.userId = userId;
     this.firstname = firstname;
@@ -212,11 +212,11 @@ public class ApplicationUser implements UserDetails {
     this.artisanProfile = artisanProfile;
   }
 
-  public Boolean getEnabled() {
+  public boolean getEnabled() {
     return enabled;
   }
 
-  public void setEnabled(Boolean enabled) {
+  public void setEnabled(boolean enabled) {
     this.enabled = enabled;
   }
 

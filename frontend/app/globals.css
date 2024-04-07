@@ -9,6 +9,22 @@
 	--textSoft: #b7bac1;
 }
 
+@keyframes popIn {
+	0%,
+	100% {
+		transform: scale(0.8);
+		opacity: 0;
+	}
+	50% {
+		transform: scale(1.2);
+		opacity: 1;
+	}
+}
+
+.pop-in {
+	animation: popIn 1s ease-in-out infinite;
+}
+
 /* a {
 	color: inherit;
 	text-decoration: none;

@@ -3,6 +3,7 @@ package com.example.dissertation_backend.solution.DTO;
 import java.time.LocalDateTime;
 
 public class RegistrationDTO {
+
   private String firstname;
   private String lastname;
   private String user_email;
@@ -13,14 +14,25 @@ public class RegistrationDTO {
   private String bankSortCode;
   private String bankAccountNo;
   private LocalDateTime dateJoined;
+  private boolean enabled;
 
   private RegistrationDTO() {
     super();
   }
 
-  private RegistrationDTO(String firstname, String lastname, String user_email, String username, String password,
-      String contactAddress, String contactTelephone, String bankSortCode, String bankAccountNo,
-      LocalDateTime dateJoined) {
+  private RegistrationDTO(
+    String firstname,
+    String lastname,
+    String user_email,
+    String username,
+    String password,
+    String contactAddress,
+    String contactTelephone,
+    String bankSortCode,
+    String bankAccountNo,
+    LocalDateTime dateJoined,
+    boolean enabled
+  ) {
     super();
     this.firstname = firstname;
     this.lastname = lastname;
@@ -32,6 +44,7 @@ public class RegistrationDTO {
     this.bankSortCode = bankSortCode;
     this.bankAccountNo = bankAccountNo;
     this.dateJoined = dateJoined;
+    this.enabled = enabled;
   }
 
   // GETTERS AND SETTERS
@@ -115,13 +128,39 @@ public class RegistrationDTO {
     this.dateJoined = dateJoined;
   }
 
+  public boolean getEnabled() {
+    return enabled;
+  }
+
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+  }
+
   // TO STRING
   @Override
   public String toString() {
-    return "RegistrationDTO [firstname=" + firstname + ", lastname=" + lastname + ", user_email=" + user_email
-        + ", username=" + username + ", password=" + password + ", contactAddress=" + contactAddress
-        + ", contactTelephone=" + contactTelephone + ", bankSortCode=" + bankSortCode + ", bankAccountNo="
-        + bankAccountNo + ", dateJoined=" + dateJoined + "]";
+    return (
+      "RegistrationDTO [firstname=" +
+      firstname +
+      ", lastname=" +
+      lastname +
+      ", user_email=" +
+      user_email +
+      ", username=" +
+      username +
+      ", password=" +
+      password +
+      ", contactAddress=" +
+      contactAddress +
+      ", contactTelephone=" +
+      contactTelephone +
+      ", bankSortCode=" +
+      bankSortCode +
+      ", bankAccountNo=" +
+      bankAccountNo +
+      ", dateJoined=" +
+      dateJoined +
+      "]"
+    );
   }
-
 }
