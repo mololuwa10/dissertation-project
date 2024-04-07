@@ -1,12 +1,16 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import styles from "@/components/dashboardComponents/users/addUser/addUser.module.css";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { addProduct } from "@/lib/auth";
 import { useFetchAllCategories } from "@/lib/dbModels";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { LanguageProvider } from "@/app/LanguageContext";
+// import ReactTooltip, { Tooltip } from "react-tooltip";
+import { Tooltip } from "reactstrap";
 
 const AddProductPage = () => {
 	const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -19,6 +23,8 @@ const AddProductPage = () => {
 	const [categoryId, setCategoryId] = useState<string | number | null>(null);
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [selectedImages, setSelectedImages] = useState<File[]>([]);
+	const [previewImages, setPreviewImages] = useState<string[]>([]);
 
 	interface Category {
 		value: number;
@@ -33,7 +39,11 @@ const AddProductPage = () => {
 	};
 
 	const [attributes, setAttributes] = useState([
-		{ productAttributesKey: "", productAttributesValue: "" },
+		{
+			productAttributesKey: "",
+			productAttributesValue: "",
+			affectPricing: true,
+		},
 	]);
 
 	const handleAttributeChange = (index: any, field: any, value: any) => {
@@ -45,7 +55,11 @@ const AddProductPage = () => {
 	const handleAddAttribute = () => {
 		setAttributes([
 			...attributes,
-			{ productAttributesKey: "", productAttributesValue: "" },
+			{
+				productAttributesKey: "",
+				productAttributesValue: "",
+				affectPricing: true,
+			},
 		]);
 	};
 
@@ -88,6 +102,7 @@ const AddProductPage = () => {
 			const attributesData = attributes.map((attr) => ({
 				productAttributesKey: attr.productAttributesKey,
 				productAttributesValue: attr.productAttributesValue,
+				affectPricing: attr.affectPricing,
 			}));
 
 			setLoading(true);
@@ -114,11 +129,31 @@ const AddProductPage = () => {
 	};
 
 	// Function to handle file selection
+	// const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	// 	if (event.target.files && event.target.files.length > 0) {
+	// 		setSelectedImage(event.target.files[0]);
+	// 	}
+	// };
+
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files && event.target.files.length > 0) {
-			setSelectedImage(event.target.files[0]);
+			const filesArray: File[] = Array.from(event.target.files);
+			setSelectedImages(filesArray); // Update state with typed File array
+
+			// Generate preview URLs and update the previewImages state
+			const filesPreview: string[] = filesArray.map((file) =>
+				URL.createObjectURL(file)
+			);
+			setPreviewImages(filesPreview);
 		}
 	};
+
+	useEffect(() => {
+		// Cleanup function to revoke URLs when the component unmounts or files change
+		return () => {
+			previewImages.forEach((url) => URL.revokeObjectURL(url));
+		};
+	}, [previewImages]);
 
 	// Function to open file dialog
 	const handleSelectImageClick = () => {
@@ -138,29 +173,62 @@ const AddProductPage = () => {
 		onRemove: any;
 		index: any;
 	}) => {
+		const [tooltipOpen, setTooltipOpen] = useState(false);
+
+		const toggleTooltip = () => setTooltipOpen(!tooltipOpen);
 		return (
 			<div className="flex items-center space-x-3">
 				<input
 					type="text"
 					placeholder="Key"
+					id={`KeyTooltip-${index}`}
 					value={attribute.productAttributesKey}
 					onChange={(e) =>
 						onAttributeChange(index, "productAttributesKey", e.target.value)
 					}
 					className="input"
 				/>
+				<Tooltip
+					placement="top"
+					isOpen={tooltipOpen}
+					target={`KeyTooltip-${index}`}
+					toggle={toggleTooltip}>
+					Enter the attribute type here, e.g., 'Size'
+				</Tooltip>
+
 				<input
 					type="text"
 					placeholder="Value"
+					id={`ValueTooltip-${index}`}
 					value={attribute.productAttributesValue}
 					onChange={(e) =>
 						onAttributeChange(index, "productAttributesValue", e.target.value)
 					}
 					className="input"
 				/>
+				<Tooltip
+					placement="top"
+					isOpen={tooltipOpen}
+					target={`ValueTooltip-${index}`}
+					toggle={toggleTooltip}>
+					Enter the attribute detail here, e.g., 'Medium' for Size
+				</Tooltip>
+
 				<button type="button" onClick={() => onRemove(index)}>
 					Remove
 				</button>
+
+				<span className="tooltip-icon" id={`ExampleTooltip-${index}`}>
+					?
+				</span>
+				<Tooltip
+					placement="top"
+					isOpen={tooltipOpen}
+					target={`ExampleTooltip-${index}`}
+					toggle={toggleTooltip}>
+					Example: For 'Size', the values can be 'Small', 'Medium', or 'Large'.
+					Make sure to use the same 'Key' for sizes.
+				</Tooltip>
 			</div>
 		);
 	};
@@ -284,6 +352,15 @@ const AddProductPage = () => {
 							onClick={() => fileInputRef.current?.click()}>
 							Select Image
 						</button>
+
+						{previewImages.map((image: any, index: any) => (
+							<img
+								key={index}
+								src={image}
+								alt="Preview"
+								style={{ width: "100px", height: "100px" }}
+							/>
+						))}
 
 						<button type="submit" disabled={loading}>
 							{loading ? "Submitting..." : "Submit"}

@@ -145,7 +145,7 @@ export default function Products() {
 											.slice(0, 10)
 											.join(" ")}
 									</TableCell>
-									<TableCell>{product.productPrice}</TableCell>
+									<TableCell>{product.productPrice.toFixed(2)}</TableCell>
 									<TableCell>{product.productStockQuantity}</TableCell>
 									<TableCell>{product.productDiscount}</TableCell>
 									<TableCell>

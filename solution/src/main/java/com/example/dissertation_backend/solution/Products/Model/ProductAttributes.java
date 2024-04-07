@@ -17,6 +17,9 @@ public class ProductAttributes {
   @Column(name = "value")
   private String productAttributesValue;
 
+  @Column(name = "affects_pricing")
+  private Boolean affectsPricing;
+
   @ManyToOne
   @JoinColumn(
     name = "product_id",
@@ -71,5 +74,13 @@ public class ProductAttributes {
 
   public void setProduct(Products product) {
     this.product = product;
+  }
+
+  public Boolean getAffectsPricing() {
+    return affectsPricing;
+  }
+
+  public void setAffectsPricing(Boolean affectsPricing) {
+    this.affectsPricing = affectsPricing;
   }
 }

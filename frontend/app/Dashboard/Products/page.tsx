@@ -115,7 +115,7 @@ export default function Products() {
 									<TableCell>{product.value}</TableCell>
 									<TableCell>{product.label}</TableCell>
 									<TableCell>{product.description.slice(0, 30)}</TableCell>
-									<TableCell>{product.price}</TableCell>
+									<TableCell>{product.price.toFixed(2)}</TableCell>
 									<TableCell>{product.quantity}</TableCell>
 									<TableCell>{product.discount}</TableCell>
 									<TableCell>{product.dateTimeUpdated}</TableCell>

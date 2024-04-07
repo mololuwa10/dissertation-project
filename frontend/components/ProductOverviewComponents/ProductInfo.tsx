@@ -216,7 +216,7 @@ export default function ProductInfo() {
 					{typeof product?.productDiscount === "number" &&
 						product.productDiscount > 0 && (
 							<span className="line-through text-gray-500">
-								£{product?.productPrice}
+								£{product?.productPrice.toFixed(2)}
 							</span>
 						)}
 					£{displayedPrice}
@@ -327,25 +327,6 @@ export default function ProductInfo() {
 								</li>
 							))}
 					</ul>
-					{/* <ul className="space-y-4 text-sm text-gray-600">
-						<li>Delivery from a small business in United Kingdom</li>
-						<li>Materials: stained glass, cactus gravel, fusible glass</li>
-					</ul>
-					<p className="text-sm text-gray-600">
-						The mushroom vase is an exquisite decorative piece that seamlessly
-						blends nature-inspired aesthetics with the elegance of glass
-						craftsmanship. It serves as a unique and eye-catching centerpiece,
-						perfect for showcasing your favorite blooms and adding a touch of
-						natural beauty to any space.
-					</p>
-					<p className="text-sm text-gray-600">
-						Size: approximately 8-12 centimeters
-					</p>
-					<p className="text-sm text-gray-600">
-						Please note: The color of the glass is difficult to capture and will
-						vary in different lighting conditions; the color will also vary
-						slightly on different displays.
-					</p> */}
 					<div className="text-lg font-medium text-gray-900">
 						Delivery and return policies
 					</div>

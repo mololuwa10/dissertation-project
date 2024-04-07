@@ -176,7 +176,8 @@ public class ReviewService {
           new ProductAttributeDTO(
             attr.getProductAttributesId(),
             attr.getProductAttributesKey(),
-            attr.getProductAttributesValue()
+            attr.getProductAttributesValue(),
+            attr.getAffectsPricing()
           )
         )
         .collect(Collectors.toSet());

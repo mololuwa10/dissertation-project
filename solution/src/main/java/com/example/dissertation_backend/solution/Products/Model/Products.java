@@ -208,4 +208,36 @@ public class Products {
     attributes.remove(attribute);
     attribute.setProduct(null);
   }
+
+  public Double calculatePriceWithCustomizations() {
+    double finalPrice = this.productPrice;
+    for (ProductAttributes attr : this.attributes) {
+      if (Boolean.TRUE.equals(attr.getAffectsPricing())) {
+        // Only parse the string to a double if it's numeric
+        if (isNumeric(attr.getProductAttributesValue())) {
+          finalPrice += Double.parseDouble(attr.getProductAttributesValue());
+        } else {
+          System.err.println(
+            "Non-numeric price impact encountered for attribute key: " +
+            attr.getProductAttributesKey() +
+            ", value: " +
+            attr.getProductAttributesValue()
+          );
+        }
+      }
+    }
+    return finalPrice;
+  }
+
+  public static boolean isNumeric(String str) {
+    if (str == null) {
+      return false;
+    }
+    try {
+      Double.parseDouble(str);
+      return true;
+    } catch (NumberFormatException e) {
+      return false;
+    }
+  }
 }

@@ -137,7 +137,7 @@ export default function ProductReviews() {
 		);
 	};
 
-	const jwt = localStorage.getItem("jwt");
+	const jwt = localStorage.getItem("jwt") ?? "";
 	const handleSubmit = async (event: { preventDefault: () => void }) => {
 		event.preventDefault();
 		if (jwt === null) {

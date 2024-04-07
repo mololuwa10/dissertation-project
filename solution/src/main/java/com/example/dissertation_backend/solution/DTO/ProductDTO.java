@@ -17,6 +17,7 @@ public class ProductDTO {
   private CategoryDTO category;
   private Set<String> imageUrls;
   private Set<ProductAttributeDTO> attributes;
+  private Double dynamicPricing;
 
   public ProductDTO() {
     super();
@@ -33,7 +34,8 @@ public class ProductDTO {
     CategoryDTO category,
     Set<String> imageUrls,
     LocalDateTime dateTimeListed,
-    LocalDateTime dateTimeUpdated
+    LocalDateTime dateTimeUpdated,
+    Double dynamicPricing
   ) {
     super();
     this.productId = productId;
@@ -47,6 +49,7 @@ public class ProductDTO {
     this.imageUrls = imageUrls;
     this.dateTimeListed = dateTimeListed;
     this.dateTimeUpdated = dateTimeUpdated;
+    this.dynamicPricing = dynamicPricing;
   }
 
   public ArtisanProfileDTO getArtisanProfile() {
@@ -143,5 +146,13 @@ public class ProductDTO {
 
   public void setAttributes(Set<ProductAttributeDTO> attributes) {
     this.attributes = attributes;
+  }
+
+  public Double getDynamicPricing() {
+    return dynamicPricing;
+  }
+
+  public void setDynamicPricing(Double dynamicPricing) {
+    this.dynamicPricing = dynamicPricing;
   }
 }

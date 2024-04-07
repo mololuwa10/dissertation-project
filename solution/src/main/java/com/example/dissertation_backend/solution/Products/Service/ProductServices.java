@@ -371,12 +371,14 @@ public class ProductServices {
         new ProductAttributeDTO(
           attr.getProductAttributesId(),
           attr.getProductAttributesKey(),
-          attr.getProductAttributesValue()
+          attr.getProductAttributesValue(),
+          attr.getAffectsPricing()
         )
       )
       .collect(Collectors.toSet());
 
     dto.setAttributes(attributeDTOs);
+    dto.setProductPrice(product.calculatePriceWithCustomizations());
 
     return dto;
   }

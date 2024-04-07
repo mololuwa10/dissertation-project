@@ -8,6 +8,7 @@ import com.example.dissertation_backend.solution.Customers.Service.UserService;
 import com.example.dissertation_backend.solution.DTO.ApplicationUserDTO;
 import com.example.dissertation_backend.solution.DTO.ArtisanProfileDTO;
 import com.example.dissertation_backend.solution.DTO.CategoryDTO;
+import com.example.dissertation_backend.solution.DTO.ProductAttributeDTO;
 import com.example.dissertation_backend.solution.DTO.ProductDTO;
 import com.example.dissertation_backend.solution.DTO.ReviewDTO;
 import com.example.dissertation_backend.solution.Orders.Service.OrderService;
@@ -336,6 +337,21 @@ public class ReviewController {
     dto.setImageUrls(imageUrls);
     dto.setDateTimeListed(product.getDateListed());
     dto.setDateTimeUpdated(product.getDateTimeUpdated());
+    Set<ProductAttributeDTO> attributeDTOs = product
+      .getAttributes()
+      .stream()
+      .map(attr ->
+        new ProductAttributeDTO(
+          attr.getProductAttributesId(),
+          attr.getProductAttributesKey(),
+          attr.getProductAttributesValue(),
+          attr.getAffectsPricing()
+        )
+      )
+      .collect(Collectors.toSet());
+
+    dto.setAttributes(attributeDTOs);
+    dto.setDynamicPricing(product.calculatePriceWithCustomizations());
 
     return dto;
   }
