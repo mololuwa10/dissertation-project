@@ -58,7 +58,7 @@ const ProductList = ({ products }: { products: any }) => {
 					reviews.length;
 				ratings[product.productId] = isNaN(averageRating)
 					? 0
-					: Number(averageRating.toFixed(1)); // Check for NaN and round to 1 decimal
+					: Number(averageRating.toFixed(1));
 			}
 			setAverageRatings(ratings);
 		};
