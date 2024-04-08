@@ -7,6 +7,7 @@ import { Label } from "../ui/label";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ChatBox } from "./ChatBox";
+import Link from "next/link";
 
 interface Product {
 	productId: number;
@@ -201,7 +202,7 @@ export default function ProductInfo() {
 		<>
 			<ToastContainer
 				position="top-right"
-				autoClose={5000}
+				autoClose={2000}
 				hideProgressBar={false}
 				newestOnTop={false}
 				closeOnClick
@@ -342,7 +343,15 @@ export default function ProductInfo() {
 						{product?.artisanProfile.firstname}
 					</div>
 					<div className="text-sm text-gray-600">
-						Owner of {product?.artisanProfile.storeName}
+						Owner of{" "}
+						<Link
+							href={{
+								pathname: "/ArtisanProfileOverview",
+								query: { artisanId: product?.artisanProfile.artisanId },
+							}}
+							className="underline font-medium text-gray-600 hover:text-gray-700">
+							{product?.artisanProfile.storeName}
+						</Link>
 					</div>
 					<Button
 						size="lg"

@@ -86,6 +86,10 @@ export default function Categories() {
 		);
 	} else {
 		// Handle the case when category is null or not found
-		return <p>Category not found</p>;
+		return (
+			<div className="flex justify-center items-center h-screen">
+				<div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+			</div>
+		);
 	}
 }

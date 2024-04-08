@@ -11,7 +11,7 @@ export default function StoriesGallerySkillsComponents() {
 	}
 	return (
 		<>
-			<div className="bg-white shadow rounded-lg p-6 mb-6">
+			{/* <div className="bg-white shadow rounded-lg p-6 mb-6">
 				<h2 className="text-2xl text-gray-800 font-semibold mb-4">Stories</h2>
 				<form>
 					<div className="mb-4">
@@ -30,16 +30,16 @@ export default function StoriesGallerySkillsComponents() {
 						Save
 					</Button>
 				</form>
-			</div>
+			</div> */}
 
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+			<div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-6">
 				<div className="bg-white shadow rounded-lg p-6">
 					<h2 className="text-2xl text-gray-800 font-semibold mb-4">Gallery</h2>
 					{/* Gallery images */}
-					{/* ... */}
+					<div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-6"></div>
 				</div>
 
-				<div className="bg-white shadow rounded-lg p-6">
+				{/* <div className="bg-white shadow rounded-lg p-6">
 					<h2 className="text-2xl text-gray-800 font-semibold mb-4">Skills</h2>
 					<form>
 						<textarea
@@ -53,13 +53,7 @@ export default function StoriesGallerySkillsComponents() {
 							Save
 						</Button>
 					</form>
-				</div>
-
-				<Link href={"/ArtisanDashboard"}>
-					<Button size={"lg"} className="hover:bg-blue-600">
-						Go To Seller Dashboard
-					</Button>
-				</Link>
+				</div> */}
 			</div>
 		</>
 	);

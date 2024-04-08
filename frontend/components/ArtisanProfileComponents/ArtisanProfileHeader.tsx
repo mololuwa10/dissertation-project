@@ -43,6 +43,14 @@ const ArtisanProfileHeader = () => {
 						<span className="text-white">Edit shop</span>
 					</Link>
 					<div className="hidden sm:block"></div>
+
+					<Link href={"/ArtisanDashboard"}>
+						<Button
+							size={"lg"}
+							className="bg-gray-800 hover:bg-gray-900 rounded-full">
+							Go To Seller Dashboard
+						</Button>
+					</Link>
 				</div>
 			</div>
 		</>

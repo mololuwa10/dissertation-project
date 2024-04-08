@@ -42,7 +42,7 @@ const AddProductPage = () => {
 		{
 			productAttributesKey: "",
 			productAttributesValue: "",
-			affectPricing: true,
+			affectsPricing: true,
 		},
 	]);
 
@@ -58,7 +58,7 @@ const AddProductPage = () => {
 			{
 				productAttributesKey: "",
 				productAttributesValue: "",
-				affectPricing: true,
+				affectsPricing: true,
 			},
 		]);
 	};
@@ -102,7 +102,7 @@ const AddProductPage = () => {
 			const attributesData = attributes.map((attr) => ({
 				productAttributesKey: attr.productAttributesKey,
 				productAttributesValue: attr.productAttributesValue,
-				affectPricing: attr.affectPricing,
+				affectsPricing: attr.affectsPricing,
 			}));
 
 			setLoading(true);
@@ -129,22 +129,23 @@ const AddProductPage = () => {
 	};
 
 	// Function to handle file selection
-	// const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-	// 	if (event.target.files && event.target.files.length > 0) {
-	// 		setSelectedImage(event.target.files[0]);
-	// 	}
-	// };
-
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files && event.target.files.length > 0) {
-			const filesArray: File[] = Array.from(event.target.files);
-			setSelectedImages(filesArray); // Update state with typed File array
+			const file = event.target.files[0];
+			setSelectedImage(file);
+			// Create a FileReader instance
+			const reader = new FileReader();
 
-			// Generate preview URLs and update the previewImages state
-			const filesPreview: string[] = filesArray.map((file) =>
-				URL.createObjectURL(file)
-			);
-			setPreviewImages(filesPreview);
+			// Define a function to handle the FileReader onload event
+			reader.onload = (e) => {
+				if (e.target && e.target.result) {
+					// Set the preview URL to the result of the FileReader
+					setPreviewImages([e.target.result.toString()]);
+				}
+			};
+
+			// Read the file as a data URL (base64 encoded)
+			reader.readAsDataURL(file);
 		}
 	};
 
@@ -173,9 +174,21 @@ const AddProductPage = () => {
 		onRemove: any;
 		index: any;
 	}) => {
-		const [tooltipOpen, setTooltipOpen] = useState(false);
+		// Use an object to manage tooltip states individually
+		const [tooltips, setTooltips] = useState({
+			keyTooltip: false,
+			valueTooltip: false,
+			exampleTooltip: false,
+		});
 
-		const toggleTooltip = () => setTooltipOpen(!tooltipOpen);
+		// Function to toggle individual tooltips
+		const toggleTooltip = (tooltip: any) => {
+			setTooltips((prev) => ({
+				...prev,
+				[tooltip]: !prev[tooltip],
+			}));
+		};
+
 		return (
 			<div className="flex items-center space-x-3">
 				<input
@@ -187,13 +200,16 @@ const AddProductPage = () => {
 						onAttributeChange(index, "productAttributesKey", e.target.value)
 					}
 					className="input"
+					onMouseEnter={() => toggleTooltip("keyTooltip")}
+					onMouseLeave={() => toggleTooltip("keyTooltip")}
 				/>
 				<Tooltip
-					placement="top"
-					isOpen={tooltipOpen}
-					target={`KeyTooltip-${index}`}
-					toggle={toggleTooltip}>
-					Enter the attribute type here, e.g., 'Size'
+					placement="bottom"
+					isOpen={tooltips.keyTooltip}
+					target={`KeyTooltip-${index}`}>
+					<h2 className="text-white">
+						Enter the attribute type here, e.g., 'Size'
+					</h2>
 				</Tooltip>
 
 				<input
@@ -205,29 +221,37 @@ const AddProductPage = () => {
 						onAttributeChange(index, "productAttributesValue", e.target.value)
 					}
 					className="input"
+					onMouseEnter={() => toggleTooltip("valueTooltip")}
+					onMouseLeave={() => toggleTooltip("valueTooltip")}
 				/>
 				<Tooltip
-					placement="top"
-					isOpen={tooltipOpen}
-					target={`ValueTooltip-${index}`}
-					toggle={toggleTooltip}>
-					Enter the attribute detail here, e.g., 'Medium' for Size
+					placement="bottom"
+					isOpen={tooltips.valueTooltip}
+					target={`ValueTooltip-${index}`}>
+					<h2 className="text-white">
+						Enter the attribute detail here, e.g., 'Medium' for Size
+					</h2>
 				</Tooltip>
 
 				<button type="button" onClick={() => onRemove(index)}>
 					Remove
 				</button>
 
-				<span className="tooltip-icon" id={`ExampleTooltip-${index}`}>
+				<span
+					className="tooltip-icon cursor-pointer"
+					id={`ExampleTooltip-${index}`}
+					onMouseEnter={() => toggleTooltip("exampleTooltip")}
+					onMouseLeave={() => toggleTooltip("exampleTooltip")}>
 					?
 				</span>
 				<Tooltip
-					placement="top"
-					isOpen={tooltipOpen}
-					target={`ExampleTooltip-${index}`}
-					toggle={toggleTooltip}>
-					Example: For 'Size', the values can be 'Small', 'Medium', or 'Large'.
-					Make sure to use the same 'Key' for sizes.
+					placement="bottom"
+					isOpen={tooltips.exampleTooltip}
+					target={`ExampleTooltip-${index}`}>
+					<h2 className="text-white">
+						Example: For 'Size', the values can be 'Small', 'Medium', or
+						'Large'. Make sure to use the same 'Key' for sizes.
+					</h2>
 				</Tooltip>
 			</div>
 		);
@@ -238,7 +262,7 @@ const AddProductPage = () => {
 			<LanguageProvider>
 				<ToastContainer
 					position="top-right"
-					autoClose={5000}
+					autoClose={2000}
 					hideProgressBar={false}
 					newestOnTop={false}
 					closeOnClick
@@ -357,8 +381,9 @@ const AddProductPage = () => {
 							<img
 								key={index}
 								src={image}
+								className="mb-4"
 								alt="Preview"
-								style={{ width: "100px", height: "100px" }}
+								style={{ width: "300px", height: "300px" }}
 							/>
 						))}
 

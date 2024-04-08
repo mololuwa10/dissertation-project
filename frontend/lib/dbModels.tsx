@@ -4,6 +4,10 @@ import React, { useState, useEffect, useCallback, SetStateAction } from "react";
 
 export interface ArtisanProfile {
 	artisanId: number;
+	artisan: {
+		firstname: string;
+		lastname: string;
+	};
 	bio: string;
 	profilePicture: string | null;
 	location: string | null;
@@ -212,6 +216,24 @@ export const fetchNewArtisans = async (): Promise<ArtisanProfile[]> => {
 	}
 };
 
+export const fetchArtisanById = async (
+	artisanId: any
+): Promise<ArtisanProfile> => {
+	try {
+		// Adjust the URL to match your API endpoint's actual location
+		const response = await fetch(
+			`http://localhost:8080/api/artisan/${artisanId}`
+		);
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		const artisans: ArtisanProfile = await response.json();
+		return artisans;
+	} catch (error) {
+		console.error("Error fetching new artisans:", error);
+		throw error;
+	}
+};
 // Get all searched products
 export const useFetchSearchedProducts = (
 	searchTerm: string,

@@ -125,7 +125,7 @@ export default function TrendingSections() {
 					</h2>
 
 					<div className="mt-3 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-						{products.slice(0, 16).map((product) => (
+						{products.slice(0, 12).map((product) => (
 							<div key={product.value} className="group relative">
 								<div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
 									{product.price && product.price > product.discount && (
@@ -169,10 +169,6 @@ export default function TrendingSections() {
 											</Link>
 										</h3>
 									</div>
-									{/* <p className="text-sm font-medium text-gray-900">
-										£{product.discount}
-									</p> */}
-
 									<div>
 										{/* Check if product has original price and if it's greater than the current price */}
 										{product.price && product.price > product.discount && (
@@ -181,16 +177,21 @@ export default function TrendingSections() {
 													£{product.price.toFixed(2)}
 												</span>
 												<span className="text-sm font-medium text-gray-900">
-													£{product.discount.toFixed(2)}
+													£
+													{product.discount !== null
+														? product.discount.toFixed(2)
+														: product.price.toFixed(2)}
 												</span>
 											</div>
 										)}
 										{/* If no original price or if it's not greater than current price, just show current price */}
-										{(!product.price || product.price <= product.discount) && (
-											<span className="text-sm font-medium text-gray-900">
-												£{product.discount.toFixed(2)}
-											</span>
-										)}
+										{!product.price ||
+											product.price <= product.discount ||
+											(product.discount === 0 && (
+												<span className="text-sm font-medium text-gray-900">
+													£{product.discount.toFixed(2)}
+												</span>
+											))}
 									</div>
 								</div>
 								<p className="text-gray-500 text-sm mt-2">
