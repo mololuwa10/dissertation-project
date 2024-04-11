@@ -108,12 +108,4 @@ public class OrderController {
 
     return ResponseEntity.ok().body("Order deleted successfully");
   }
-  // private boolean hasRole(ApplicationUser user, String roleName) {
-  //   for (Roles role : user.getAuthorities()) {
-  //     if (roleName.equals(role.getAuthority())) {
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // }
 }
