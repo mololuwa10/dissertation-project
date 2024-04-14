@@ -12,6 +12,8 @@ import { LanguageProvider } from "../LanguageContext";
 import { useFetchUserInfo } from "@/lib/data";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Inventory from "@/components/dashboardComponents/inventory/inventory";
+import HighestSellingProducts from "@/components/dashboardComponents/highestSellingProducts/highestSellingProducts";
 
 const Dashboard = () => {
 	const [usersData, setUsersData] = useState({
@@ -223,6 +225,8 @@ const Dashboard = () => {
 				</div>
 				<Orders />
 				<Chart />
+				<HighestSellingProducts />
+				<Inventory />
 			</div>
 		</div>
 	);

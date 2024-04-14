@@ -5,10 +5,13 @@ import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser
 import com.example.dissertation_backend.solution.Customers.Repository.UserRepository;
 import com.example.dissertation_backend.solution.DTO.FullOrderDTO;
 import com.example.dissertation_backend.solution.DTO.OrderDTO;
+import com.example.dissertation_backend.solution.DTO.ProductSalesDTO;
 // import com.example.dissertation_backend.solution.DTO.OrderDetailsDTO;
 import com.example.dissertation_backend.solution.Orders.Service.OrderService;
+import com.example.dissertation_backend.solution.Products.Model.Products;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -92,6 +95,26 @@ public class OrderController {
       return ResponseEntity.ok(orders);
     } catch (RuntimeException e) {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
+  }
+
+  @GetMapping("/top-selling-product")
+  public ResponseEntity<?> getTopSellingProduct() {
+    Optional<Products> product = orderService.findTopSellingProduct();
+    if (product.isPresent()) {
+      return ResponseEntity.ok(product.get());
+    } else {
+      return ResponseEntity.notFound().build();
+    }
+  }
+
+  @GetMapping("/product-sales")
+  public ResponseEntity<List<ProductSalesDTO>> getProductSales() {
+    List<ProductSalesDTO> productSales = orderService.findAllProductSales();
+    if (productSales.isEmpty()) {
+      return ResponseEntity.noContent().build();
+    } else {
+      return ResponseEntity.ok(productSales);
     }
   }
 

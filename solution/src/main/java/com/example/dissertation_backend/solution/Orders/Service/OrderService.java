@@ -5,6 +5,7 @@ import com.example.dissertation_backend.solution.Customers.Repository.UserReposi
 import com.example.dissertation_backend.solution.DTO.FullOrderDTO;
 import com.example.dissertation_backend.solution.DTO.OrderDTO;
 import com.example.dissertation_backend.solution.DTO.OrderDetailsDTO;
+import com.example.dissertation_backend.solution.DTO.ProductSalesDTO;
 import com.example.dissertation_backend.solution.Orders.Model.OrderDetails;
 import com.example.dissertation_backend.solution.Orders.Model.Orders;
 import com.example.dissertation_backend.solution.Orders.Repository.OrderDetailsRepository;
@@ -103,6 +104,30 @@ public class OrderService {
           .collect(Collectors.toList());
         return new FullOrderDTO(orderDTO, detailsDTOs);
       })
+      .collect(Collectors.toList());
+  }
+
+  public Optional<Products> findTopSellingProduct() {
+    List<Object[]> productSales = orderDetailsRepository.findProductSales();
+    return productSales
+      .stream()
+      .max((a, b) ->
+        Integer.compare(((Long) a[1]).intValue(), ((Long) b[1]).intValue())
+      )
+      .map(result -> (Products) result[0]);
+  }
+
+  public List<ProductSalesDTO> findAllProductSales() {
+    List<Object[]> results = orderDetailsRepository.findProductSalesAndOrderCount();
+    return results
+      .stream()
+      .map(result ->
+        new ProductSalesDTO(
+          (Products) result[0],
+          ((Long) result[1]).intValue(),
+          ((Long) result[2]).intValue()
+        )
+      )
       .collect(Collectors.toList());
   }
 

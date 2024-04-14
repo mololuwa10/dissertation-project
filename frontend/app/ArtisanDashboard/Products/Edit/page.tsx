@@ -76,20 +76,17 @@ export default function EditProduct() {
 	const [selectedCategoryId, setSelectedCategoryId] = useState<number | string>(
 		""
 	);
+	const [attributes, setAttributes] = useState([
+		{
+			key: "",
+			value: "",
+			affectsPricing: false,
+		},
+	]);
 	const [productImages, setProductImages] = useState<File[]>([]);
 	const [allArtisans, setAllArtisans] = useState<ArtisanProfile[]>([]);
 	const searchParams = useSearchParams();
 	const productId = searchParams.get("productId");
-
-	useEffect(() => {
-		fetchAllArtisans()
-			.then((fetchedArtisans) => {
-				setAllArtisans(fetchedArtisans);
-			})
-			.catch((error) => {
-				console.error("Error fetching artisans:", error);
-			});
-	}, []);
 
 	useEffect(() => {
 		if (productId) {
@@ -103,6 +100,15 @@ export default function EditProduct() {
 					// Set the artisan that owns the product
 					if (fetchedProduct && fetchedProduct.artisanProfile) {
 						setSelectedArtisanId(fetchedProduct.artisanProfile.artisanId);
+					}
+
+					// SETTING THE ATTRIBUTES
+					if (fetchedProduct.attributes) {
+						setAttributes(
+							Array.isArray(fetchedProduct.attributes)
+								? fetchedProduct.attributes
+								: []
+						);
 					}
 				})
 				.catch((err) => {
@@ -119,6 +125,30 @@ export default function EditProduct() {
 	if (!product) {
 		return <div>Loading...</div>;
 	}
+
+	const handleAttributeChange = (index: any, field: any, value: any) => {
+		const newAttributes = [...attributes];
+		newAttributes[index] = { ...newAttributes[index], [field]: value };
+		setAttributes(newAttributes);
+	};
+
+	const handleAddAttribute = () => {
+		setAttributes([
+			...attributes,
+			{
+				key: "",
+				value: "",
+				affectsPricing: false,
+			},
+		]);
+	};
+
+	const handleRemoveAttribute = (index: any) => {
+		const newAttributes = attributes.filter(
+			(_, attrIndex) => attrIndex !== index
+		);
+		setAttributes(newAttributes);
+	};
 
 	const handleSubmit = async (event: any) => {
 		event.preventDefault();
@@ -140,10 +170,16 @@ export default function EditProduct() {
 			productDiscount: product?.productDiscount,
 		};
 
-		const formData = new FormData();
-		formData.append("product", JSON.stringify(productData));
+		const attributesData = attributes.map((attr) => ({
+			productAttributesKey: attr.key,
+			productAttributesValue: attr.value,
+			affectsPricing: attr.affectsPricing,
+		}));
+
+		// const formData = new FormData();
+		// formData.append("product", JSON.stringify(productData));
 		try {
-			await updateProduct(product?.productId, productData, jwt);
+			await updateProduct(product?.productId, attributesData, productData, jwt);
 			toast.success("Product Updated Successfully");
 		} catch (error) {
 			if (error instanceof Error) {
@@ -206,7 +242,7 @@ export default function EditProduct() {
 			<LanguageProvider>
 				<ToastContainer
 					position="top-right"
-					autoClose={5000}
+					autoClose={2000}
 					hideProgressBar={false}
 					newestOnTop={false}
 					closeOnClick
@@ -221,7 +257,11 @@ export default function EditProduct() {
 							{product?.imageUrls.map((imageUrl, index) => (
 								<Image
 									key={index}
-									src={`http://localhost:8080${imageUrl}` || "/noavatar.png"}
+									src={
+										imageUrl
+											? `http://localhost:8080${imageUrl}`
+											: "/noavatar.png"
+									}
 									alt={`Product Image ${index + 1}`}
 									fill
 								/>
@@ -283,6 +323,58 @@ export default function EditProduct() {
 									</option>
 								))}
 							</select>
+
+							<div>
+								<h4>Attributes</h4>
+								{attributes.map((attribute, index) => (
+									<div key={index} className="flex items-center space-x-3 mb-3">
+										<input
+											className="flex-1 p-2 border border-gray-300 rounded"
+											type="text"
+											placeholder="Attribute Key"
+											value={attribute.key}
+											onChange={(e) =>
+												handleAttributeChange(index, "key", e.target.value)
+											}
+										/>
+										<input
+											className="flex-1 p-2 border border-gray-300 rounded"
+											type="text"
+											placeholder="Attribute Value"
+											value={attribute.value}
+											onChange={(e) =>
+												handleAttributeChange(index, "value", e.target.value)
+											}
+										/>
+										<label className="flex items-center space-x-2">
+											<span>Affects Pricing</span>
+											<input
+												type="checkbox"
+												checked={attribute.affectsPricing}
+												onChange={(e) =>
+													handleAttributeChange(
+														index,
+														"affectsPricing",
+														e.target.checked
+													)
+												}
+											/>
+										</label>
+										<button
+											type="button"
+											className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+											onClick={() => handleRemoveAttribute(index)}>
+											Remove
+										</button>
+									</div>
+								))}
+								<button
+									type="button"
+									className="mt-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+									onClick={handleAddAttribute}>
+									Add Attribute
+								</button>
+							</div>
 
 							<button>Update</button>
 						</form>

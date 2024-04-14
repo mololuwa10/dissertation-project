@@ -142,6 +142,134 @@ public class ProductController {
     return productService.getProductsByArtisanId(artisanId);
   }
 
+  // @PostMapping
+  // public ResponseEntity<Object> createProduct(
+  //   Principal principal,
+  //   @RequestParam("product") String productStr,
+  //   @RequestParam("attributes") String attributesStr,
+  //   @RequestParam("images") MultipartFile[] files
+  // ) {
+  //   try {
+  //     // Converting the JSON string to a product object
+  //     ObjectMapper mapper = new ObjectMapper();
+  //     Products product = mapper.readValue(productStr, Products.class);
+
+  //     // Convert attributes JSON to list of ProductAttribute
+  //     List<ProductAttributes> attributes = Arrays.asList(
+  //       mapper.readValue(attributesStr, ProductAttributes[].class)
+  //     );
+
+  //     // Getting the user from user service
+  //     ApplicationUser user = userService.findByUsername(principal.getName());
+
+  //     // Check if the user is an artisan or an admin
+  //     boolean isArtisanOrAdmin = user
+  //       .getAuthorities()
+  //       .stream()
+  //       .anyMatch(role ->
+  //         role.getAuthority().equals("ARTISAN") ||
+  //         role.getAuthority().equals("ADMIN")
+  //       );
+
+  //     if (!isArtisanOrAdmin) {
+  //       return ResponseEntity
+  //         .status(HttpStatus.FORBIDDEN)
+  //         .body("Access denied: User is not authorized to create products");
+  //     }
+
+  //     Optional<ArtisanProfile> artisanProfileOpt = artisanProfileService.findByArtisan(
+  //       user
+  //     );
+  //     ArtisanProfile artisan;
+  //     if (artisanProfileOpt.isPresent()) {
+  //       artisan = artisanProfileOpt.get();
+  //     } else if (isArtisanOrAdmin) {
+  //       // Create a new ArtisanProfile for the admin
+  //       artisan =
+  //         new ArtisanProfile(
+  //           user,
+  //           "Admin's bio",
+  //           null,
+  //           "Northampton",
+  //           "CraftWise Artisans"
+  //         );
+  //       artisanProfileService.saveOrUpdateArtisanProfile(artisan);
+  //     } else {
+  //       throw new RuntimeException("Artisan profile not found for user");
+  //     }
+
+  //     // Getting the category it is set to
+  //     Category category = categoryService
+  //       .getCategoryById(product.getCategory().getCategoryId())
+  //       .orElseThrow(() -> new RuntimeException("Category not found"));
+
+  //     // product.setProductPrice(product.calculatePriceWithCustomizations());
+  //     product.setCategory(category);
+  //     product.setArtisan(artisan);
+  //     product.setDateListed(LocalDateTime.now());
+  //     Products createdProduct = productService.saveOrUpdateProduct(
+  //       product,
+  //       attributes
+  //     );
+
+  //     for (MultipartFile file : files) {
+  //       try {
+  //         // Process file - you can resize or convert format if needed
+  //         byte[] resizedImage = file.getBytes();
+
+  //         // The directory name
+  //         String directoryName = "uploads";
+
+  //         // Ensure directory exists or create it
+  //         Path uploadDirPath = Paths.get(directoryName).toAbsolutePath();
+  //         Files.createDirectories(uploadDirPath);
+
+  //         // Extract file extension
+  //         String originalFilename = file.getOriginalFilename();
+  //         String fileExtension = "";
+
+  //         if (originalFilename != null && originalFilename.contains(".")) {
+  //           fileExtension =
+  //             originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+  //         }
+
+  //         // Generate a unique filename using the current time and the original filename
+  //         String fileName =
+  //           System.currentTimeMillis() + "_" + file.getOriginalFilename();
+
+  //         // Resolve the file extension if necessary
+  //         if (!fileExtension.isEmpty()) {
+  //           fileName = fileName + "." + fileExtension;
+  //         }
+
+  //         Path destinationFilePath = uploadDirPath.resolve(fileName);
+
+  //         // Write the resized image to the file
+  //         Files.write(destinationFilePath, resizedImage);
+
+  //         // Generate the retrievable URL or relative path
+  //         String imageUrl = "/" + directoryName + "/" + fileName;
+
+  //         // Create ProductImages instance and save
+  //         ProductImages productImage = new ProductImages(
+  //           createdProduct,
+  //           imageUrl
+  //         );
+  //         productImageService.saveImage(productImage);
+  //       } catch (IOException ex) {
+  //         throw new ImageStorageException("Error processing image", ex);
+  //       }
+  //     }
+  //     return ResponseEntity.ok(createdProduct);
+  //   } catch (IOException e) {
+  //     // Handling IOException
+  //     e.printStackTrace();
+  //     return ResponseEntity
+  //       .status(HttpStatus.INTERNAL_SERVER_ERROR)
+  //       .body("Failed to create product");
+  //   }
+  // }
+
   @PostMapping
   public ResponseEntity<Object> createProduct(
     Principal principal,
@@ -150,55 +278,33 @@ public class ProductController {
     @RequestParam("images") MultipartFile[] files
   ) {
     try {
-      // Converting the JSON string to a product object
       ObjectMapper mapper = new ObjectMapper();
       Products product = mapper.readValue(productStr, Products.class);
-
-      // Convert attributes JSON to list of ProductAttribute
       List<ProductAttributes> attributes = Arrays.asList(
         mapper.readValue(attributesStr, ProductAttributes[].class)
       );
 
-      // Getting the user from user service
       ApplicationUser user = userService.findByUsername(principal.getName());
-
-      // Check if the user is an artisan or an admin
-      boolean isArtisanOrAdmin = user
-        .getAuthorities()
-        .stream()
-        .anyMatch(role ->
-          role.getAuthority().equals("ARTISAN") ||
-          role.getAuthority().equals("ADMIN")
-        );
-
-      if (!isArtisanOrAdmin) {
+      if (
+        !user
+          .getAuthorities()
+          .stream()
+          .anyMatch(role ->
+            role.getAuthority().equals("ARTISAN") ||
+            role.getAuthority().equals("ADMIN")
+          )
+      ) {
         return ResponseEntity
           .status(HttpStatus.FORBIDDEN)
           .body("Access denied: User is not authorized to create products");
       }
 
-      Optional<ArtisanProfile> artisanProfileOpt = artisanProfileService.findByArtisan(
-        user
-      );
-      ArtisanProfile artisan;
-      if (artisanProfileOpt.isPresent()) {
-        artisan = artisanProfileOpt.get();
-      } else if (isArtisanOrAdmin) {
-        // Create a new ArtisanProfile for the admin
-        artisan =
-          new ArtisanProfile(
-            user,
-            "Admin's bio",
-            null,
-            "Northampton",
-            "CraftWise Artisans"
-          );
-        artisanProfileService.saveOrUpdateArtisanProfile(artisan);
-      } else {
-        throw new RuntimeException("Artisan profile not found for user");
-      }
+      ArtisanProfile artisan = artisanProfileService
+        .findByArtisan(user)
+        .orElseThrow(() ->
+          new RuntimeException("Artisan profile not found for user")
+        );
 
-      // Getting the category it is set to
       Category category = categoryService
         .getCategoryById(product.getCategory().getCategoryId())
         .orElseThrow(() -> new RuntimeException("Category not found"));
@@ -212,56 +318,34 @@ public class ProductController {
       );
 
       for (MultipartFile file : files) {
-        try {
-          // Process file - you can resize or convert format if needed
-          byte[] resizedImage = file.getBytes();
+        byte[] resizedImage = file.getBytes();
+        String directoryName = "uploads";
+        Path uploadDirPath = Paths.get(directoryName).toAbsolutePath();
+        Files.createDirectories(uploadDirPath);
 
-          // The directory name
-          String directoryName = "uploads";
+        String originalFilename = file.getOriginalFilename();
+        String fileExtension = originalFilename != null &&
+          originalFilename.contains(".")
+          ? originalFilename.substring(originalFilename.lastIndexOf(".") + 1)
+          : "";
+        String fileName =
+          System.currentTimeMillis() +
+          "_" +
+          file.getOriginalFilename() +
+          (fileExtension.isEmpty() ? "" : "." + fileExtension);
 
-          // Ensure directory exists or create it
-          Path uploadDirPath = Paths.get(directoryName).toAbsolutePath();
-          Files.createDirectories(uploadDirPath);
+        Path destinationFilePath = uploadDirPath.resolve(fileName);
+        Files.write(destinationFilePath, resizedImage);
+        String imageUrl = "/" + directoryName + "/" + fileName;
 
-          // Extract file extension
-          String originalFilename = file.getOriginalFilename();
-          String fileExtension = "";
-
-          if (originalFilename != null && originalFilename.contains(".")) {
-            fileExtension =
-              originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
-          }
-
-          // Generate a unique filename using the current time and the original filename
-          String fileName =
-            System.currentTimeMillis() + "_" + file.getOriginalFilename();
-
-          // Resolve the file extension if necessary
-          if (!fileExtension.isEmpty()) {
-            fileName = fileName + "." + fileExtension;
-          }
-
-          Path destinationFilePath = uploadDirPath.resolve(fileName);
-
-          // Write the resized image to the file
-          Files.write(destinationFilePath, resizedImage);
-
-          // Generate the retrievable URL or relative path
-          String imageUrl = "/" + directoryName + "/" + fileName;
-
-          // Create ProductImages instance and save
-          ProductImages productImage = new ProductImages(
-            createdProduct,
-            imageUrl
-          );
-          productImageService.saveImage(productImage);
-        } catch (IOException ex) {
-          throw new ImageStorageException("Error processing image", ex);
-        }
+        ProductImages productImage = new ProductImages(
+          createdProduct,
+          imageUrl
+        );
+        productImageService.saveImage(productImage);
       }
       return ResponseEntity.ok(createdProduct);
     } catch (IOException e) {
-      // Handling IOException
       e.printStackTrace();
       return ResponseEntity
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -359,6 +443,11 @@ public class ProductController {
 
     if (existingProduct != null) {
       updatedProducts.setProductId(id);
+
+      // updatedProducts.setAttributes(new HashSet<>(newAttributes));
+      updatedProducts.setProductPrice(
+        updatedProducts.calculatePriceWithCustomizations()
+      );
 
       // Getting the user from user service
       ApplicationUser user = userService.findByUsername(principal.getName());

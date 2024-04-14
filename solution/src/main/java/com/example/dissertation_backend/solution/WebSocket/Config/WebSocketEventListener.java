@@ -39,10 +39,6 @@ public class WebSocketEventListener {
         .build();
 
       messagingTemplate.convertAndSend("/topic/public", chatMessage);
-      // Map<String, Object> sessionAttributes = headerAccessor.getSessionAttributes();
-      // if (sessionAttributes != null) {
-      //   String username = (String) sessionAttributes.get("username");
-      // }
     } else {
       log.warn("Username not found in session attributes");
     }

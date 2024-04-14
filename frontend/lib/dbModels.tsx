@@ -28,7 +28,7 @@ export interface ArtisanProfile {
 	privacyPolicy: string | null;
 	communicationPreferences: string | null;
 	preferredLanguage: string | null;
-	creationDate: string; // Assuming ISO 8601 format string; adjust if using Date objects
+	creationDate: string;
 }
 
 export const useFetchCategoryById = (categoryId: any) => {
@@ -310,6 +310,7 @@ export const useFetchProducts = () => {
 		artisanProfile: {
 			artisanId: number;
 		};
+		dateTimeListed: string;
 		dateTimeUpdated: string;
 	}
 	const [products, setProducts] = useState([]);
@@ -325,6 +326,7 @@ export const useFetchProducts = () => {
 					price: product.productPrice,
 					quantity: product.productStockQuantity,
 					image: product.imageUrls[0],
+					dateTimeListed: product.dateTimeListed,
 					dateTimeUpdated: product.dateTimeUpdated,
 					discount: product.productDiscount,
 					category: product.category,
@@ -338,6 +340,30 @@ export const useFetchProducts = () => {
 
 	return { products };
 };
+
+// Getting Products with the highest sales
+export async function highestSellingProducts() {
+	try {
+		const response = await fetch(
+			"http://localhost:8080/api/orders/product-sales",
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error("Failed to fetch highest selling products");
+		}
+
+		return await response.json();
+	} catch (error) {
+		console.error("Error fetching highest selling products:", error);
+		throw error;
+	}
+}
 
 // get product by id
 export async function fetchProductById(productId: any) {

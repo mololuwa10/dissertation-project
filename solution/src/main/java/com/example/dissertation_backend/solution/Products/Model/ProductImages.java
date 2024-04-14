@@ -1,5 +1,6 @@
 package com.example.dissertation_backend.solution.Products.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,8 +12,9 @@ public class ProductImages {
   @Column(name = "product_image_id")
   private Integer productImageId;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+  @JsonBackReference
   private Products product;
 
   @Column(name = "image_url")

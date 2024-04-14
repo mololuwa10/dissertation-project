@@ -79,7 +79,7 @@ public class StripeController {
       @SuppressWarnings("unused")
       long totalPriceInCents = 0;
 
-      // Use checkoutItems from CheckoutPayment for validations and updates
+      // Using checkoutItems from CheckoutPayment for validations and updates
       List<CheckoutItem> checkoutItems = checkoutPayment.getItems();
       SessionCreateParams.Builder paramsBuilder = SessionCreateParams
         .builder()
@@ -87,7 +87,7 @@ public class StripeController {
         .setSuccessUrl(checkoutPayment.getSuccessUrl())
         .setCancelUrl(checkoutPayment.getCancelUrl());
 
-      // Dynamically add line items based on checkoutItems
+      // Dynamically adding line items based on checkoutItems
       for (CheckoutItem item : checkoutItems) {
         Products product = productRepository
           .findById(item.getProductId())
@@ -127,16 +127,15 @@ public class StripeController {
         );
       }
 
-      // Perform checkout validations and updates
+      // Performing checkout validations and updates
       ResponseEntity<?> checkoutResponse = checkoutService.checkout(
         checkoutItems
       );
 
       if (checkoutResponse.getStatusCode().is2xxSuccessful()) {
-        // Assuming the checkoutResponse body is a Map containing order details
         @SuppressWarnings("unchecked")
         Map<String, Object> checkoutInfo = (Map<String, Object>) checkoutResponse.getBody();
-        // Extract necessary details to send the email
+        // Extracting necessary details to send the email
         @SuppressWarnings("null")
         Long orderId = (Long) checkoutInfo.get("orderId");
         Orders order = ordersRepository
@@ -145,15 +144,14 @@ public class StripeController {
             new RuntimeException("Order not found with ID: " + orderId)
           );
 
-        // Call EmailService to send an order confirmation email
+        // Calling EmailService to send an order confirmation email
         emailService.sendOrderConfirmationEmail(order);
 
-        // Create the Stripe session
+        // Creating the Stripe session
         Session session = Session.create(paramsBuilder.build());
         Map<String, String> stripeResponse = new HashMap<>();
         stripeResponse.put("url", session.getUrl());
 
-        // You might want to include the order ID in the Stripe response for your records
         stripeResponse.put("orderId", String.valueOf(orderId));
 
         return ResponseEntity.ok(stripeResponse);

@@ -2,6 +2,7 @@ package com.example.dissertation_backend.solution.Products.Model;
 
 import com.example.dissertation_backend.solution.Category.Model.Category;
 import com.example.dissertation_backend.solution.Customers.Model.ArtisanProfile;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.*;
 import java.util.*;
@@ -29,6 +30,7 @@ public class Products {
     fetch = FetchType.EAGER
   )
   @Column(name = "product_images")
+  @JsonManagedReference
   private Set<ProductImages> images = new HashSet<>();
 
   @Column(name = "product_name")
@@ -58,6 +60,7 @@ public class Products {
     orphanRemoval = true,
     fetch = FetchType.LAZY
   )
+  @JsonManagedReference
   private Set<ProductAttributes> attributes = new HashSet<>();
 
   // CONSTRUCTORS
@@ -200,7 +203,7 @@ public class Products {
 
   // Include methods to add and remove attributes
   public void addAttribute(ProductAttributes attribute) {
-    attributes.add(attribute);
+    this.attributes.add(attribute);
     attribute.setProduct(this);
   }
 
@@ -211,21 +214,28 @@ public class Products {
 
   public Double calculatePriceWithCustomizations() {
     double finalPrice = this.productPrice;
+    System.out.println("Initial product price: " + this.productPrice);
     for (ProductAttributes attr : this.attributes) {
-      if (Boolean.TRUE.equals(attr.getAffectsPricing())) {
-        // Only parse the string to a double if it's numeric
-        if (isNumeric(attr.getProductAttributesValue())) {
-          finalPrice += Double.parseDouble(attr.getProductAttributesValue());
-        } else {
-          System.err.println(
-            "Non-numeric price impact encountered for attribute key: " +
-            attr.getProductAttributesKey() +
-            ", value: " +
-            attr.getProductAttributesValue()
-          );
-        }
+      System.out.println(
+        "Checking attribute: " +
+        attr.getProductAttributesKey() +
+        ", Affects Pricing: " +
+        attr.getAffectsPricing() +
+        ", Value: " +
+        attr.getProductAttributesValue()
+      );
+      if (
+        Boolean.TRUE.equals(attr.getAffectsPricing()) &&
+        isNumeric(attr.getProductAttributesValue())
+      ) {
+        double valueToAdd = Double.parseDouble(
+          attr.getProductAttributesValue()
+        );
+        System.out.println("Adding to price: " + valueToAdd);
+        finalPrice += valueToAdd;
       }
     }
+    System.out.println("Final calculated price: " + finalPrice);
     return finalPrice;
   }
 

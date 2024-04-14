@@ -330,7 +330,7 @@ public class ReviewController {
     dto.setProductId(product.getProductId());
     dto.setProductName(product.getProductName());
     dto.setProductDescription(product.getProductDescription());
-    dto.setProductPrice(product.getProductPrice());
+    dto.setDynamicPricing(product.calculatePriceWithCustomizations());
     dto.setProductStockQuantity(product.getProductStockQuantity());
     dto.setArtisanProfile(convertArtisanProfileToDTO(product.getArtisan()));
     dto.setCategory(convertCategoryToDTO(product.getCategory()));
@@ -351,7 +351,6 @@ public class ReviewController {
       .collect(Collectors.toSet());
 
     dto.setAttributes(attributeDTOs);
-    dto.setDynamicPricing(product.calculatePriceWithCustomizations());
 
     return dto;
   }

@@ -77,7 +77,7 @@ const menuItems = [
 			},
 			{
 				title: "Reports",
-				path: "/Dashboard/reports",
+				path: "/Dashboard/Reports",
 				icon: <MdAnalytics />,
 			},
 			{

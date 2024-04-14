@@ -15,6 +15,7 @@ import com.example.dissertation_backend.solution.Products.Repository.ProductAttr
 import com.example.dissertation_backend.solution.Products.Repository.ProductRepository;
 import com.example.dissertation_backend.solution.Review.Model.Review;
 import jakarta.persistence.criteria.*;
+import jakarta.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -244,6 +245,7 @@ public class ProductServices {
       .collect(Collectors.toList());
   }
 
+  @Transactional
   public Products saveOrUpdateProduct(
     Products product,
     List<ProductAttributes> newAttributes
@@ -252,19 +254,47 @@ public class ProductServices {
       return null;
     }
 
-    Products savedProduct = productRepository.save(product);
-
-    if (product.getProductId() == null) {
-      attributeRepository.deleteByProductId(product.getProductId());
+    // Set attributes and link them back to the product
+    for (ProductAttributes attribute : newAttributes) {
+      attribute.setProduct(product);
+      product.addAttribute(attribute); // Ensure this method sets both sides of the relationship
     }
 
-    for (ProductAttributes newAttribute : newAttributes) {
-      newAttribute.setProduct(product);
-      attributeRepository.save(newAttribute);
-    }
+    // Calculate dynamic pricing after all attributes are set
+    product.setProductPrice(product.calculatePriceWithCustomizations());
 
-    return savedProduct;
+    // Save the product, which now includes updated price and linked attributes
+    return productRepository.save(product);
   }
+
+  // @Transactional
+  // public Products saveOrUpdateProduct(
+  //   Products product,
+  //   List<ProductAttributes> newAttributes
+  // ) {
+  //   if (product == null) {
+  //     return null;
+  //   }
+
+  //   // Set attributes first and calculate dynamic pricing
+  //   product.setAttributes(new HashSet<>(newAttributes));
+  //   for (ProductAttributes attribute : newAttributes) {
+  //     attribute.setProduct(product);
+  //   }
+  //   product.setProductPrice(product.calculatePriceWithCustomizations());
+
+  //   // First, save the product to generate the product ID
+  //   Products savedProduct = productRepository.save(product);
+
+  //   // Now that the product is saved and has an ID, set and save the attributes
+  //   newAttributes.forEach(attr -> {
+  //     attr.setProduct(savedProduct);
+  //     attributeRepository.save(attr);
+  //   });
+
+  //   savedProduct.setAttributes(new HashSet<>(newAttributes));
+  //   return savedProduct;
+  // }
 
   public void deleteProduct(Integer productId) {
     if (productId == null) {
@@ -273,8 +303,6 @@ public class ProductServices {
     attributeRepository.deleteByProductId(productId);
     productRepository.deleteById(productId);
   }
-
-  // Additional business logic methods can be added here
 
   private ArtisanProfileDTO convertArtisanProfileToDTO(
     ArtisanProfile artisanProfile
@@ -378,7 +406,7 @@ public class ProductServices {
       .collect(Collectors.toSet());
 
     dto.setAttributes(attributeDTOs);
-    dto.setProductPrice(product.calculatePriceWithCustomizations());
+    dto.setDynamicPricing(product.calculatePriceWithCustomizations());
 
     return dto;
   }

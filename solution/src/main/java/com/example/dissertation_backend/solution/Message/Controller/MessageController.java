@@ -75,17 +75,6 @@ public class MessageController {
     @PathVariable Integer receiverId,
     Principal principal
   ) {
-    // if (
-    //   principal == null ||
-    //   !principal
-    //     .getName()
-    //     .equals(userRepository.findById(receiverId).orElseThrow().getUsername())
-    // ) {
-    //   return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-    // }
-    // messageService.markMessagesAsRead(senderId, receiverId);
-    // return new ResponseEntity<>("Messages marked as read", HttpStatus.OK);
-
     if (principal == null) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
@@ -185,31 +174,6 @@ public class MessageController {
   private ArtisanProfile fetchArtisanProfile(Integer userid) {
     return artisanProfileRepository.findByArtisan_UserId(userid).orElse(null);
   }
-
-  // @PostMapping("/send")
-  // public ResponseEntity<?> sendMessage(
-  //   @RequestBody MessageDTO messageDTO,
-  //   Principal principal
-  // ) {
-  //   // Check if the user is logged in
-  //   if (principal == null) {
-  //     return ResponseEntity
-  //       .status(HttpStatus.UNAUTHORIZED)
-  //       .body("You must be logged in to send a message.");
-  //   }
-
-  //   // Fetch the sender (logged-in user) details
-  //   ApplicationUser sender = userRepository
-  //     .findByUsername(principal.getName())
-  //     .orElseThrow(() -> new RuntimeException("User not found"));
-
-  //   Message message = messageService.sendMessage(
-  //     sender.getUserId(),
-  //     messageDTO.getReceiverId(),
-  //     messageDTO.getMessageText()
-  //   );
-  //   return ResponseEntity.ok(message);
-  // }
 
   @GetMapping("/conversations")
   public ResponseEntity<?> getAllConversations(Principal principal) {

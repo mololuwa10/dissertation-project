@@ -179,6 +179,7 @@ export default function ProductInfo() {
 				jwtToken
 			);
 			toast.success("Product added to cart successfully!");
+			window.location.reload(); // Refresh the page to update the cart icon
 		} catch (error) {
 			console.error("Error adding product to cart:", error);
 			toast.error("Failed to add product to cart. Please try again.");

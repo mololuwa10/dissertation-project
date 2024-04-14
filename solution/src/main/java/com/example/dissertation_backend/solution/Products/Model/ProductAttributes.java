@@ -1,5 +1,6 @@
 package com.example.dissertation_backend.solution.Products.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -26,6 +27,7 @@ public class ProductAttributes {
     nullable = false,
     referencedColumnName = "product_id"
   )
+  @JsonBackReference
   private Products product;
 
   // Constructors

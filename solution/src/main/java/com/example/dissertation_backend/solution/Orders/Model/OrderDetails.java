@@ -1,12 +1,13 @@
 package com.example.dissertation_backend.solution.Orders.Model;
 
 import com.example.dissertation_backend.solution.Products.Model.Products;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "order_details")
 public class OrderDetails {
-  
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "order_detail_id")
@@ -18,6 +19,7 @@ public class OrderDetails {
 
   @ManyToOne
   @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+  @JsonIgnore
   private Products product;
 
   @Column(name = "quantity")

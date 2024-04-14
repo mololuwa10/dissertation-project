@@ -21,8 +21,18 @@ export default function SignIn() {
 
 	const handleSubmit = async (event: { preventDefault: () => void }) => {
 		event.preventDefault();
-		await login(username, password);
-		toast.success("Login successful!");
+		if (!username || !password) {
+			// Show error message if username or password is empty
+			toast.error("Please enter both username and password.");
+		} else {
+			try {
+				await login(username, password);
+				toast.success("Login successful!");
+			} catch (error) {
+				toast.error("An error occurred during login.");
+				console.error("Failed to log in:", error);
+			}
+		}
 	};
 
 	return (
@@ -30,7 +40,7 @@ export default function SignIn() {
 			<LanguageProvider>
 				<ToastContainer
 					position="top-right"
-					autoClose={5000}
+					autoClose={2000}
 					hideProgressBar={false}
 					newestOnTop={false}
 					closeOnClick

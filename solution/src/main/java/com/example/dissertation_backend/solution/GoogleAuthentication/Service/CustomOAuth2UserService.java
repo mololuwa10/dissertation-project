@@ -91,7 +91,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     newUser.setUsername(email); // Use email as username
     newUser.setFirstname(oauth2User.getAttribute("given_name"));
     newUser.setLastname(oauth2User.getAttribute("family_name"));
-    newUser.setEnabled(true); // Enable by default for OAuth2 users
+    newUser.setEnabled(true);
     newUser.setPassword(passwordEncoder.encode(UUID.randomUUID().toString())); // Generate secure password
 
     // Assign default role
@@ -105,7 +105,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
   }
 
   private String generateJwtForUser(ApplicationUser user) {
-    // Mimic the Authentication object creation
     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
       user,
       null,
