@@ -1,5 +1,6 @@
 package com.example.dissertation_backend.solution.Configuration;
 
+import com.example.dissertation_backend.solution.GoogleAuthentication.Service.CustomOAuth2UserService;
 import com.example.dissertation_backend.solution.utils.RSAKeyProperties;
 import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -12,15 +13,20 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.*;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+// Might remove later
+@EnableWebSecurity
 @Configuration
 public class SecurityConfiguration {
 
@@ -65,6 +71,9 @@ public class SecurityConfiguration {
         // oauth2.loginPage("/oauth2/authorization/google");
         oauth2.defaultSuccessUrl("http://localhost:3000/");
         oauth2.failureUrl("/auth/login?error=true");
+        oauth2.userInfoEndpoint(userInfo ->
+          userInfo.userService(customOAuth2UserService())
+        );
       });
 
     http.oauth2ResourceServer(oauth2 ->
@@ -78,6 +87,11 @@ public class SecurityConfiguration {
     );
 
     return http.build();
+  }
+
+  @Bean
+  public OAuth2UserService<OAuth2UserRequest, OAuth2User> customOAuth2UserService() {
+    return new CustomOAuth2UserService();
   }
 
   @Bean

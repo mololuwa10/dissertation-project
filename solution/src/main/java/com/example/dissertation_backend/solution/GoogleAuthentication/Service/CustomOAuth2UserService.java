@@ -10,10 +10,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Random;
 // import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,14 +25,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.stereotype.Service;
 
-@Service
+// import org.springframework.stereotype.Service;
+
+// @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+
+  private static final Logger logger = LoggerFactory.getLogger(
+    CustomOAuth2UserService.class
+  );
 
   @Autowired
   private UserRepository userRepository;
@@ -44,12 +53,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
   private TokenService tokenService;
 
   @Override
-  public OidcUser loadUser(OAuth2UserRequest userRequest) {
+  public OidcUser loadUser(OAuth2UserRequest userRequest)
+    throws OAuth2AuthenticationException {
     OAuth2User oauth2User = super.loadUser(userRequest);
+    logger.debug("OAuth2User loaded: {}", oauth2User.getAttributes());
     if (userRequest instanceof OidcUserRequest) {
       OidcUserRequest oidcUserRequest = (OidcUserRequest) userRequest;
       OidcIdToken idToken = oidcUserRequest.getIdToken();
-      return processOAuth2User(oauth2User, idToken);
+      ApplicationUser user = (ApplicationUser) processOAuth2User(
+        oauth2User,
+        idToken
+      );
+      logger.debug("User processed and saved: {}", user);
+      return (OidcUser) user;
     }
 
     throw new IllegalArgumentException("Expected OIDC User Request");
@@ -79,7 +95,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     Map<String, Object> userAttributes = new HashMap<>(
       oauth2User.getAttributes()
     );
-    userAttributes.put("token", token); // Add the JWT token to the attributes
+    userAttributes.put("token", token);
 
     // Now, use the correct constructor for DefaultOidcUser
     return new DefaultOidcUser(userAuthorities, idToken, "email");
@@ -88,11 +104,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
   private ApplicationUser registerNewUser(OAuth2User oauth2User, String email) {
     ApplicationUser newUser = new ApplicationUser();
     newUser.setUser_email(email);
-    newUser.setUsername(email); // Use email as username
+    int randomNumber = new Random().nextInt(90000) + 10000;
+    String username = oauth2User.getAttribute("given_name");
+    newUser.setUsername(username + randomNumber);
     newUser.setFirstname(oauth2User.getAttribute("given_name"));
     newUser.setLastname(oauth2User.getAttribute("family_name"));
     newUser.setEnabled(true);
-    newUser.setPassword(passwordEncoder.encode(UUID.randomUUID().toString())); // Generate secure password
+    newUser.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
 
     // Assign default role
     Roles userRole = roleRepository
