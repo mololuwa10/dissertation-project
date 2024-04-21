@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { Addresses } from "./dbModels";
 
 export const useLogin = () => {
 	const router = useRouter();
@@ -603,5 +604,113 @@ export const handleCancelOrder = async (orderId: any) => {
 	} catch (error) {
 		// Handle any errors here
 		console.error("Failed to cancel the order:", error);
+	}
+};
+
+// Address ----------------------
+// Add Address ------------------------------
+export const createAddresses = async (address: Addresses) => {
+	const jwt = localStorage.getItem("jwt");
+
+	try {
+		const response = await fetch("http://localhost:8080/api/addresses", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${jwt}`,
+			},
+			body: JSON.stringify(address),
+		});
+
+		if (!response.ok) {
+			throw new Error(`Error: ${response.status}`);
+		}
+
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error("Error creating address:", error);
+		throw error;
+	}
+};
+
+// update address
+export const updateAddress = async (addressId: number, address: Addresses) => {
+	const jwt = localStorage.getItem("jwt");
+
+	try {
+		const response = await fetch(
+			`http://localhost:8080/api/addresses/${addressId}`,
+			{
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${jwt}`,
+				},
+				body: JSON.stringify(address),
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error(`Error: ${response.status}`);
+		}
+
+		return await response.json();
+	} catch (err) {
+		console.error("Error updating address:", err);
+		throw err;
+	}
+};
+
+// Delete Address
+export const deleteAddress = async (addressId: number) => {
+	const jwt = localStorage.getItem("jwt");
+
+	try {
+		const response = await fetch(
+			`http://localhost:8080/api/addresses/${addressId}`,
+			{
+				method: "DELETE",
+				headers: {
+					Authorization: `Bearer ${jwt}`,
+				},
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error(`Error: ${response.status}`);
+		}
+
+		return true;
+	} catch (err) {
+		console.error("Error deleting address:", err);
+		throw err;
+	}
+};
+
+// Set Address as default
+export const setDefaultAddress = async (addressId: number) => {
+	const jwt = localStorage.getItem("jwt");
+
+	try {
+		const response = await fetch(
+			`http://localhost:8080/api/addresses/set-default/${addressId}`,
+			{
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${jwt}`,
+				},
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error(`Error: ${response.status}`);
+		}
+
+		return await response.json();
+	} catch (err) {
+		console.error("Error setting default address:", err);
+		throw err;
 	}
 };

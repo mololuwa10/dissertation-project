@@ -29,13 +29,6 @@ export default function PersonalInformationComponents() {
 		};
 	}
 
-	// profilePicture: null,
-	// storeBanner: "",
-	// gallery: [],
-	// paymentOptions: "",
-	// communicationPreferences: "",
-	// preferredLanguage: "",
-
 	const [formDetails, setFormDetails] = useState<UserDetails>({
 		user: {
 			userId: 0,

@@ -1,6 +1,8 @@
 package com.example.dissertation_backend.solution.Customers.Model;
 
+import com.example.dissertation_backend.solution.Addresses.Model.Address;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -63,12 +65,20 @@ public class ApplicationUser implements UserDetails {
   @JsonBackReference
   private ArtisanProfile artisanProfile;
 
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonManagedReference
+  private Set<Address> addresses = new HashSet<>();
+
   @Column(name = "enabled")
   private boolean enabled;
 
   public ApplicationUser() {
     super();
     authorities = new HashSet<Roles>();
+  }
+
+  public Set<Address> getAddresses() {
+    return addresses;
   }
 
   public ApplicationUser(ArtisanProfile artisanProfile) {
@@ -218,6 +228,20 @@ public class ApplicationUser implements UserDetails {
 
   public void setEnabled(boolean enabled) {
     this.enabled = enabled;
+  }
+
+  public void setAddresses(Set<Address> addresses) {
+    this.addresses = addresses;
+  }
+
+  public void addAddress(Address address) {
+    addresses.add(address);
+    address.setUser(this);
+  }
+
+  public void removeAddress(Address address) {
+    addresses.remove(address);
+    address.setUser(null);
   }
 
   @Override

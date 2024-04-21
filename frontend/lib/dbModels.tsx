@@ -31,6 +31,17 @@ export interface ArtisanProfile {
 	creationDate: string;
 }
 
+export interface Addresses {
+	addressId: number | null;
+	country: string | null;
+	postcode: string | null;
+	addressLine1: string | null;
+	addressLine2?: string | null;
+	city: string | null;
+	county?: string | null;
+	default: boolean | null;
+}
+
 export const useFetchCategoryById = (categoryId: any) => {
 	interface Category {
 		categoryId: number;
@@ -749,7 +760,7 @@ export async function fetchShoppingCart(jwt: any) {
 	return response.json();
 }
 
-// Orders
+// Orders -------------------------------------------------------
 // Get Orders
 export async function fetchCurrentUserOrders() {
 	const jwt = localStorage.getItem("jwt");
@@ -851,4 +862,32 @@ export const getAllConversations = async () => {
 		console.error("Error fetching conversations:", error);
 		throw error;
 	}
+};
+
+// Address -----------------------------------------------------
+export const GetUserAddresses = () => {
+	const jwt = localStorage.getItem("jwt");
+	const [addresses, setAddresses] = React.useState<Addresses[]>([]);
+	useEffect(() => {
+		const fetchUserAddresses = async () => {
+			try {
+				const response = await fetch(
+					"http://localhost:8080/api/addresses/my-addresses",
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${jwt}`,
+						},
+					}
+				);
+
+				setAddresses(await response.json());
+			} catch (err) {
+				console.error("Error fetching user addresses:", err);
+			}
+		};
+		fetchUserAddresses();
+	}, [jwt]);
+	return addresses;
 };

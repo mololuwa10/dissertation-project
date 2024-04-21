@@ -98,31 +98,6 @@ export default function Messages() {
 		fetchConversations();
 	}, []);
 
-	// useEffect(() => {
-	// 	const jwt = localStorage.getItem("jwt") ?? "";
-	// 	if (selectedUserId) {
-	// 		const markMessagesAsRead = async () => {
-	// 			try {
-	// 				const response = await fetch(
-	// 					`http://localhost:8080/api/messages/mark-read/${userId}/${selectedUserId}`,
-	// 					{
-	// 						method: "POST",
-	// 						headers: {
-	// 							Authorization: `Bearer ${jwt}`,
-	// 						},
-	// 					}
-	// 				);
-	// 				if (!response.ok) throw new Error("Failed to mark messages as read");
-	// 				// Handle response if needed
-	// 			} catch (error) {
-	// 				console.error(error);
-	// 			}
-	// 		};
-
-	// 		markMessagesAsRead();
-	// 	}
-	// }, [selectedUserId, userId]);
-
 	const markMessagesAsRead = async (senderId: any, receiverId: any) => {
 		const jwt = localStorage.getItem("jwt") ?? "";
 		try {
@@ -248,9 +223,21 @@ export default function Messages() {
 												{lastMessage.messageText}
 											</p>
 										</div>
-										<span className="ml-auto text-xs">
-											{new Date(lastMessage.dateSent).toLocaleTimeString()}
-										</span>
+										<div className="ml-auto text-right">
+											<span className="block text-xs">
+												{new Date(lastMessage.dateSent).toLocaleDateString(
+													"en-GB",
+													{
+														day: "numeric",
+														month: "long",
+														year: "numeric",
+													}
+												)}
+											</span>
+											<span className="block text-xs">
+												{new Date(lastMessage.dateSent).toLocaleTimeString()}
+											</span>
+										</div>
 									</div>
 								);
 							})}
@@ -300,9 +287,21 @@ export default function Messages() {
 													<audio controls src={message.content}></audio>
 												)}
 												<p>{message.content}</p>
-												<p className="text-xs mt-1">
-													{new Date(message.localDateTime).toLocaleTimeString()}
-												</p>
+												<div className="flex">
+													<p className="text-xs mt-1">
+														{new Date(message.localDateTime).toLocaleDateString(
+															"en-GB",
+															{
+																day: "numeric",
+																month: "long",
+																year: "numeric",
+															}
+														)}{" "}
+														{new Date(
+															message.localDateTime
+														).toLocaleTimeString()}
+													</p>
+												</div>
 											</div>
 										</div>
 									);

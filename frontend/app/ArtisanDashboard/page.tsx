@@ -70,7 +70,7 @@ const Dashboard = () => {
 		},
 		{
 			id: 3,
-			title: "Notifications",
+			title: "Revenue",
 			number: 6,
 			change: 3,
 		},

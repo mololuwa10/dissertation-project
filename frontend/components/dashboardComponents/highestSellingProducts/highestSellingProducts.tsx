@@ -12,6 +12,7 @@ export default function HighestSellingProducts() {
 			productName: string;
 			imageUrls: string[];
 		};
+		imageUrl: string;
 		totalOrders: number;
 		totalQuantitySold: number;
 	}
