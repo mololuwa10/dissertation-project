@@ -1,19 +1,61 @@
 /* eslint-disable @next/next/no-img-element */
-const products = [
-	{
-		id: 1,
-		name: "Basic Tee",
-		href: "#",
-		imageSrc:
-			"https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-		imageAlt: "Front of men's Basic Tee in black.",
-		price: "$35",
-		color: "Black",
-	},
-	// More products...
-];
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { TopArtisanProfile } from "@/lib/dbModels";
+import NewArtisans from "@/app/NewArtisans/page";
+import NewArtisansGrid from "../NewArtisanComponents/NewArtisanGrid";
+import ArtisanCard from "../NewArtisanComponents/ArtisanCard";
+import TopSellerComponents from "./TopSellerComponent";
+
+// Fetching top artisans asynchronously
+const fetchTopArtisans = async () => {
+	try {
+		const response = await fetch(
+			"http://localhost:8080/api/sales/top-artisans"
+		);
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+		return await response.json();
+	} catch (error) {
+		console.error("Error fetching top artisans:", error);
+		throw error;
+	}
+};
 
 export default function SellerStoreComponent() {
+	const [topArtisans, setTopArtisans] = useState<TopArtisanProfile[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+
+	useEffect(() => {
+		setIsLoading(true);
+		setError(null);
+		fetchTopArtisans().then(
+			(artisans) => {
+				setTopArtisans(artisans);
+				setIsLoading(false);
+			},
+			(error) => {
+				setError(error.message);
+				setIsLoading(false);
+			}
+		);
+	}, []);
+
+	if (isLoading) {
+		return (
+			<div className="flex justify-center items-center h-screen">
+				<div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+			</div>
+		);
+	}
+
+	if (error) {
+		return <div>Error: {error}</div>;
+	}
+
 	return (
 		<>
 			<div className="mt-[-90px]">
@@ -23,7 +65,7 @@ export default function SellerStoreComponent() {
 					</h2>
 
 					<div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-						{products.map((product) => (
+						{/* {products.map((product) => (
 							<div key={product.id} className="group relative">
 								<div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
 									<img
@@ -49,7 +91,11 @@ export default function SellerStoreComponent() {
 									</p>
 								</div>
 							</div>
+						))} */}
+						{topArtisans.map((artisan, index) => (
+							<TopSellerComponents key={index} artisan={artisan} />
 						))}
+						{/* <NewArtisansGrid artisans={topArtisans} /> */}
 					</div>
 				</div>
 			</div>

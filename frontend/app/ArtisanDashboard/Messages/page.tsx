@@ -217,12 +217,14 @@ export default function Messages() {
 											alt={conversation.otherParty.firstname}
 											className="h-10 w-10 rounded-full"
 										/>
+
 										<div className="ml-3">
 											<p className="text-sm font-semibold">{`${conversation.otherParty.firstname} ${conversation.otherParty.lastname}`}</p>
 											<p className="text-xs text-white">
 												{lastMessage.messageText}
 											</p>
 										</div>
+
 										<div className="ml-auto text-right">
 											<span className="block text-xs">
 												{new Date(lastMessage.dateSent).toLocaleDateString(

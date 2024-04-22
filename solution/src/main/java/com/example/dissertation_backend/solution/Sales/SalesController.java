@@ -1,5 +1,6 @@
 package com.example.dissertation_backend.solution.Sales;
 
+import com.example.dissertation_backend.solution.DTO.ArtisanSalesDTO;
 // import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
 import com.example.dissertation_backend.solution.DTO.ProductSalesDTO;
 import java.security.Principal;
@@ -94,5 +95,11 @@ public class SalesController {
       }
     }
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied");
+  }
+
+  @GetMapping("/top-artisans")
+  public ResponseEntity<?> getTopArtisans() {
+    List<ArtisanSalesDTO> topArtisans = salesDataService.getTopArtisans();
+    return ResponseEntity.ok(topArtisans);
   }
 }

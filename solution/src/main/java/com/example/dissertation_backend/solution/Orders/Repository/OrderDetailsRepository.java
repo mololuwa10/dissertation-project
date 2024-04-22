@@ -66,4 +66,10 @@ public interface OrderDetailsRepository
     LocalDateTime endDate,
     String username
   );
+
+  @Query(
+    "SELECT od.product.artisan, SUM(od.priceAtOrder * od.quantity) AS totalSales, COUNT(DISTINCT od.order) AS totalOrders " +
+    "FROM OrderDetails od WHERE od.order.status = 'DELIVERED' GROUP BY od.product.artisan ORDER BY totalSales DESC"
+  )
+  List<Object[]> findSalesByArtisan();
 }

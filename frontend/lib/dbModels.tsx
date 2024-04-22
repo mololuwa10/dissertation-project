@@ -31,6 +31,36 @@ export interface ArtisanProfile {
 	creationDate: string;
 }
 
+export interface TopArtisanProfile {
+	artisan: {
+		artisanId: number;
+		artisan: {
+			firstname: string;
+			lastname: string;
+		};
+		bio: string;
+		profilePicture: string | null;
+		location: string | null;
+		storeName: string | null;
+		storeBanner: string | null;
+		announcements: string | null;
+		businessHours: string | null;
+		gallery: string[];
+		stories: string | null;
+		specializations: string | null;
+		materialsUsed: string | null;
+		servicesOffered: string | null;
+		experienceYears: number | null;
+		shippingPolicies: string | null;
+		returnPolicy: string | null;
+		paymentOptions: string | null;
+		termsConditions: string | null;
+		privacyPolicy: string | null;
+		communicationPreferences: string | null;
+		preferredLanguage: string | null;
+		creationDate: string;
+	};
+}
 export interface Addresses {
 	addressId: number | null;
 	country: string | null;
@@ -890,4 +920,31 @@ export const GetUserAddresses = () => {
 		fetchUserAddresses();
 	}, [jwt]);
 	return addresses;
+};
+
+// Get top artisans
+export const GetTopArtisans = async () => {
+	const [topArtisans, setTopArtisans] = React.useState<ArtisanProfile[]>([]);
+	useEffect(() => {
+		const fetchTopArtisans = async () => {
+			try {
+				const response = await fetch(
+					"http://localhost:8080/api/sales/top-artisans"
+				);
+
+				if (!response.ok) {
+					throw new Error("Network response was not ok");
+				}
+
+				setTopArtisans(await response.json());
+			} catch (error) {
+				console.error("Error fetching top artisans:", error);
+			}
+		};
+		fetchTopArtisans().catch((error) => {
+			console.error("Error fetching top artisans:", error);
+		});
+	}, []);
+
+	return topArtisans;
 };

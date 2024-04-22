@@ -1,5 +1,7 @@
 package com.example.dissertation_backend.solution.Sales;
 
+import com.example.dissertation_backend.solution.Customers.Model.ArtisanProfile;
+import com.example.dissertation_backend.solution.DTO.ArtisanSalesDTO;
 import com.example.dissertation_backend.solution.DTO.ProductSalesDTO;
 import com.example.dissertation_backend.solution.Orders.Repository.OrderDetailsRepository;
 import com.example.dissertation_backend.solution.Products.Model.Products;
@@ -41,6 +43,20 @@ public class SalesDataService {
       .stream()
       .map(result ->
         new SalesDataDTO((LocalDateTime) result[1], (Double) result[0])
+      )
+      .collect(Collectors.toList());
+  }
+
+  public List<ArtisanSalesDTO> getTopArtisans() {
+    return orderDetailsRepository
+      .findSalesByArtisan()
+      .stream()
+      .map(result ->
+        new ArtisanSalesDTO(
+          (ArtisanProfile) result[0],
+          (Double) result[1],
+          ((Long) result[2]).intValue()
+        )
       )
       .collect(Collectors.toList());
   }

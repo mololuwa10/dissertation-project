@@ -167,7 +167,7 @@ const ItemList = () => {
 									</div>
 									<div>
 										{/* Check if product has original price and if it's greater than the current price */}
-										{product.productPrice &&
+										{typeof product.productPrice === "number" &&
 											product.productPrice > product.productDiscount && (
 												<div className="flex flex-col items-end">
 													<span className="text-sm font-medium text-gray-900 line-through">

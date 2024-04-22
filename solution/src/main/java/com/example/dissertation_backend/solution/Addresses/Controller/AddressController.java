@@ -38,9 +38,6 @@ public class AddressController {
   @GetMapping("/my-addresses")
   public ResponseEntity<?> getCurrentUserAddresses() {
     List<Address> addresses = addressService.findAddressesForCurrentUser();
-    if (addresses.isEmpty()) {
-      return ResponseEntity.notFound().build();
-    }
     return ResponseEntity.ok(addresses);
   }
 

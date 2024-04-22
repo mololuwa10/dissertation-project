@@ -27,7 +27,7 @@ export default function Addresses() {
 	const [sortedAddresses, setSortedAddresses] = useState<Addresses[]>([]);
 
 	useEffect(() => {
-		if (userAddresses.length > 0) {
+		if (userAddresses !== undefined) {
 			// Sort the userAddresses based on the `isDefault` property
 			const sorted = [...userAddresses].sort(
 				(a, b) => Number(b.default) - Number(a.default)

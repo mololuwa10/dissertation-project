@@ -29,7 +29,7 @@ export default function AddAddress() {
 	});
 
 	useEffect(() => {
-		if (addresses.length > 0) {
+		if (addresses !== undefined) {
 			setIsLoading(false);
 		}
 	}, [addresses]);
