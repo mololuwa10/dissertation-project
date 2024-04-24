@@ -127,7 +127,6 @@ export const useFetchUsers = () => {
 	useEffect(() => {
 		const jwt = localStorage.getItem("jwt");
 
-		// Ensure JWT token exists before making the request
 		if (jwt) {
 			fetch("http://localhost:8080/api/admin/allUsers", {
 				method: "GET",
@@ -193,7 +192,6 @@ export async function fetchUserById(userId: any, jwt: string) {
 			throw new Error(`Error fetching user: ${response.status}`);
 		}
 
-		// Assuming the response is JSON
 		const user = await response.json();
 		return user;
 	} catch (error) {
@@ -244,7 +242,6 @@ export async function fetchAllArtisans() {
 // Getting all new artisans within the span of 2 weeks
 export const fetchNewArtisans = async (): Promise<ArtisanProfile[]> => {
 	try {
-		// Adjust the URL to match your API endpoint's actual location
 		const response = await fetch("http://localhost:8080/api/user/newArtisans");
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
@@ -261,7 +258,6 @@ export const fetchArtisanById = async (
 	artisanId: any
 ): Promise<ArtisanProfile> => {
 	try {
-		// Adjust the URL to match your API endpoint's actual location
 		const response = await fetch(
 			`http://localhost:8080/api/artisan/${artisanId}`
 		);
@@ -423,7 +419,6 @@ export async function fetchProductById(productId: any) {
 			throw new Error(`Error fetching product: ${response.status}`);
 		}
 
-		// Assuming the response is JSON
 		const product = await response.json();
 		return product;
 	} catch (error) {

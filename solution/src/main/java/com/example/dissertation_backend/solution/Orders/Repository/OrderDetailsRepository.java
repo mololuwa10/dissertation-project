@@ -35,15 +35,6 @@ public interface OrderDetailsRepository
   )
   List<Object[]> findProductSalesAndOrderCount();
 
-  // @Query(
-  //   "SELECT od.product, SUM(od.quantity) AS totalQuantity, COUNT(DISTINCT od.order) AS totalOrders " +
-  //   "FROM OrderDetails od " +
-  //   "WHERE od.order.status = 'DELIVERED' AND od.product.artisan.artisanId = :artisanId " +
-  //   "GROUP BY od.product " +
-  //   "ORDER BY totalQuantity DESC"
-  // )
-  // List<Object[]> findProductSalesAndOrderCountByArtisan(Integer artisanId);
-
   @Query(
     "SELECT od.product, SUM(od.quantity) AS totalQuantity, COUNT(DISTINCT od.order) AS totalOrders " +
     "FROM OrderDetails od " +

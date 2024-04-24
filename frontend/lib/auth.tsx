@@ -50,7 +50,7 @@ export const createCategoryOrSubcategory = async (
 	try {
 		let url = "http://localhost:8080/api/categories";
 		if (parentId !== undefined) {
-			url += `/${parentId}/subcategories`; // Appending the parentId for subcategory creation
+			url += `/${parentId}/subcategories`;
 		}
 
 		const response = await fetch(url, {
@@ -185,7 +185,6 @@ export const createArtisanProfile = async (jwt: string) => {
 
 		if (response.ok) {
 			const data = await response.json();
-			// alert("Artisan profile created successfully");
 			return data;
 		} else {
 			const errorText = await response.text();
@@ -208,17 +207,14 @@ export const updateArtisanProfile = async (
 	const formData = new FormData();
 	formData.append("artisanProfile", JSON.stringify(artisanData));
 
-	// Append the profile picture if it's been updated
 	if (selectedProfilePicture) {
 		formData.append("profilePicture", selectedProfilePicture);
 	}
 
-	// Append the profile picture if it's been updated
 	if (selectedStoreBanner) {
 		formData.append("storeBanner", selectedStoreBanner);
 	}
 
-	// Append gallery images if there are any
 	if (selectedGalleryImages) {
 		for (let i = 0; i < selectedGalleryImages.length; i++) {
 			formData.append("galleryImages", selectedGalleryImages[i]);
@@ -347,7 +343,7 @@ export const translateTextWithApertium = async (
 			text
 		)}`,
 		{
-			method: "GET", // Apertium API uses GET for simple translation requests
+			method: "GET",
 		}
 	);
 
@@ -369,14 +365,14 @@ export const translateText = async (text: any) => {
 			source: "auto",
 			target: "fr",
 			format: "text",
-			api_key: "", // Use your API key if needed
+			api_key: "",
 		}),
 		headers: { "Content-Type": "application/json" },
 	});
 
 	const data = await res.json();
-	console.log(data); // Contains the translated text
-	return data.translatedText; // Assuming 'translatedText' is part of the response
+	console.log(data);
+	return data.translatedText;
 };
 
 // Update Product
@@ -447,7 +443,6 @@ export const addReview = async (
 	id: number,
 	type: "product" | "artisan"
 ) => {
-	// Determine the endpoint based on the review type
 	const endpoint = type === "product" ? `product/${id}` : `artisan/${id}`;
 	try {
 		const response = await fetch(
@@ -590,7 +585,7 @@ export const handleCancelOrder = async (orderId: any) => {
 				method: "DELETE",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization: `Bearer ${jwt}`, // Assuming you're using Bearer tokens
+					Authorization: `Bearer ${jwt}`,
 				},
 			}
 		);

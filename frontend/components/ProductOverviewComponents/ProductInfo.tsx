@@ -163,13 +163,10 @@ export default function ProductInfo() {
 		// Log the selected attributes to confirm their values before sending
 		console.log("Selected Attributes:", selectedAttributes);
 
-		// Convert selectedAttributes into an array of selected attribute IDs
+		// ConvertING selectedAttributes into an array of selected attribute IDs
 		const attributeIds = Object.values(selectedAttributes).filter(
 			(id) => id !== null
 		);
-
-		// Log the attribute IDs to check they are what you expect
-		console.log("Attribute IDs:", attributeIds);
 
 		try {
 			await addProductToCart(
@@ -179,7 +176,7 @@ export default function ProductInfo() {
 				jwtToken
 			);
 			toast.success("Product added to cart successfully!");
-			window.location.reload(); // Refresh the page to update the cart icon
+			window.location.reload();
 		} catch (error) {
 			console.error("Error adding product to cart:", error);
 			toast.error("Failed to add product to cart. Please try again.");

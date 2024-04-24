@@ -1,8 +1,7 @@
 package com.example.dissertation_backend.solution.DTO;
 
-// import com.example.dissertation_backend.solution.Models.Products;
-
 public class CartItemDTO {
+
   private Integer cartItemId;
   private ProductDTO product;
   private Integer quantity;
@@ -12,7 +11,12 @@ public class CartItemDTO {
     // Default constructor
   }
 
-  public CartItemDTO(Integer cartItemId, ProductDTO product, Integer quantity, Double totalProductPrice) {
+  public CartItemDTO(
+    Integer cartItemId,
+    ProductDTO product,
+    Integer quantity,
+    Double totalProductPrice
+  ) {
     this.cartItemId = cartItemId;
     this.product = product;
     this.quantity = quantity;

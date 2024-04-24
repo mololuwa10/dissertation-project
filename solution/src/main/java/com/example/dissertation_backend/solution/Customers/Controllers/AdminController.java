@@ -49,9 +49,6 @@ public class AdminController {
   @Autowired
   private TestimonialRepo testimonialRepo;
 
-  // @Autowired
-  // private ArtisanProfileService artisanProfileService;
-
   @GetMapping("/")
   public String helloAdminController() {
     return "Admin access level";

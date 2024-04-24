@@ -11,7 +11,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-// import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import net.coobird.thumbnailator.Thumbnails;

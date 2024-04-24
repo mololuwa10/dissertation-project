@@ -1,12 +1,10 @@
 package com.example.dissertation_backend.solution.Orders.Controller;
 
 import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
-// import com.example.dissertation_backend.solution.Customers.Model.Roles;
 import com.example.dissertation_backend.solution.Customers.Repository.UserRepository;
 import com.example.dissertation_backend.solution.DTO.FullOrderDTO;
 import com.example.dissertation_backend.solution.DTO.OrderDTO;
 import com.example.dissertation_backend.solution.DTO.ProductSalesDTO;
-// import com.example.dissertation_backend.solution.DTO.OrderDetailsDTO;
 import com.example.dissertation_backend.solution.Orders.Service.OrderService;
 import com.example.dissertation_backend.solution.Products.Model.Products;
 import java.security.Principal;

@@ -147,7 +147,7 @@ export default function ProductReviews() {
 		// Convert productId from string to number
 		const numericProductId = Number(productId);
 
-		// Check if productId conversion is successful and is a valid number
+		// Checking if productId conversion is successful and is a valid number
 		if (isNaN(numericProductId)) {
 			toast.error("Invalid product ID");
 			return;

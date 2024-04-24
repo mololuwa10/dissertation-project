@@ -6,14 +6,7 @@ import com.example.dissertation_backend.solution.Customers.Model.Roles;
 import com.example.dissertation_backend.solution.Customers.Repository.RoleRepository;
 import com.example.dissertation_backend.solution.Customers.Repository.UserRepository;
 import com.example.dissertation_backend.solution.GoogleAuthentication.Model.CustomOAuth2User;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Random;
-// import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +23,6 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-
-// import org.springframework.stereotype.Service;
 
 // @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -83,9 +74,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     // Wrap OAuth2User in CustomOAuth2User
     CustomOAuth2User customOAuth2User = new CustomOAuth2User(oauth2User, user);
 
-    String token = generateJwtForUser(user); // Generate JWT for the user
+    String token = generateJwtForUser(user);
 
-    // Define userAuthorities and userAttributes here
     Set<GrantedAuthority> userAuthorities = customOAuth2User
       .getAuthorities()
       .stream()
@@ -97,7 +87,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     );
     userAttributes.put("token", token);
 
-    // Now, use the correct constructor for DefaultOidcUser
     return new DefaultOidcUser(userAuthorities, idToken, "email");
   }
 

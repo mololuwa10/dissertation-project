@@ -37,9 +37,9 @@ public class ArtisanProfileService {
   }
 
   public List<ArtisanProfile> findNewArtisansToHighlight() {
-    // Calculate the date 2 weeks ago from current date
+    // Calculate the date 3 weeks ago from current date
     Calendar cal = Calendar.getInstance();
-    cal.add(Calendar.WEEK_OF_YEAR, -2);
+    cal.add(Calendar.WEEK_OF_YEAR, -3);
     Date twoWeeksAgo = cal.getTime();
 
     return artisanProfileRepository.findAllByCreationDateAfter(twoWeeksAgo);
@@ -59,14 +59,6 @@ public class ArtisanProfileService {
     if (!existingArtisanProfile.getArtisan().equals(currentUser)) {
       throw new RuntimeException("You are not authorized to edit this profile");
     }
-
-    // Update fields
-    // existingArtisanProfile.setBio(artisanProfile.getBio());
-    // try {
-    //   BeanUtils.copyProperties(existingArtisanProfile, artisanProfile);
-    // } catch (Exception e) {
-    //   throw new RuntimeException("Could not update artisan profile", e);
-    // }
 
     if (artisanProfile.getBio() != null) {
       existingArtisanProfile.setBio(artisanProfile.getBio());
@@ -101,11 +93,16 @@ public class ArtisanProfileService {
       );
     }
 
+    // Append new gallery images to existing ones if present
     if (
       artisanProfile.getGallery() != null &&
       !artisanProfile.getGallery().isEmpty()
     ) {
-      existingArtisanProfile.setGallery(artisanProfile.getGallery());
+      List<String> updatedGallery = new ArrayList<>(
+        existingArtisanProfile.getGallery()
+      );
+      updatedGallery.addAll(artisanProfile.getGallery());
+      existingArtisanProfile.setGallery(updatedGallery);
     }
 
     if (artisanProfile.getStories() != null) {
@@ -194,18 +191,4 @@ public class ArtisanProfileService {
     );
     return profiles.isEmpty() ? Optional.empty() : Optional.of(profiles.get());
   }
-  // Utility method to get names of null properties from a bean
-  // private String[] getNullPropertyNames(Object source) {
-  //   final BeanWrapper src = new BeanWrapperImpl(source);
-  //   PropertyDescriptor[] pds = src.getPropertyDescriptors();
-
-  //   Set<String> emptyNames = new HashSet<>();
-  //   for (PropertyDescriptor pd : pds) {
-  //     // Check if value of property is null
-  //     Object srcValue = src.getPropertyValue(pd.getName());
-  //     if (srcValue == null) emptyNames.add(pd.getName());
-  //   }
-  //   String[] result = new String[emptyNames.size()];
-  //   return emptyNames.toArray(result);
-  // }
 }

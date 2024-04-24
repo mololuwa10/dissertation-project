@@ -80,7 +80,6 @@ export default function Inventory() {
 								<td>{product.label}</td>
 								<td>{product.value}</td>
 								<td>{product.category.categoryName}</td>{" "}
-								{/* Make sure you have categoryName in your data */}
 								<td>£{product.price.toFixed(2)}</td>
 								<td>
 									<span className={product.status.className}>

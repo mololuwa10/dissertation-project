@@ -2,7 +2,6 @@ package com.example.dissertation_backend.solution.Products.Service;
 
 import com.example.dissertation_backend.solution.Category.Model.Category;
 import com.example.dissertation_backend.solution.Category.Repository.CategoryRepository;
-// import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
 import com.example.dissertation_backend.solution.Customers.Model.ArtisanProfile;
 import com.example.dissertation_backend.solution.DTO.ArtisanProfileDTO;
 import com.example.dissertation_backend.solution.DTO.CategoryDTO;

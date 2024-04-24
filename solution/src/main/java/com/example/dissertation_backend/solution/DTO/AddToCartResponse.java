@@ -1,8 +1,7 @@
 package com.example.dissertation_backend.solution.DTO;
 
-// import com.example.dissertation_backend.solution.Models.CartItem;
-
 public class AddToCartResponse {
+
   private String message;
   private CartItemDTO cartItemDTO;
 

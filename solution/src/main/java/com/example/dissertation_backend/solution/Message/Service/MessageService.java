@@ -108,7 +108,6 @@ public class MessageService {
       }
     });
 
-    // Now retrieve the messages again, they will be marked as read
     List<Message> updatedMessages = messageRepository.findBySenderAndReceiver(
       userRepository
         .findById(senderId)

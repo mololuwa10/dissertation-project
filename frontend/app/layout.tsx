@@ -20,7 +20,6 @@ export default function RootLayout({
 	currentLanguage?: string;
 }>) {
 	return (
-		// <LanguageProvider>
 		<html lang={currentLanguage || "en"}>
 			<body className={inter.className}>
 				{/* <Header /> */}
@@ -28,6 +27,5 @@ export default function RootLayout({
 				{/* <Footer /> */}
 			</body>
 		</html>
-		// </LanguageProvider>
 	);
 }

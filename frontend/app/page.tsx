@@ -30,13 +30,12 @@ export default function Home({ Component, pageProps }: AppProps) {
 				setNewArtisans(artisans);
 				if (artisans.length > 0) {
 					setShowPopup(true);
-					// Set a timeout to hide the popup after 10 seconds
+
 					const timer = setTimeout(() => setShowPopup(false), 10000);
 					return () => clearTimeout(timer);
 				}
 			} catch (error) {
 				console.error("Failed to load new artisans:", error);
-				// Handle the error appropriately in your UI
 			}
 		};
 
@@ -45,7 +44,6 @@ export default function Home({ Component, pageProps }: AppProps) {
 
 	// Function to redirect to view all artisans and hide the popup
 	const handleViewAllArtisans = () => {
-		// Implement the redirect logic, e.g., using router.push('/path-to-all-artisans')
 		router.push("/NewArtisans");
 		setShowPopup(false);
 	};
@@ -86,7 +84,6 @@ export default function Home({ Component, pageProps }: AppProps) {
 				</main>
 
 				<Footer />
-				{/* <Component {...pageProps} /> */}
 			</LanguageProvider>
 		</>
 	);

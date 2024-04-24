@@ -6,7 +6,6 @@ import {
 	disconnect,
 	isConnected,
 } from "@/lib/WebSocketService";
-// import { useFetchUserInfo } from "@/lib/data";
 
 const ChatInterface = ({
 	artisanId,

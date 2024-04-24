@@ -6,7 +6,6 @@ const HeaderTabs = () => {
 	const router = useRouter();
 	const navigationPathname = usePathname();
 
-	// Effect to set mounted state after mounting
 	useEffect(() => {
 		setIsMounted(true);
 	}, []);

@@ -59,11 +59,4 @@ public class ProductAttributeDTO {
   public void setAffectsPricing(Boolean affectsPricing) {
     this.affectsPricing = affectsPricing;
   }
-  // public Double getPriceImpact() {
-  //   return priceImpact;
-  // }
-
-  // public void setPriceImpact(Double priceImpact) {
-  //   this.priceImpact = priceImpact;
-  // }
 }

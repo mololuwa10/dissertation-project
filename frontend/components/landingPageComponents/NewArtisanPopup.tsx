@@ -24,14 +24,6 @@ const NewArtisanPopup = ({
 					title="Close">
 					<X className="w-5 h-5" />
 				</Button>
-				{/* <p className="text-sm font-medium text-gray-800 items-center justify-center block">
-					<span className="animate-bounce">🎉</span>
-					<span className="ml-2">
-						New artisan alert! We&apos;ve got {count} new star
-						{count !== 1 ? "s" : ""} in our community!
-					</span>
-					<span className="animate-bounce">✨</span>
-				</p> */}
 				<p className="text-sm font-medium text-gray-800 flex items-center justify-center">
 					<span className="pop-in">🌟</span>
 					<span className="mx-2">

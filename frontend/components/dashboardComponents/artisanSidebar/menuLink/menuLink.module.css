@@ -13,17 +13,14 @@
 }
 
 .notificationIndicator {
-	background-color: #ed4956; /* example color for the notification badge */
+	background-color: #ed4956;
 	border-radius: 50%;
 	color: white;
 	font-size: 0.75rem;
 	padding: 0.25em 0.6em;
-	position: absolute; /* adjust as needed */
-	top: 0; /* adjust as needed */
-	right: 0; /* adjust as needed */
-	transform: translate(
-		50%,
-		-50%
-	); /* this will help center the badge over the corner */
+	position: absolute;
+	top: 0;
+	right: 0;
+	transform: translate(50%, -50%);
 	font-weight: bold;
 }

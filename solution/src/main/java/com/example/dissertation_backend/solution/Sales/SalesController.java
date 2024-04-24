@@ -1,7 +1,6 @@
 package com.example.dissertation_backend.solution.Sales;
 
 import com.example.dissertation_backend.solution.DTO.ArtisanSalesDTO;
-// import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
 import com.example.dissertation_backend.solution.DTO.ProductSalesDTO;
 import java.security.Principal;
 import java.time.LocalDateTime;

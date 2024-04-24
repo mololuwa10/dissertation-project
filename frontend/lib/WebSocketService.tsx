@@ -25,7 +25,7 @@ const connect = (
 
 	stompClient = new Client({
 		webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
-		connectHeaders: headers, // Add this line
+		connectHeaders: headers,
 		onConnect: () => {
 			if (stompClient) {
 				stompClient.subscribe(`/topic/public`, (message) => {

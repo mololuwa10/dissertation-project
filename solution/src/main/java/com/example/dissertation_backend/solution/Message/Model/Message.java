@@ -3,7 +3,6 @@ package com.example.dissertation_backend.solution.Message.Model;
 import com.example.dissertation_backend.solution.Customers.Model.ApplicationUser;
 import com.example.dissertation_backend.solution.Products.Model.Products;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-// import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 

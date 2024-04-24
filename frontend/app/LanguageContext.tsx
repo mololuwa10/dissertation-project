@@ -15,7 +15,6 @@ export const LanguageContext = createContext<LanguageContextProps>({
 	setCurrentLanguage: () => {},
 });
 
-// Define props for the LanguageProvider for TypeScript
 interface LanguageProviderProps {
 	children: ReactNode;
 }

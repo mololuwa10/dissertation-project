@@ -98,7 +98,7 @@ const CartItem = ({
 			{/* Description and Price */}
 			<div className="flex-grow px-3">
 				<div className="text-lg font-semibold">{item.product.productName}</div>
-				{/* <div>{`${item.color} | ${item.size}`}</div> */}
+
 				<div className="text-lg font-semibold text-red-600">
 					{typeof item.product.productDiscount === "number" &&
 						item.product.productDiscount > 0 && (
@@ -144,11 +144,11 @@ const OrderSummary = ({ cartItems }: { cartItems: Item[] }) => {
 		0
 	);
 
-	// Define fixed tax rate and shipping fee for demonstration
+	// Defining a fixed tax rate and shipping fee for demonstration
 	const taxRate = 0.07;
 	const shippingFee = subtotal > 50 ? 0 : 5.0;
 
-	// Calculate tax and total
+	// Calculating tax and total
 	// const tax = subtotal * taxRate;
 	const total = subtotal + shippingFee;
 
@@ -208,10 +208,7 @@ const OrderSummary = ({ cartItems }: { cartItems: Item[] }) => {
 				<span>Subtotal</span>
 				<span>{`£${subtotal.toFixed(2)}`}</span>
 			</div>
-			{/* <div className="flex justify-between mb-1">
-				<span>Tax</span>
-				<span>{`£${tax.toFixed(2)}`}</span>
-			</div> */}
+
 			<div className="flex justify-between mb-1">
 				<span>Shipping</span>
 				<span>{`£${shippingFee.toFixed(2)}`}</span>

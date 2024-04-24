@@ -1,7 +1,5 @@
 package com.example.dissertation_backend.solution.DTO;
 
-// import com.example.dissertation_backend.solution.Category.Model.Category;
-// import com.example.dissertation_backend.solution.Customers.Model.ArtisanProfile;
 import com.example.dissertation_backend.solution.Products.Model.ProductImages;
 import com.example.dissertation_backend.solution.Products.Model.Products;
 import java.util.Set;
@@ -124,43 +122,4 @@ public class OrderDetailsDTO {
 
     return dto;
   }
-  // private static ArtisanProfileDTO convertArtisanProfileToDTO(
-  //   ArtisanProfile artisanProfile
-  // ) {
-  //   ArtisanProfileDTO artisanProfileDTO = new ArtisanProfileDTO();
-  //   artisanProfileDTO.setArtisanId(artisanProfile.getArtisanId());
-  //   artisanProfileDTO.setBio(artisanProfile.getBio());
-  //   artisanProfileDTO.setProfilePicture(artisanProfile.getProfilePicture());
-  //   artisanProfileDTO.setLocation(artisanProfile.getLocation());
-
-  //   // Map other fields from ApplicationUser to ArtisanProfileDTO as needed
-  //   artisanProfileDTO.setFirstname(artisanProfile.getArtisan().getFirstname());
-  //   artisanProfileDTO.setLastname(artisanProfile.getArtisan().getLastname());
-  //   artisanProfileDTO.setUser_email(
-  //     artisanProfile.getArtisan().getUser_email()
-  //   );
-  //   artisanProfileDTO.setBankAccountNo(
-  //     artisanProfile.getArtisan().getBankAccountNo()
-  //   );
-  //   artisanProfileDTO.setBankSortCode(
-  //     artisanProfile.getArtisan().getBankSortCode()
-  //   );
-  //   artisanProfileDTO.setContactTelephone(
-  //     artisanProfile.getArtisan().getContactTelephone()
-  //   );
-  //   artisanProfileDTO.setContactAddress(
-  //     artisanProfile.getArtisan().getContactAddress()
-  //   );
-
-  //   return artisanProfileDTO;
-  // }
-
-  // private static CategoryDTO convertCategoryToDTO(Category category) {
-  //   CategoryDTO categoryDTO = new CategoryDTO();
-  //   categoryDTO.setCategoryId(category.getCategoryId());
-  //   categoryDTO.setCategoryName(category.getCategoryName());
-  //   categoryDTO.setCategoryDescription(category.getCategoryDescription());
-
-  //   return categoryDTO;
-  // }
 }

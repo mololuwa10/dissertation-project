@@ -86,8 +86,6 @@ public class AuthenticationService {
         .body(Collections.singletonMap("error", "Email already exists"));
     }
     String encodedPassword = passwordEncoder.encode(password);
-    // String encryptedBankAccountNo = EncryptionUtil.encrypt(bankAccountNo);
-    // String encryptedBankSortCode = EncryptionUtil.encrypt(bankSortCode);
     Roles userRole = roleRepository.findByAuthority("USER").get();
 
     Set<Roles> authorities = new HashSet<>();

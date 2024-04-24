@@ -53,26 +53,4 @@ public class VerificationController {
 
     return ResponseEntity.ok(user.getEnabled());
   }
-  // @GetMapping("/resend-verification")
-  // public ResponseEntity<?> resendVerificationEmail(Principal principal) {
-  //   if (principal == null) {
-  //     return ResponseEntity
-  //       .status(HttpStatus.UNAUTHORIZED)
-  //       .body("User is not logged in");
-  //   }
-
-  //   String username = principal.getName();
-  //   ApplicationUser user = userRepository
-  //     .findByUsername(username)
-  //     .orElseThrow(() -> new RuntimeException("User not found"));
-
-  //   if (user.isEnabled()) {
-  //     return ResponseEntity
-  //       .status(HttpStatus.BAD_REQUEST)
-  //       .body("User is already verified");
-  //   }
-
-  //   // Send verification email
-  //   return ResponseEntity.ok("Verification email sent");
-  // }
 }

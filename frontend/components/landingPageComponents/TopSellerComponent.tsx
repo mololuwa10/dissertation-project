@@ -3,6 +3,7 @@
 
 import React from "react";
 import { ArtisanProfile, TopArtisanProfile } from "@/lib/dbModels";
+import Link from "next/link";
 
 const TopSellerComponents = ({ artisan }: { artisan: TopArtisanProfile }) => {
 	return (
@@ -21,9 +22,15 @@ const TopSellerComponents = ({ artisan }: { artisan: TopArtisanProfile }) => {
 				</h5>
 				<p className="text-gray-700 text-base mb-4">{artisan.artisan.bio}</p>
 				{/* Additional Artisan info */}
-				<button className="text-white bg-gray-800 hover:bg-gray-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-					View Full Profile
-				</button>
+				<Link
+					href={{
+						pathname: "/ArtisanProfileOverview",
+						query: { artisanId: artisan.artisan.artisanId },
+					}}>
+					<button className="text-white bg-gray-800 hover:bg-gray-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+						View Full Profile
+					</button>
+				</Link>
 			</div>
 		</div>
 	);

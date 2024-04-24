@@ -10,26 +10,9 @@ import { useEffect, useState } from "react";
 export default function ContactUs() {
 	const [translatedText, setTranslatedText] = useState("");
 
-	// useEffect(() => {
-	// 	// Replace 'Your text here' with the actual text you want to translate
-	// 	const fetchTranslation = async () => {
-	// 		const textToTranslate = "Your text here";
-	// 		try {
-	// 			const result = await translateText(textToTranslate);
-	// 			setTranslatedText(result);
-	// 			console.log(result);
-	// 		} catch (error) {
-	// 			console.error("Translation error:", error);
-	// 			setTranslatedText("Error in translation");
-	// 		}
-	// 	};
-
-	// 	fetchTranslation();
-	// }, []);
-
 	useEffect(() => {
 		// Define the text and languages for translation
-		const textToTranslate = "Hello, world!"; // Example text
+		const textToTranslate = "Hello, world!";
 		const sourceLang = "en";
 		const targetLang = "es";
 

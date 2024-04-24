@@ -55,14 +55,12 @@ function formatDate(dateString: any) {
 		day % 10 > 3 ? 0 : (day % 100) - (day % 10) != 10 ? day % 10 : 0
 	];
 
-	// Replace the day number with the day number + suffix
 	formattedDate = formattedDate.replace(/\d+/, `${day}${suffix}`);
 
 	return formattedDate;
 }
 
 const OrderCard = ({ orderInfo, item }: { orderInfo: Order; item: any }) => {
-	// Call the formatDate function before rendering
 	const formattedDate = formatDate(orderInfo.orderDateTime);
 
 	// This function handles the click event and the success/error toast messages

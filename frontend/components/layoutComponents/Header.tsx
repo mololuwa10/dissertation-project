@@ -88,23 +88,6 @@ export default function Header() {
 							className="relative px-4 sm:px-6 lg:px-8 flex h-12 items-center
 				justify-between w-full">
 							<div className="flex items-center ml-4">
-								{/* <Sheet>
-								<SheetTrigger>
-									<Menu className="h-6 md:hidden w-6" />
-								</SheetTrigger>
-								<SheetContent side={"left"} className="w-[300px] sm:w-[400px]">
-									<nav className="flex flex-col gap-4">
-										<div className="block px-2 py-1 text-lg">
-											<NavigationMenuDemo />
-										</div>
-									</nav>
-								</SheetContent>
-							</Sheet> */}
-								{/* <img
-									src="/CraftLogo.jpeg"
-									alt="Company logo"
-									className="h-16 md:h-10"
-								/> */}
 								<a
 									href="/"
 									className="ml-1 lg:ml-0 text-lg font-bold text-emerald-900">

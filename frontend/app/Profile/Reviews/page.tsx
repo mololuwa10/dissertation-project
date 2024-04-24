@@ -30,13 +30,11 @@ function formatDate(dateString: any) {
 	const date = new Date(dateString);
 	let formattedDate = date.toLocaleDateString("en-GB", options);
 
-	// Find the day number and append the appropriate suffix
 	const day = date.getDate();
 	const suffix = ["th", "st", "nd", "rd"][
 		day % 10 > 3 ? 0 : (day % 100) - (day % 10) != 10 ? day % 10 : 0
 	];
 
-	// Replace the day number with the day number + suffix
 	formattedDate = formattedDate.replace(/\d+/, `${day}${suffix}`);
 
 	return formattedDate;

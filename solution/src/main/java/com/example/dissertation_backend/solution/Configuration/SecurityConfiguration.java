@@ -25,7 +25,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
-// Might remove later
 @EnableWebSecurity
 @Configuration
 public class SecurityConfiguration {

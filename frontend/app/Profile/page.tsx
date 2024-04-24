@@ -64,8 +64,6 @@ export default function Profile() {
 		);
 	}
 
-	// <PageNotFound isLoggedIn={isLoggedIn} />;
-
 	let accountOptions = [
 		{
 			titleId: "yourOrders",

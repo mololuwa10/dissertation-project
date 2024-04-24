@@ -78,18 +78,6 @@ const ProfileInformation = () => {
 
 						<PersonalInformationComponents />
 
-						{/* <div className="bg-white shadow rounded-lg p-6 mb-6">
-						<h2 className="text-2xl text-gray-800 font-semibold mb-4">
-							Profile Picture
-						</h2>
-						<form>
-						
-							<Button className="mt-4 bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
-								Upload
-							</Button>
-						</form>
-					</div> */}
-
 						<AccountSettingsComponents />
 
 						<StoriesGallerySkillsComponents />

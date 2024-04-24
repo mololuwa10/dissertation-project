@@ -15,10 +15,10 @@ export default function NewProduct() {
 				`http://localhost:8080/api/reviews/product/${productId}`
 			);
 			const data = await response.json();
-			return data; // Returns the array of reviews
+			return data;
 		} catch (error) {
 			console.error("Error fetching reviews:", error);
-			return []; // Return empty array in case of error
+			return [];
 		}
 	};
 
@@ -69,9 +69,8 @@ export default function NewProduct() {
 		const fetchAndCountReviews = async () => {
 			const counts: { [key: number]: number } = {};
 			for (const product of products) {
-				// Assume fetchReviewsByProduct correctly fetches reviews for a given product ID
 				const reviews = await fetchReviewsByProduct(product.value);
-				// Store the number of reviews instead of calculating an average
+
 				counts[product.value] = reviews.length;
 			}
 			setReviewCounts(counts);
@@ -93,7 +92,7 @@ export default function NewProduct() {
 					reviews.length;
 				ratings[product.value] = isNaN(averageRating)
 					? 0
-					: Number(averageRating.toFixed(1)); // Check for NaN and round to 1 decimal
+					: Number(averageRating.toFixed(1)); 
 			}
 			setAverageRatings(ratings);
 		};

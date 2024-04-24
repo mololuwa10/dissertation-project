@@ -17,8 +17,6 @@ import {
 import { useFetchCategories } from "@/lib/dbModels";
 import { FormattedMessage } from "react-intl";
 
-// import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
-
 const components: { title: string; href: string }[] = [
 	{
 		title: "UPCOMING AUCTIONS",

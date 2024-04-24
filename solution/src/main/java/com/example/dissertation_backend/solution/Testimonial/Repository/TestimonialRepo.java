@@ -7,6 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TestimonialRepo extends JpaRepository<Testimonial, Integer> {
-  // Implement methods for getting testimonials by author or by product
   List<Testimonial> findByApplicationUser_UserId(Integer userId);
 }

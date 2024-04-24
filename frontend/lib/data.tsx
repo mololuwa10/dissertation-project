@@ -33,7 +33,7 @@ export const useFetchUserInfo = () => {
 
 				const data = await response.json();
 				setUserDetails(data);
-				// Set the user role based on authorities
+				// Setting the user role based on authorities
 				const isAdmin = data.user.authorities.some(
 					(authority: { roleId: number; authority: string }) =>
 						authority.authority === "ADMIN"
@@ -101,7 +101,6 @@ export const checkVerificationStatus = async () => {
 	try {
 		const token = localStorage.getItem("jwt");
 
-		// Make the GET request to the backend
 		const response = await fetch(
 			`http://localhost:8080/api/email/check-verification`,
 			{
@@ -117,7 +116,6 @@ export const checkVerificationStatus = async () => {
 			throw new Error(`HTTP error! status: ${response.status}`);
 		}
 
-		// Assuming the response body is just a boolean
 		const isVerified = await response.json();
 		return isVerified;
 	} catch (error) {
